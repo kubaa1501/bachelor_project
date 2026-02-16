@@ -12,3 +12,11 @@ Network density (users-only subgraph): 0.00002668
 Number of connected components (users-only subgraph): 1  
 Largest connected component size (users-only subgraph): 99,924  
 Average clustering coefficient (users-only subgraph): 0.0431  
+
+## LCC
+after filtration:  
+"original_nodes": 43614,  
+  "original_edges": 44508,  
+  "lcc_nodes": 31021,  
+  "lcc_edges": 40204,  
+  "directed": false  
