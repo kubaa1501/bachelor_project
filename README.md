@@ -32,7 +32,8 @@ directed: false
 
 ## games: (enriched_games_filtered.scv)
 20988 games (cols)  
-<img width="810" height="121" alt="obraz" src="https://github.com/user-attachments/assets/6a438470-5956-41ad-8898-50e5e458e97f" />
+<img width="835" height="141" alt="obraz" src="https://github.com/user-attachments/assets/6e479c8b-c4ad-47a0-864d-1e7fb6c4b457" />
+
 
 ## users: (users_filtered.csv)
 43675 users (rows)   WHY??????   
