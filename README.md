@@ -23,12 +23,6 @@ lcc_nodes: 31021
 lcc_edges: 40204  
 directed: false    
 
-## algorithm   
-- game_index_to_gameid_sq_20988.mmap (map games id)    
-- user_edge_graph_relabelled.pkl (31021 nodes/users, 40204 edges/connections)   
-- old_to_new_node_id.csv (mapping users (2) 43613/filtered data -> 31021 (LCC)   
-- game_game_dists_sq_20988.mmap -> upper triangle games relationships matrix   
-
 
 ## games: (enriched_games_filtered.scv)
 20988 games (cols)  
@@ -77,3 +71,11 @@ directed: false
 | 80  | 0.0 | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 10.618079 | 3357.562256 |
 | 100 | 0.0 | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 3357.741211 |
 | 130 | 0.0 | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0.000000 |
+
+
+
+### my notes:
+- game_index_to_gameid_sq_20988.mmap (map games id)    
+- user_edge_graph_relabelled.pkl (31021 nodes/users, 40204 edges/connections)   
+- old_to_new_node_id.csv (mapping users (2) 43613/filtered data -> 31021 (LCC)   
+- game_game_dists_sq_20988.mmap -> upper triangle games relationships matrix   
