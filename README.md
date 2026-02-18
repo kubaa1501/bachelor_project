@@ -32,7 +32,8 @@ directed: false
 
 ## games: (enriched_games_filtered.scv)
 20988 games (cols)  
-<img width="835" height="141" alt="obraz" src="https://github.com/user-attachments/assets/6e479c8b-c4ad-47a0-864d-1e7fb6c4b457" />
+<img width="838" height="221" alt="obraz" src="https://github.com/user-attachments/assets/956e0e60-fdfe-41b4-9ec3-630cebef532d" />
+
 
 
 ## users: (users_filtered.csv)
