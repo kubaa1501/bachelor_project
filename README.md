@@ -39,6 +39,9 @@ directed: false
 |   76561198109425210  |  True   |   BE    |  1.380726e+09    |      NaN      |
 |   76561198281198045  |  True   |  NaN    |  1.454511e+09    |      NaN      |
 
+
+# on SSD (in correct_files) 
+
 ## matrix (user_game_01_steam_users_appid_games.pkl) 
 31021 users (rows)  
 20988 games (cols)   
@@ -57,6 +60,7 @@ directed: false
 | 76561198004594504 |    0 |    1 |    0 |    0 |    1 |    0 |    1 |    0 |     0 |     1 |
 
 ## matrix ("game_game_dists_sq_20988.mmap)
+! file itself does not have headers- use **game_index_to_gameid_20988.csv**
 
 
 | game_id | 10 | 20 | 30 | 40 | 50 | 60 | 70 | 80 | 100 | 130 |
@@ -73,6 +77,27 @@ directed: false
 | 130 | 0.0 | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0.000000 |
 
 
+
+## Graph (user_edge_graph_steamid_LCC31021.pkl)
+**Type:** NetworkX undirected graph (`nx.Graph`)    
+**Nodes:** Steam user IDs (`steam_id` as `string`)    
+**Edges:** user–user connections (undirected)  
+
+  
+nodes: 31021  
+edges: 40204  
+```text
+('76561198064675174', '76561197972380369')
+('76561198064675174', '76561198109425210')
+('76561198109425210', '76561198281198045')
+('76561198109425210', '76561198362520139')
+('76561198281198045', '76561197994839969')
+('76561197994839969', '76561197977761889')
+('76561197994839969', '76561198050217493')
+('76561197994839969', '76561198113936877')
+('76561197994839969', '76561198119199983')
+('76561197972380369', '76561197966485747')
+```
 
 ### my notes:
 - game_index_to_gameid_sq_20988.mmap (map games id)    
