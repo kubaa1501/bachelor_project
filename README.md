@@ -107,6 +107,14 @@ edges: 40204
 | RandomForest | 0.94115 | max_depth=24, max_features=None, min_samples_leaf=2, min_samples_split=10 | 0.85864 | 0.84563 | 0.87747 | 0.86125 | 0.92028 | [[20143, 3842], [2939, 21046]] | `outputs_baseline_small/models/RandomForest_best.joblib` |
 | XGBoost | 0.94491 | colsample_bytree=0.6, max_depth=8, reg_lambda=1.0, subsample=0.6 | 0.86250 | 0.84869 | 0.88230 | 0.86517 | 0.92342 | [[20212, 3773], [2823, 21162]] | `outputs_baseline_small/models/XGBoost_best.joblib` |
 
+
+<img width="1152" height="908" alt="LogisticRegression_learning_curve" src="https://github.com/user-attachments/assets/6513294c-033d-4079-b2d8-759177144e90" />
+
+<img width="1152" height="908" alt="RandomForest_learning_curve" src="https://github.com/user-attachments/assets/4e273056-7747-4be3-9965-31f094b1535f" />
+
+<img width="1170" height="908" alt="XGBoost_learning_curve" src="https://github.com/user-attachments/assets/30fe8c3b-c5a5-4e51-ba1a-4339ba0e22c1" />
+
+
 ### my notes:
 - game_index_to_gameid_sq_20988.mmap (map games id)    
 - user_edge_graph_relabelled.pkl (31021 nodes/users, 40204 edges/connections)   
