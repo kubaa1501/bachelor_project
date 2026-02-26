@@ -115,6 +115,76 @@ edges: 40204
 <img width="1170" height="908" alt="XGBoost_learning_curve" src="https://github.com/user-attachments/assets/30fe8c3b-c5a5-4e51-ba1a-4339ba0e22c1" />
 
 
+## Results (Baseline models)
+
+### Logistic Regression (LR)
+**Best CV ROC-AUC:** 0.9268  
+**Best hyperparameter:** `C = 29.7635`
+
+**Test metrics:**
+- Accuracy: **0.8496**
+- Precision: **0.8398**
+- Recall: **0.8640**
+- F1: **0.8517**
+- ROC-AUC: **0.9248**
+- Confusion matrix (TN FP / FN TP): **[[677022, 133617], [110236, 700403]]**
+
+Saved model:
+- `outputs_baseline_full/models/LogisticRegression_best.joblib`
+Saved results:
+- `outputs_baseline_full/results_lr.csv`
+
+---
+
+### XGBoost (XGB)
+**Best CV ROC-AUC:** 0.9310  
+**Best hyperparameters:**
+- `max_depth = 8`
+- `subsample = 0.6`
+- `colsample_bytree = 0.6`
+- `reg_lambda = 1.0`
+
+**Test metrics:**
+- Accuracy: **0.8523**
+- Precision: **0.8425**
+- Recall: **0.8667**
+- F1: **0.8544**
+- ROC-AUC: **0.9287**
+- Confusion matrix (TN FP / FN TP): **[[679251, 131388], [108063, 702576]]**
+
+Saved model:
+- `outputs_baseline_full/models/XGBoost_best.joblib`
+Saved results:
+- `outputs_baseline_full/results_xgb.csv`
+
+---
+
+## Feature Importance (Block Permutation Importance, ROC-AUC drop)
+We compute **block permutation importance** on the **full test set**, measuring the **drop in ROC-AUC** when a feature block is permuted.
+Interpretation: **higher AUC drop = more important feature block**.
+**Repeats:** 5 (mean ± std)
+
+| Feature block | ROC-AUC drop (mean ± std) |
+|---|---:|
+| **game_total_playtime_minutes** | **0.400609 ± 0.000281** |
+| **total_games_owned** | **0.041662 ± 0.000072** |
+| publisher | 0.004393 ± 0.000010 |
+| developer | 0.003990 ± 0.000011 |
+| genres | 0.003739 ± 0.000030 |
+| platforms | 0.001401 ± 0.000016 |
+| user_count | 0.000576 ± 0.000011 |
+| total_playtime_minutes | 0.000383 ± 0.000002 |
+| median_playtime_minutes | 0.000283 ± 0.000007 |
+| country | 0.000092 ± 0.000005 |
+| unique_genres_played | -0.000518 ± 0.000005 |
+
+Missing-indicator flags (all ~0):
+- `*_is_missing` → **0.000000** (no measurable impact)
+
+Saved output:
+- `outputs_baseline_full/feature_importance_blocks/block_permutation_importance.csv`
+
+
 ### my notes:
 - game_index_to_gameid_sq_20988.mmap (map games id)    
 - user_edge_graph_relabelled.pkl (31021 nodes/users, 40204 edges/connections)   
