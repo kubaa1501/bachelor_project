@@ -160,7 +160,6 @@ from sklearn.model_selection import StratifiedKFold, RandomizedSearchCV
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
-from sklearn.impute import SimpleImputer
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score, confusion_matrix
 from sklearn.linear_model import LogisticRegression
 
@@ -211,21 +210,39 @@ y_train = train_all[target].astype(int).copy()
 X_test  = test_all[numeric_features + categorical_features].copy()
 y_test  = test_all[target].astype(int).copy()
 
-# ---- FIX: sklearn prefers np.nan over pd.NA (pandas 'string' dtype uses pd.NA) ----
+# normalize missing markers
 X_train = X_train.replace({pd.NA: np.nan})
 X_test  = X_test.replace({pd.NA: np.nan})
 
+# -------- Policy B: numeric -> median + missing flag --------
+missing_flags = []
+for c in numeric_features:
+    flag = c + "_is_missing"
+    missing_flags.append(flag)
+
+    X_train[flag] = X_train[c].isna().astype("int8")
+    X_test[flag]  = X_test[c].isna().astype("int8")
+
+    med = float(pd.Series(X_train[c]).median(skipna=True))
+    X_train[c] = X_train[c].fillna(med).astype(np.float32)
+    X_test[c]  = X_test[c].fillna(med).astype(np.float32)
+
+# categorical -> "MISSING"
+for c in categorical_features:
+    X_train[c] = X_train[c].fillna("MISSING").astype(str)
+    X_test[c]  = X_test[c].fillna("MISSING").astype(str)
+
 print("y_train counts:", np.bincount(y_train))
 
-numeric_pipe = Pipeline([("imputer", SimpleImputer(strategy="median")),
-                         ("scaler", StandardScaler())])
-categorical_pipe = Pipeline([("imputer", SimpleImputer(strategy="most_frequent")),
-                             ("onehot", OneHotEncoder(handle_unknown="ignore"))])
-
-preprocessor = ColumnTransformer([
-    ("num", numeric_pipe, numeric_features),
-    ("cat", categorical_pipe, categorical_features),
-])
+# LR: scale only real numeric, keep flags passthrough
+preprocessor = ColumnTransformer(
+    transformers=[
+        ("num", StandardScaler(), numeric_features),
+        ("miss", "passthrough", missing_flags),
+        ("cat", OneHotEncoder(handle_unknown="ignore"), categorical_features),
+    ],
+    remainder="drop"
+)
 
 cv = StratifiedKFold(n_splits=CV_SPLITS, shuffle=True, random_state=SEED)
 
@@ -275,7 +292,6 @@ pd.DataFrame([row]).to_csv(out_csv, index=False)
 
 print("Saved:", out_csv)
 print(row)
-
 #### train RF############
 
 import os, json, joblib
@@ -286,15 +302,13 @@ from sklearn.model_selection import StratifiedKFold, RandomizedSearchCV
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
-from sklearn.impute import SimpleImputer
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score, confusion_matrix
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
 
 SEED = 42
 SCORING = "roc_auc"
-N_ITER = int(os.getenv("N_ITER", "8"))          # RF is heavy; 8 is ok baseline
+N_ITER = int(os.getenv("N_ITER", "10"))
 CV_SPLITS = int(os.getenv("CV_SPLITS", "3"))
-RF_NJOBS = int(os.getenv("RF_NJOBS", "16"))
 
 OUT_DIR = "outputs_baseline_full"
 DATA_DIR = os.path.join(OUT_DIR, "data")
@@ -338,26 +352,183 @@ y_train = train_all[target].astype(int).copy()
 X_test  = test_all[numeric_features + categorical_features].copy()
 y_test  = test_all[target].astype(int).copy()
 
-# ---- FIX: sklearn prefers np.nan over pd.NA ----
+# normalize missing markers
 X_train = X_train.replace({pd.NA: np.nan})
 X_test  = X_test.replace({pd.NA: np.nan})
 
+# -------- Policy B: numeric -> median + missing flag --------
+missing_flags = []
+for c in numeric_features:
+    flag = c + "_is_missing"
+    missing_flags.append(flag)
+
+    X_train[flag] = X_train[c].isna().astype("int8")
+    X_test[flag]  = X_test[c].isna().astype("int8")
+
+    med = float(pd.Series(X_train[c]).median(skipna=True))
+    X_train[c] = X_train[c].fillna(med).astype(np.float32)
+    X_test[c]  = X_test[c].fillna(med).astype(np.float32)
+
+# categorical -> "MISSING"
+for c in categorical_features:
+    X_train[c] = X_train[c].fillna("MISSING").astype(str)
+    X_test[c]  = X_test[c].fillna("MISSING").astype(str)
+
 print("y_train counts:", np.bincount(y_train))
 
-numeric_pipe = Pipeline([("imputer", SimpleImputer(strategy="median")),
-                         ("scaler", StandardScaler())])
-categorical_pipe = Pipeline([("imputer", SimpleImputer(strategy="most_frequent")),
-                             ("onehot", OneHotEncoder(handle_unknown="ignore"))])
+# LR: scale only real numeric, keep flags passthrough
+preprocessor = ColumnTransformer(
+    transformers=[
+        ("num", StandardScaler(), numeric_features),
+        ("miss", "passthrough", missing_flags),
+        ("cat", OneHotEncoder(handle_unknown="ignore"), categorical_features),
+    ],
+    remainder="drop"
+)
 
-preprocessor = ColumnTransformer([
-    ("num", numeric_pipe, numeric_features),
-    ("cat", categorical_pipe, categorical_features),
+cv = StratifiedKFold(n_splits=CV_SPLITS, shuffle=True, random_state=SEED)
+
+pipe = Pipeline([
+    ("preprocessor", preprocessor),
+    ("model", LogisticRegression(max_iter=2000, random_state=SEED))
 ])
+
+params = {"model__C": np.logspace(-3, 2, 20)}
+
+search = RandomizedSearchCV(
+    pipe, params,
+    n_iter=min(N_ITER, 20),
+    scoring=SCORING, cv=cv,
+    random_state=SEED,
+    n_jobs=1, verbose=1, error_score=np.nan
+)
+
+search.fit(X_train, y_train)
+best = search.best_estimator_
+
+y_pred = best.predict(X_test)
+y_proba = best.predict_proba(X_test)[:, 1]
+
+metrics = {
+    "accuracy": float(accuracy_score(y_test, y_pred)),
+    "precision": float(precision_score(y_test, y_pred, zero_division=0)),
+    "recall": float(recall_score(y_test, y_pred, zero_division=0)),
+    "f1": float(f1_score(y_test, y_pred, zero_division=0)),
+    "roc_auc": float(roc_auc_score(y_test, y_proba)),
+    "confusion_matrix": confusion_matrix(y_test, y_pred).tolist()
+}
+
+model_path = os.path.join(MODELS_DIR, "LogisticRegression_best.joblib")
+joblib.dump(best, model_path)
+
+row = {
+    "model": "LogisticRegression",
+    "best_cv_score": float(search.best_score_),
+    "best_params": json.dumps(search.best_params_),
+    **metrics,
+    "model_path": model_path
+}
+
+out_csv = os.path.join(OUT_DIR, "results_lr.csv")
+pd.DataFrame([row]).to_csv(out_csv, index=False)
+
+print("Saved:", out_csv)
+print(row)
+[anci@slurmhead model]$ cat train_rf.py
+import os, json, joblib
+import numpy as np
+import pandas as pd
+
+from sklearn.model_selection import StratifiedKFold, RandomizedSearchCV
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score, confusion_matrix
+from sklearn.ensemble import RandomForestClassifier
+
+SEED = 42
+SCORING = "roc_auc"
+N_ITER = int(os.getenv("N_ITER", "4"))
+CV_SPLITS = int(os.getenv("CV_SPLITS", "3"))
+RF_NJOBS = int(os.getenv("RF_NJOBS", "8"))
+
+OUT_DIR = "outputs_baseline_full"
+DATA_DIR = os.path.join(OUT_DIR, "data")
+MODELS_DIR = os.path.join(OUT_DIR, "models")
+os.makedirs(MODELS_DIR, exist_ok=True)
+
+TRAIN_CSV = os.path.join(DATA_DIR, "train_all.csv")
+TEST_CSV  = os.path.join(DATA_DIR, "test_all.csv")
+
+numeric_features = [
+    "total_games_owned","total_playtime_minutes","median_playtime_minutes",
+    "unique_genres_played","user_count","game_total_playtime_minutes"
+]
+categorical_features = ["country","developer","publisher","platforms","genres"]
+target = "owned"
+usecols = ["steamid","appid",target] + numeric_features + categorical_features
+
+dtypes = {
+    "steamid": "int64",
+    "appid": "int32",
+    "owned": "int8",
+    "total_games_owned": "float32",
+    "total_playtime_minutes": "float32",
+    "median_playtime_minutes": "float32",
+    "unique_genres_played": "float32",
+    "user_count": "float32",
+    "game_total_playtime_minutes": "float32",
+    "country": "object",
+    "developer": "object",
+    "publisher": "object",
+    "platforms": "object",
+    "genres": "object",
+}
+
+print("Loading CSV (train/test) with selected columns...")
+train_all = pd.read_csv(TRAIN_CSV, usecols=usecols, dtype=dtypes)
+test_all  = pd.read_csv(TEST_CSV,  usecols=usecols, dtype=dtypes)
+
+X_train = train_all[numeric_features + categorical_features].copy()
+y_train = train_all[target].astype(int).copy()
+X_test  = test_all[numeric_features + categorical_features].copy()
+y_test  = test_all[target].astype(int).copy()
+
+X_train = X_train.replace({pd.NA: np.nan})
+X_test  = X_test.replace({pd.NA: np.nan})
+
+# Policy B: numeric -> median + missing flag
+missing_flags = []
+for c in numeric_features:
+    flag = c + "_is_missing"
+    missing_flags.append(flag)
+
+    X_train[flag] = X_train[c].isna().astype("int8")
+    X_test[flag]  = X_test[c].isna().astype("int8")
+
+    med = float(pd.Series(X_train[c]).median(skipna=True))
+    X_train[c] = X_train[c].fillna(med).astype(np.float32)
+    X_test[c]  = X_test[c].fillna(med).astype(np.float32)
+
+# categorical -> "MISSING"
+for c in categorical_features:
+    X_train[c] = X_train[c].fillna("MISSING").astype(str)
+    X_test[c]  = X_test[c].fillna("MISSING").astype(str)
+
+print("y_train counts:", np.bincount(y_train))
+
+preprocessor = ColumnTransformer(
+    transformers=[
+        ("num", "passthrough", numeric_features + missing_flags),
+        ("cat", OneHotEncoder(handle_unknown="ignore"), categorical_features),
+    ],
+    remainder="drop"
+)
 
 cv = StratifiedKFold(n_splits=CV_SPLITS, shuffle=True, random_state=SEED)
 
 rf = RandomForestClassifier(
-    n_estimators=400,
+    n_estimators=200,
     random_state=SEED,
     n_jobs=RF_NJOBS
 )
@@ -366,10 +537,10 @@ pipe = Pipeline([("preprocessor", preprocessor),
                  ("model", rf)])
 
 params = {
-    "model__max_depth": [None, 24],
+    "model__max_depth": [None, 20],
     "model__min_samples_split": [2, 10],
     "model__min_samples_leaf": [1, 2],
-    "model__max_features": ["sqrt", None],
+    "model__max_features": ["sqrt"],
 }
 
 search = RandomizedSearchCV(
@@ -411,8 +582,6 @@ pd.DataFrame([row]).to_csv(out_csv, index=False)
 
 print("Saved:", out_csv)
 print(row)
-
-
 #### train XGB #############
 
 import os, json, joblib
@@ -420,10 +589,9 @@ import numpy as np
 import pandas as pd
 
 from sklearn.model_selection import StratifiedKFold, RandomizedSearchCV
-from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.preprocessing import OneHotEncoder
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
-from sklearn.impute import SimpleImputer
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score, confusion_matrix
 from xgboost import XGBClassifier
 
@@ -431,7 +599,6 @@ SEED = 42
 SCORING = "roc_auc"
 N_ITER = int(os.getenv("N_ITER", "10"))
 CV_SPLITS = int(os.getenv("CV_SPLITS", "3"))
-USE_XGB_GPU = os.getenv("USE_XGB_GPU", "1") == "1"
 
 OUT_DIR = "outputs_baseline_full"
 DATA_DIR = os.path.join(OUT_DIR, "data")
@@ -475,21 +642,36 @@ y_train = train_all[target].astype(int).copy()
 X_test  = test_all[numeric_features + categorical_features].copy()
 y_test  = test_all[target].astype(int).copy()
 
-# ---- FIX: sklearn prefers np.nan over pd.NA ----
 X_train = X_train.replace({pd.NA: np.nan})
 X_test  = X_test.replace({pd.NA: np.nan})
 
+# Policy B: numeric -> median + missing flag
+missing_flags = []
+for c in numeric_features:
+    flag = c + "_is_missing"
+    missing_flags.append(flag)
+
+    X_train[flag] = X_train[c].isna().astype("int8")
+    X_test[flag]  = X_test[c].isna().astype("int8")
+
+    med = float(pd.Series(X_train[c]).median(skipna=True))
+    X_train[c] = X_train[c].fillna(med).astype(np.float32)
+    X_test[c]  = X_test[c].fillna(med).astype(np.float32)
+
+# categorical -> "MISSING"
+for c in categorical_features:
+    X_train[c] = X_train[c].fillna("MISSING").astype(str)
+    X_test[c]  = X_test[c].fillna("MISSING").astype(str)
+
 print("y_train counts:", np.bincount(y_train))
 
-numeric_pipe = Pipeline([("imputer", SimpleImputer(strategy="median")),
-                         ("scaler", StandardScaler())])
-categorical_pipe = Pipeline([("imputer", SimpleImputer(strategy="most_frequent")),
-                             ("onehot", OneHotEncoder(handle_unknown="ignore"))])
-
-preprocessor = ColumnTransformer([
-    ("num", numeric_pipe, numeric_features),
-    ("cat", categorical_pipe, categorical_features),
-])
+preprocessor = ColumnTransformer(
+    transformers=[
+        ("num", "passthrough", numeric_features + missing_flags),
+        ("cat", OneHotEncoder(handle_unknown="ignore"), categorical_features),
+    ],
+    remainder="drop"
+)
 
 cv = StratifiedKFold(n_splits=CV_SPLITS, shuffle=True, random_state=SEED)
 
@@ -499,8 +681,9 @@ xgb = XGBClassifier(
     n_estimators=600,
     learning_rate=0.05,
     tree_method="hist",
-    device="cpu",
+    n_jobs=8
 )
+
 pipe = Pipeline([("preprocessor", preprocessor),
                  ("model", xgb)])
 
@@ -521,9 +704,6 @@ search = RandomizedSearchCV(
 
 search.fit(X_train, y_train)
 best = search.best_estimator_
-
-p = best.named_steps["model"].get_params()
-print("XGB tree_method:", p.get("tree_method"), "| device:", p.get("device"))
 
 y_pred = best.predict(X_test)
 y_proba = best.predict_proba(X_test)[:, 1]
