@@ -104,12 +104,12 @@ edges: 40204
 | Model              | Best CV ROC-AUC | Best Params                                                                                                              | Accuracy | Precision |  Recall |      F1 | Test ROC-AUC | Confusion Matrix (TN FP / FN TP) | Saved Model                                                          |
 | ------------------ | --------------: | ------------------------------------------------------------------------------------------------------------------------ | -------: | --------: | ------: | ------: | -----------: | -------------------------------- | -------------------------------------------------------------------- |
 | LogisticRegression |         0.93290 | C=0.78476                                                                                                                |  0.85139 |   0.84864 | 0.85533 | 0.85197 |      0.91337 | [[20326, 3659], [3470, 20515]]   | `outputs_baseline_small/models/LogisticRegression_best_small.joblib` |
-| RandomForest       |         0.93941 | max_depth=10, max_features=0.5, min_samples_leaf=1, min_samples_split=2, bootstrap=True *(OHE max_cats=500; min_freq=5)* |  0.85318 |   0.84301 | 0.86800 | 0.85532 |      0.91777 | [[20108, 3877], [3166, 20819]]   | `outputs_baseline_small/models/RandomForest_best_small.joblib`       |
+| RandomForest | 0.94392 | max_depth=20, max_features=0.5, min_samples_leaf=2, min_samples_split=50, bootstrap=True *(OHE max_cats=500; min_freq=5)* | 0.86023 | 0.84813 | 0.87759 | 0.86261 | 0.92349 | [[20216, 3769], [2936, 21049]] | `outputs_baseline_small/models/RandomForest_best_small.joblib` |
 | XGBoost            |         0.94507 | colsample_bytree=0.8, max_depth=8, reg_lambda=1.0, subsample=0.8                                                         |  0.86333 |   0.85016 | 0.88213 | 0.86585 |      0.92354 | [[20256, 3729], [2827, 21158]]   | `outputs_baseline_small/models/XGBoost_best_small.joblib`            |
 
 
 <img width="1600" height="1000" alt="learning_curve_lr_roc_auc_small" src="https://github.com/user-attachments/assets/767e995a-53dd-4f0c-b74b-0966994c53a7" />
-<img width="1600" height="1000" alt="learning_curve_rf_roc_auc_small" src="https://github.com/user-attachments/assets/c494c192-fc05-44b0-a4b8-d09272067128" />
+<img width="1600" height="1000" alt="learning_curve_rf_roc_auc_small" src="https://github.com/user-attachments/assets/42fdaf4a-9711-4da1-a8bd-309e05dab73d" />
 <img width="1600" height="1000" alt="learning_curve_xgb_roc_auc_small" src="https://github.com/user-attachments/assets/824cc432-4400-49bf-b080-2c94812496e6" />
 
 
