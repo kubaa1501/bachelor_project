@@ -119,12 +119,12 @@ edges: 40204
 | Model              | Best CV ROC-AUC | Best Params                                                                                                                                     | Accuracy | Precision |  Recall |      F1 | Test ROC-AUC | Confusion Matrix (TN FP / FN TP)     | Saved Model                                                   |
 | ------------------ | --------------: | ----------------------------------------------------------------------------------------------------------------------------------------------- | -------: | --------: | ------: | ------: | -----------: | ------------------------------------ | ------------------------------------------------------------- |
 | LogisticRegression |         0.92679 | C=29.76351                                                                                                                                      |  0.84959 |   0.83979 | 0.86401 | 0.85173 |      0.92477 | [[677022, 133617], [110236, 700403]] | `outputs_baseline_full/models/LogisticRegression_best.joblib` |
-| RandomForest       |         0.89980 | max_depth=20, max_features=sqrt, min_samples_leaf=5, min_samples_split=2, bootstrap=True *(train subsample=0.2; OHE max_cats=200; min_freq=20)* |  0.82504 |   0.83835 | 0.80538 | 0.82153 |      0.89893 | [[684757, 125882], [157770, 652869]] | `outputs_baseline_full/models/RandomForest_best.joblib`       |
+| RandomForest | 0.91948 | max_depth=10, max_features=0.3, min_samples_leaf=10, min_samples_split=50, bootstrap=True *(train subsample=0.2; LC subsample=0.2; OHE max_cats=200; min_freq=20)* | 0.83880 | 0.83194 | 0.84913 | 0.84044 | 0.91804 | [[671584, 139055], [122302, 688337]] | `outputs_baseline_full/models/RandomForest_best.joblib` |     |
 | XGBoost            |         0.93096 | colsample_bytree=0.6, max_depth=8, reg_lambda=1.0, subsample=0.6                                                                                |  0.85231 |   0.84245 | 0.86669 | 0.85440 |      0.92872 | [[679251, 131388], [108063, 702576]] | `outputs_baseline_full/models/XGBoost_best.joblib`            |
 
 
 <img width="1600" height="1000" alt="learning_curve_lr_roc_auc" src="https://github.com/user-attachments/assets/a711eee6-1c6b-4815-8dd3-fdf7545be27a" />
-<img width="1600" height="1000" alt="learning_curve_rf_roc_auc" src="https://github.com/user-attachments/assets/76e384fe-9ceb-457a-943a-8b080b06e462" />
+<img width="1600" height="1000" alt="learning_curve_rf_roc_auc" src="https://github.com/user-attachments/assets/9e7fe82d-561f-4c0f-9ef4-4fa392069b77" />
 
 <img width="1600" height="1000" alt="learning_curve_xgb_roc_auc" src="https://github.com/user-attachments/assets/1ef2e3a3-f4da-4288-a9f6-a50da206c518" />
 
