@@ -101,63 +101,31 @@ edges: 40204
 
 
 ## models for small dataset:
- Model | Best CV ROC-AUC | Best Params | Accuracy | Precision | Recall | F1 | Test ROC-AUC | Confusion Matrix (TN FP / FN TP) | Saved Model |
-|---|---:|---|---:|---:|---:|---:|---:|---|---|
-| LogisticRegression | 0.93298 | C=1.43845 | 0.85262 | 0.84530 | 0.86321 | 0.85416 | 0.91342 | [[20196, 3789], [3281, 20704]] | `outputs_baseline_small/models/LogisticRegression_best.joblib` |
-| RandomForest | 0.94115 | max_depth=24, max_features=None, min_samples_leaf=2, min_samples_split=10 | 0.85864 | 0.84563 | 0.87747 | 0.86125 | 0.92028 | [[20143, 3842], [2939, 21046]] | `outputs_baseline_small/models/RandomForest_best.joblib` |
-| XGBoost | 0.94491 | colsample_bytree=0.6, max_depth=8, reg_lambda=1.0, subsample=0.6 | 0.86250 | 0.84869 | 0.88230 | 0.86517 | 0.92342 | [[20212, 3773], [2823, 21162]] | `outputs_baseline_small/models/XGBoost_best.joblib` |
+| Model              | Best CV ROC-AUC | Best Params                                                                                                  | Accuracy | Precision |  Recall |      F1 | Test ROC-AUC | Confusion Matrix (TN FP / FN TP) | Saved Model                                                          |
+| ------------------ | --------------: | ------------------------------------------------------------------------------------------------------------ | -------: | --------: | ------: | ------: | -----------: | -------------------------------- | -------------------------------------------------------------------- |
+| LogisticRegression |         0.93290 | C=0.78476                                                                                                    |  0.85139 |   0.84864 | 0.85533 | 0.85197 |      0.91337 | [[20326, 3659], [3470, 20515]]   | `outputs_baseline_small/models/LogisticRegression_best_small.joblib` |
+| RandomForest       |         0.94600 | max_depth=None, max_features=sqrt, min_samples_leaf=1, min_samples_split=10 *(OHE max_cats=500; min_freq=5)* |  0.86848 |   0.85735 | 0.88405 | 0.87050 |      0.92816 | [[20457, 3528], [2781, 21204]]   | `outputs_baseline_small/models/RandomForest_best_small.joblib`       |
+| XGBoost            |         0.94507 | colsample_bytree=0.8, max_depth=8, reg_lambda=1.0, subsample=0.8                                             |  0.86333 |   0.85016 | 0.88213 | 0.86585 |      0.92354 | [[20256, 3729], [2827, 21158]]   | `outputs_baseline_small/models/XGBoost_best_small.joblib`            |
 
 
-<img width="1152" height="908" alt="LogisticRegression_learning_curve" src="https://github.com/user-attachments/assets/6513294c-033d-4079-b2d8-759177144e90" />
-
-<img width="1152" height="908" alt="RandomForest_learning_curve" src="https://github.com/user-attachments/assets/4e273056-7747-4be3-9965-31f094b1535f" />
-
-<img width="1170" height="908" alt="XGBoost_learning_curve" src="https://github.com/user-attachments/assets/30fe8c3b-c5a5-4e51-ba1a-4339ba0e22c1" />
+<img width="1600" height="1000" alt="learning_curve_lr_roc_auc_small" src="https://github.com/user-attachments/assets/767e995a-53dd-4f0c-b74b-0966994c53a7" />
+<img width="1600" height="1000" alt="learning_curve_rf_roc_auc_small" src="https://github.com/user-attachments/assets/32e5131a-04bc-4cbc-9714-84972e000d3b" />
+<img width="1600" height="1000" alt="learning_curve_xgb_roc_auc_small" src="https://github.com/user-attachments/assets/824cc432-4400-49bf-b080-2c94812496e6" />
 
 
-## Results (Baseline models)
 
-### Logistic Regression (LR)
-**Best CV ROC-AUC:** 0.9268  
-**Best hyperparameter:** `C = 29.7635`
+## models for full dataset:
 
-**Test metrics:**
-- Accuracy: **0.8496**
-- Precision: **0.8398**
-- Recall: **0.8640**
-- F1: **0.8517**
-- ROC-AUC: **0.9248**
-- Confusion matrix (TN FP / FN TP): **[[677022, 133617], [110236, 700403]]**
+| Model              | Best CV ROC-AUC | Best Params                                                                                                                        | Accuracy | Precision |  Recall |      F1 | Test ROC-AUC | Confusion Matrix (TN FP / FN TP)     | Saved Model                                                   |
+| ------------------ | --------------: | ---------------------------------------------------------------------------------------------------------------------------------- | -------: | --------: | ------: | ------: | -----------: | ------------------------------------ | ------------------------------------------------------------- |
+| LogisticRegression |         0.92679 | C=29.76351                                                                                                                         |  0.84959 |   0.83979 | 0.86401 | 0.85173 |      0.92477 | [[677022, 133617], [110236, 700403]] | `outputs_baseline_full/models/LogisticRegression_best.joblib` |
+| RandomForest       |         0.93177 | max_depth=None, max_features=sqrt, min_samples_leaf=1, min_samples_split=10 *(train subsample=0.2; OHE max_cats=200; min_freq=20)* |  0.85753 |   0.85071 | 0.86724 | 0.85890 |      0.93245 | [[687267, 123372], [107618, 703021]] | `outputs_baseline_full/models/RandomForest_best.joblib`       |
+| XGBoost            |         0.93096 | colsample_bytree=0.6, max_depth=8, reg_lambda=1.0, subsample=0.6                                                                   |  0.85231 |   0.84245 | 0.86669 | 0.85440 |      0.92872 | [[679251, 131388], [108063, 702576]] | `outputs_baseline_full/models/XGBoost_best.joblib`            |
 
-Saved model:
-- `outputs_baseline_full/models/LogisticRegression_best.joblib`
-Saved results:
-- `outputs_baseline_full/results_lr.csv`
+<img width="1600" height="1000" alt="learning_curve_lr_roc_auc" src="https://github.com/user-attachments/assets/a711eee6-1c6b-4815-8dd3-fdf7545be27a" />
+<img width="1600" height="1000" alt="learning_curve_rf_roc_auc" src="https://github.com/user-attachments/assets/9d35ca33-8f7f-4733-9b9d-08fcd6972e44" />
+<img width="1600" height="1000" alt="learning_curve_xgb_roc_auc" src="https://github.com/user-attachments/assets/1ef2e3a3-f4da-4288-a9f6-a50da206c518" />
 
----
-
-### XGBoost (XGB)
-**Best CV ROC-AUC:** 0.9310  
-**Best hyperparameters:**
-- `max_depth = 8`
-- `subsample = 0.6`
-- `colsample_bytree = 0.6`
-- `reg_lambda = 1.0`
-
-**Test metrics:**
-- Accuracy: **0.8523**
-- Precision: **0.8425**
-- Recall: **0.8667**
-- F1: **0.8544**
-- ROC-AUC: **0.9287**
-- Confusion matrix (TN FP / FN TP): **[[679251, 131388], [108063, 702576]]**
-
-Saved model:
-- `outputs_baseline_full/models/XGBoost_best.joblib`
-Saved results:
-- `outputs_baseline_full/results_xgb.csv`
-
----
 
 ## Feature Importance (Block Permutation Importance, ROC-AUC drop)
 We compute **block permutation importance** on the **full test set**, measuring the **drop in ROC-AUC** when a feature block is permuted.
