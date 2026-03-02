@@ -161,7 +161,35 @@ final shape: (4010476, 46)
 | 76561198064675174 |   620 |    IT   |               170 |               505414.0 |                   588.0 |                   15 | Portal 2                     | Action;Adventure | Valve         | Valve     | windows;linux | 2011-04-18   |      17020 |                  12584145.0 |           28 |         21 |   667.1358 |  268.13412 |   93.35679 |  37.888783 | -4.4383454 |  20.302198 |   5.236955 |    8.47173 |  15.365093 |  -11.573789 |  -17.319775 |  -5.4135013 |   3.6591618 |   -8.029749 |  -11.136434 |  -10.106342 |   2.7152863 |    7.367307 |     4.26974 |  -3.1251187 |    4.212208 |  -1.2821062 |  -10.325581 |   12.463725 |     7.04293 |   1.7030023 |   22.602686 |   -8.296105 |  -37.514336 |
 | 76561198064675174 |  3900 |    IT   |               170 |               505414.0 |                   588.0 |                   15 | Sid Meier's Civilization® IV | Strategy         | Firaxis Games | 2K        | windows;mac   | 2006-10-25   |       1262 |                    223960.0 |           28 |         84 |  301.28006 |   4.801401 | -24.707678 |  -8.812908 |  -6.113992 |  -4.800696 |   4.308728 |    6.08423 | -2.6863155 | -0.88333786 |   1.3589162 |  -2.3656147 |    6.239287 |  0.35651204 | -0.64102525 |  -0.4086798 |   3.1381812 |  -0.5871557 |  -1.5863887 |  -2.2396324 |   1.5458672 |  -0.8461953 | -0.17637874 |   1.6948044 |  -0.1395636 |   -1.039272 |  0.20626062 |  0.40612754 |    1.298332 |
  
+## Split (game-disjoint) — dataset summary
 
+| Item | Value |
+|---|---:|
+| Split strategy | **Game-disjoint** (`appid` in train ∩ test = ∅) |
+| Goal | Simulate “new game release” (test contains unseen games) |
+| Seed | 42 |
+| Test game fraction (`TEST_GAME_FRAC`) | 0.20 |
+| Negative sampling ratio (`NEG_RATIO`) | 1.0 (1 negative per positive) |
+| Users | 31,021 |
+| Games total | 20,918 |
+| Games in test | 4,184 |
+| Games in train | 16,734 |
+| Users with ≥1 positive in both train & test | 29,939 |
+| Appid overlap between train & test | **0** ✅ |
+| Embedding dimensions | 29 (`game_emb_0 … game_emb_28`) |
+
+### Output files
+
+| Dataset variant | Train rows | Test rows | Train path | Test path |
+|---|---:|---:|---|---|
+| Baseline (no network) | 5,368,456 | 2,600,070 | `new_approach_dataset/baseline/data/train.csv` | `new_approach_dataset/baseline/data/test.csv` |
+| Baseline + network | 5,368,456 | 2,600,070 | `new_approach_dataset/baseline_with_network/data/train.csv` | `new_approach_dataset/baseline_with_network/data/test.csv` |
+
+### Notes
+- Train/test **share users**, but **do not share games** (strictly enforced).
+- Negatives are sampled **separately** within train and test game pools.
+- `baseline_with_network` adds `friend_count` (per user) and `game_emb_*` (per game) features.
+- 
 ### my notes:
 - game_index_to_gameid_sq_20988.mmap (map games id)    
 - user_edge_graph_relabelled.pkl (31021 nodes/users, 40204 edges/connections)   
