@@ -189,9 +189,22 @@ final shape: (4010476, 46)
 - Train/test **share users**, but **do not share games** (strictly enforced).
 - Negatives are sampled **separately** within train and test game pools.
 - `baseline_with_network` adds `friend_count` (per user) and `game_emb_*` (per game) features.
-- 
-### my notes:
-- game_index_to_gameid_sq_20988.mmap (map games id)    
-- user_edge_graph_relabelled.pkl (31021 nodes/users, 40204 edges/connections)   
-- old_to_new_node_id.csv (mapping users (2) 43613/filtered data -> 31021 (LCC)   
-- game_game_dists_sq_20988.mmap -> upper triangle games relationships matrix   
+
+## NEW TRAIN-TEST SPLIT MODELS:
+### Logistic Regression
+| Variant | CV ROC-AUC | Test ROC-AUC | Accuracy | Precision | Recall | F1 | Best params |
+|---|---:|---:|---:|---:|---:|---:|---|
+| Baseline | 0.507633 | 0.504176 | 0.502102 | 0.509589 | 0.222475 | 0.309729 | C=0.000259, penalty=l1, class_weight=balanced, solver=liblinear |
+| + Network (friend_count + 29 embeddings) | 0.927460 | 0.949093 | 0.876257 | 0.840302 | 0.930365 | 0.883043 | C=0.048939, penalty=l2, class_weight=balanced, solver=liblinear |
+<img width="1600" height="1000" alt="learning_curve_lr_roc_auc" src="https://github.com/user-attachments/assets/a483895c-4965-4b66-9948-5d3e6e3b8de4" />
+<img width="1600" height="1000" alt="learning_curve_lr_roc_auc" src="https://github.com/user-attachments/assets/0fe076f0-8768-4bda-9b81-f210d9a1b5fa" />
+
+### XGBoost 
+| Variant | CV ROC-AUC | Test ROC-AUC | Accuracy | Precision | Recall | F1 | Best params |
+|---|---:|---:|---:|---:|---:|---:|---|
+| Baseline | 0.505019 | 0.504176 | 0.502102 | 0.507851 | 0.270787 | 0.353230 | max_depth=3, subsample=1.0, colsample=0.6, min_child_weight=1, gamma=1.0, reg_alpha=0.5, reg_lambda=2.0 |
+| + Network (friend_count + 29 embeddings) | 0.957359 | 0.966717 | 0.905709 | 0.871810 | 0.952221 | 0.910243 | max_depth=8, subsample=0.6, colsample=0.8, min_child_weight=10, gamma=1.0, reg_alpha=0.5, reg_lambda=0.5 |
+
+<img width="1600" height="1000" alt="learning_curve_xgb_roc_auc" src="https://github.com/user-attachments/assets/cb880482-342f-4502-9f68-7737b1ff2f34" />
+<img width="1600" height="1000" alt="learning_curve_xgb_roc_auc" src="https://github.com/user-attachments/assets/e27fc72d-d645-4ab9-b6de-1146230705ba" />
+
