@@ -160,7 +160,8 @@ final shape: (4010476, 46)
 | 76561198064675174 |   550 |    IT   |               170 |               505414.0 |                   588.0 |                   15 | Left 4 Dead 2                | Action           | Valve         | Valve     | windows;linux | 2009-11-16   |      26253 |                  69129046.0 |           28 |         19 |   683.7639 |   285.9603 |  107.24204 |   47.04935 | -1.5980552 |  31.032335 |  1.9328676 |  12.893521 |  16.533867 |  -1.7018634 |  -3.4427319 |  -5.2860446 |    7.049412 |   -3.244441 |   -8.320024 |  -1.8394125 |   1.0495358 |   -1.846529 |   -2.949326 | 0.010995906 |    8.462385 |    -3.27282 |  -1.0441896 |   2.5599153 |   12.126819 |   -2.255205 |   23.305458 |    6.542681 |  -36.192795 |
 | 76561198064675174 |   620 |    IT   |               170 |               505414.0 |                   588.0 |                   15 | Portal 2                     | Action;Adventure | Valve         | Valve     | windows;linux | 2011-04-18   |      17020 |                  12584145.0 |           28 |         21 |   667.1358 |  268.13412 |   93.35679 |  37.888783 | -4.4383454 |  20.302198 |   5.236955 |    8.47173 |  15.365093 |  -11.573789 |  -17.319775 |  -5.4135013 |   3.6591618 |   -8.029749 |  -11.136434 |  -10.106342 |   2.7152863 |    7.367307 |     4.26974 |  -3.1251187 |    4.212208 |  -1.2821062 |  -10.325581 |   12.463725 |     7.04293 |   1.7030023 |   22.602686 |   -8.296105 |  -37.514336 |
 | 76561198064675174 |  3900 |    IT   |               170 |               505414.0 |                   588.0 |                   15 | Sid Meier's Civilization® IV | Strategy         | Firaxis Games | 2K        | windows;mac   | 2006-10-25   |       1262 |                    223960.0 |           28 |         84 |  301.28006 |   4.801401 | -24.707678 |  -8.812908 |  -6.113992 |  -4.800696 |   4.308728 |    6.08423 | -2.6863155 | -0.88333786 |   1.3589162 |  -2.3656147 |    6.239287 |  0.35651204 | -0.64102525 |  -0.4086798 |   3.1381812 |  -0.5871557 |  -1.5863887 |  -2.2396324 |   1.5458672 |  -0.8461953 | -0.17637874 |   1.6948044 |  -0.1395636 |   -1.039272 |  0.20626062 |  0.40612754 |    1.298332 |
- 
+
+ # NEW TRAIN-TEST SPLIT MODELS:
 ## Split (game-disjoint) — dataset summary
 
 | Item | Value |
@@ -175,22 +176,91 @@ final shape: (4010476, 46)
 | Games in test | 4,184 |
 | Games in train | 16,734 |
 | Users with ≥1 positive in both train & test | 29,939 |
-| Appid overlap between train & test | **0** ✅ |
+| Appid overlap between train & test | **0**  |
 | Embedding dimensions | 29 (`game_emb_0 … game_emb_28`) |
-
-### Output files
-
-| Dataset variant | Train rows | Test rows | Train path | Test path |
-|---|---:|---:|---|---|
-| Baseline (no network) | 5,368,456 | 2,600,070 | `new_approach_dataset/baseline/data/train.csv` | `new_approach_dataset/baseline/data/test.csv` |
-| Baseline + network | 5,368,456 | 2,600,070 | `new_approach_dataset/baseline_with_network/data/train.csv` | `new_approach_dataset/baseline_with_network/data/test.csv` |
 
 ### Notes
 - Train/test **share users**, but **do not share games** (strictly enforced).
 - Negatives are sampled **separately** within train and test game pools.
 - `baseline_with_network` adds `friend_count` (per user) and `game_emb_*` (per game) features.
 
-## NEW TRAIN-TEST SPLIT MODELS:
+## New gamexgame matrix (games only in training preventing data leaking) :
+**Train-only game–game similarity (cosine)**  
+
+We compute a **game×game cosine similarity** matrix using **TRAIN positives only** (`owned=1`) and store it as an **upper-triangle float32 array** (excluding diagonal). This prevents test-leakage when later building embeddings.  
+
+#### Stored matrix stats
+| Metric | Value |
+|---|---:|
+| Train games (`n_games`) | 16,734 |
+| Stored values (upper triangle) | 140,005,011 |
+| Storage | Upper triangle (i < j), diagonal excluded |
+| dtype | float32 |
+| File size | 534.1 MB |
+| Files | `train_game_sim_cosine_upper_f32.npy`, `train_game_sim_cosine_upper_meta.json`, `train_game_index.csv` |
+
+**Indexing formula (upper triangle):**  
+`k = i*(2n - i - 1)//2 + (j - i - 1)` for `0 ≤ i < j < n`
+
+#### First 10 games (by train game_idx)
+| game_idx | appid |
+|---:|---:|
+| 0 | 10 |
+| 1 | 20 |
+| 2 | 40 |
+| 3 | 50 |
+| 4 | 60 |
+| 5 | 70 |
+| 6 | 130 |
+| 7 | 220 |
+| 8 | 280 |
+| 9 | 300 |
+
+#### 10×10 similarity preview (rows/cols = appid)
+| appid | 10 | 20 | 40 | 50 | 60 | 70 | 130 | 220 | 280 | 300 |
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 10 | 0.0000 | 0.6162 | 0.6640 | 0.6162 | 0.6622 | 0.5982 | 0.6157 | 0.5738 | 0.5799 | 0.5891 |
+| 20 | 0.6162 | 0.0000 | 0.8310 | 0.9609 | 0.8295 | 0.7467 | 0.9645 | 0.6293 | 0.8995 | 0.7679 |
+| 40 | 0.6640 | 0.8310 | 0.0000 | 0.8139 | 0.9918 | 0.6421 | 0.8169 | 0.5467 | 0.7796 | 0.8043 |
+| 50 | 0.6162 | 0.9609 | 0.8139 | 0.0000 | 0.8113 | 0.7628 | 0.9850 | 0.6453 | 0.8946 | 0.7579 |
+| 60 | 0.6622 | 0.8295 | 0.9918 | 0.8113 | 0.0000 | 0.6416 | 0.8147 | 0.5466 | 0.7780 | 0.8033 |
+| 70 | 0.5982 | 0.7467 | 0.6421 | 0.7628 | 0.6416 | 0.0000 | 0.7612 | 0.7337 | 0.6989 | 0.6121 |
+| 130 | 0.6157 | 0.9645 | 0.8169 | 0.9850 | 0.8147 | 0.7612 | 0.0000 | 0.6434 | 0.8993 | 0.7587 |
+| 220 | 0.5738 | 0.6293 | 0.5467 | 0.6453 | 0.5466 | 0.7337 | 0.6434 | 0.0000 | 0.6298 | 0.5683 |
+| 280 | 0.5799 | 0.8995 | 0.7796 | 0.8946 | 0.7780 | 0.6989 | 0.8993 | 0.6298 | 0.0000 | 0.7893 |
+| 300 | 0.5891 | 0.7679 | 0.8043 | 0.7579 | 0.8033 | 0.6121 | 0.7587 | 0.5683 | 0.7893 | 0.0000 |
+
+
+### PCA95 game embeddings
+| appid | emb0 | emb1 | emb2 | emb3 | emb4 | emb5 | emb6 | emb7 | emb8 | emb9 | emb10 | emb11 |
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 10  | -18.409132 | -4.319274 | -0.9189478 | 0.3999531 | 0.4293030 | 1.1332549 | -1.7259296 | -0.3306376 | -0.6646197 | 1.4975620 | 1.4892817 | 0.0436611 |
+| 20  | -17.322119 | -1.678589 | 0.0964240 | 0.6387344 | 1.3623946 | 2.0647311 | -1.8057147 | -0.4516179 | -0.7089579 | 1.7256294 | 1.5963341 | 0.1672443 |
+| 40  | -17.240707 | -2.327463 | -0.2841532 | 0.4887637 | 0.8431156 | 1.4215784 | -1.6851312 | -0.4551899 | -0.5191811 | 1.4549949 | 1.3946556 | 0.0885037 |
+| 50  | -17.391333 | -1.734731 | 0.0915704 | 0.6396646 | 1.3897355 | 2.1104310 | -1.8281013 | -0.4546433 | -0.7365656 | 1.7704560 | 1.6408337 | 0.1742452 |
+| 60  | -17.243963 | -2.350560 | -0.2899061 | 0.4858887 | 0.8527242 | 1.4432449 | -1.6825049 | -0.4388882 | -0.5487711 | 1.4666959 | 1.3669611 | 0.0970209 |
+| 70  | -18.061094 | -2.536264 | -0.0848833 | 0.6058696 | 1.4819728 | 2.3099554 | -1.9732434 | -0.4666621 | -0.7035309 | 1.9587950 | 1.9017795 | 0.0828693 |
+| 130 | -17.282185 | -1.518037 | 0.1082908 | 0.5630072 | 1.4247332 | 2.0908344 | -1.8575177 | -0.4903648 | -0.7169039 | 1.7961316 | 1.6293833 | 0.1697471 |
+| 220 | -18.360088 | -2.842084 | -0.1417450 | 0.6011832 | 1.5561073 | 2.4555657 | -2.0543263 | -0.4497394 | -0.8084972 | 2.0706496 | 2.0046163 | 0.0989048 |
+| 280 | -17.053340 | -1.240685 | 0.1694918 | 0.5531242 | 1.3946271 | 1.9881690 | -1.8606758 | -0.5276797 | -0.6358551 | 1.7524627 | 1.5859109 | 0.1774690 |
+| 300 | -17.238493 | -2.188106 | -0.1962015 | 0.4979853 | 1.0333966 | 1.6512796 | -1.6938734 | -0.4759845 | -0.5959634 | 1.5575571 | 1.4815848 | 0.1373427 |
+
+- **Method:** IncrementalPCA  
+- **Target explained variance:** 0.95  
+- **Selected components:** 12 (emb0..emb11)
+- **Seed:** 42
+- **Training scope:** similarity computed on **train positives only** (`owned=1`), so embeddings are **train-only** (cold-start safe)
+  
+### Datasets 
+
+| Dataset variant | Train rows | Test rows | Train path | Test path |
+|---|---:|---:|---|---|
+| Baseline (no network) | 5,368,456 | 2,600,070 | `new_approach_dataset/baseline/data/train.csv` | `new_approach_dataset/baseline/data/test.csv` |
+| Baseline + network | 5,368,456 | 2,600,070 | `new_approach_dataset/baseline_with_network/data/train.csv` | `new_approach_dataset/baseline_with_network/data/test.csv` |
+
+
+
+###
 ### Logistic Regression
 | Variant | CV ROC-AUC | Test ROC-AUC | Accuracy | Precision | Recall | F1 | Best params |
 |---|---:|---:|---:|---:|---:|---:|---|
