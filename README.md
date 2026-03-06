@@ -333,9 +333,11 @@ Total rows: 2,849,311
 
 ### embeddings: 
 <img width="1600" height="1000" alt="pca_cumulative_plot_k32_trainonly" src="https://github.com/user-attachments/assets/fc2ccbf3-4dfa-4a1d-a7ac-71527fabb1d4" />
-K=32  
-explained var: 0,9868  
-### /splits_full_network/train.csv
+  
+- K=32      
+- explained var: 0,9868    
+  
+### /splits_full_network/train.csv  
 Total Rows (no headers) : 39,140,281  
 Total Columns: 50 (untill embedding 31)   
 
