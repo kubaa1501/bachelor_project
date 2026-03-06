@@ -280,7 +280,7 @@ We compute a **game×game cosine similarity** matrix using **TRAIN positives onl
 
 # NEW APPROACH 
 ## Datasets:
-### Train.csv
+### /splits_full/rain.csv
 Positives (owned=1): 3,954,054    
 Negatives (owned=0): 35,186,227    
 Total rows: 39,140,281  
@@ -297,7 +297,7 @@ Total rows: 39,140,281
 | 76561198064675174 |  7670 | IT      |               168 |               498693.0 |                   588.0 |                   15 | BioShock™                              | Action;RPG       | 2K Boston;2K Australia   | 2K        | windows       | 2007-08-21   |     3735.0 |                    616250.0 |     1 |              667.0 |
 
 
-### val.csv 
+### /splits_full/val.csv 
 Positives (owned=1): 28,211
 Negatives (owned=0): 2,821,100
 Total rows: 2,849,311
@@ -314,7 +314,7 @@ Total rows: 2,849,311
 | 76561198064675174 |  307780 | IT      |               168 |               498693.0 |                   588.0 |                   15 | Mortal Kombat X               | Action                                                                          | NetherRealm Studios;QLOC                                                                 | Warner Bros. Games;Warner Bros. Interactive Entertainment          | windows           | 2015-04-13   |     3376.0 |                   4842706.0 |     0 |                0.0 |
 | 76561198064675174 |  204360 | IT      |               168 |               498693.0 |                   588.0 |                   15 | Castle Crashers®              | Action;Adventure;Casual;Indie;RPG                                               | The Behemoth                                                                             | The Behemoth                                                       | windows;mac       | 2012-09-26   |     6829.0 |                   2699609.0 |     0 |                0.0 |
 
-### test.csv
+### /splits_full/test.csv
 Positives (owned=1): 28,211    
 Negatives (owned=0): 2,821,100  
 Total rows: 2,849,311  
@@ -331,4 +331,34 @@ Total rows: 2,849,311
 | 76561198064675174 | 1271100 | IT      |               168 |               498693.0 |                   588.0 |                   15 | Deadly Premonition 2: A Blessing in Disguise | Action;Adventure       | Toy Box Inc.;White Owls Inc.                                                                                          | Rising Star Games           | windows           | 2022-06-11   |      262.0 |                     17896.0 |     0 |                0.0 |
 | 76561198064675174 |     100 | IT      |               168 |               498693.0 |                   588.0 |                   15 | Counter-Strike: Condition Zero               | Action                 | Valve                                                                                                                 | Valve                       | windows;mac;linux | 2004-03-01   |    12945.0 |                   3962266.0 |     0 |                0.0 |
 
+### /splits_full_network/train.csv
+Total Rows (no headers) : 39,140,281  
+Total Columns: 50 (untill embedding 31)   
 
+| steamid           | appid | country | total_games_owned | total_playtime_minutes | median_playtime_minutes | unique_genres_played | name                         | genres           | developer     | publisher | platforms     | release_date | user_count | game_total_playtime_minutes | owned | user_game_playtime | friend_count | game_emb_0 | game_emb_1 |
+| ----------------- | ----: | ------- | ----------------: | ---------------------: | ----------------------: | -------------------: | ---------------------------- | ---------------- | ------------- | --------- | ------------- | ------------ | ---------: | --------------------------: | ----: | -----------------: | -----------: | ---------: | ---------: |
+| 76561198064675174 |   400 | IT      |               168 |               498693.0 |                   588.0 |                   15 | Portal                       | Action           | Valve         | Valve     | windows;linux | 2007-10-10   |     7807.0 |                   2544088.0 |     1 |              367.0 |           28 |   633.3285 |  233.05273 |
+| 76561198064675174 |   500 | IT      |               168 |               498693.0 |                   588.0 |                   15 | Left 4 Dead                  | Action           | Valve         | Valve     | windows       | 2008-11-17   |     6018.0 |                   7031495.0 |     1 |              117.0 |           28 |   602.6439 |  212.20387 |
+| 76561198064675174 |   550 | IT      |               168 |               498693.0 |                   588.0 |                   15 | Left 4 Dead 2                | Action           | Valve         | Valve     | windows;linux | 2009-11-16   |    16225.0 |                  67545173.0 |     1 |                0.0 |           28 |   690.1665 |  284.01422 |
+| 76561198064675174 |   620 | IT      |               168 |               498693.0 |                   588.0 |                   15 | Portal 2                     | Action;Adventure | Valve         | Valve     | windows;linux | 2011-04-18   |    10717.0 |                  12417300.0 |     1 |              710.0 |           28 |  670.31323 |  264.53372 |
+| 76561198064675174 |  3900 | IT      |               168 |               498693.0 |                   588.0 |                   15 | Sid Meier's Civilization® IV | Strategy         | Firaxis Games | 2K        | windows;mac   | 2006-10-25   |      818.0 |                    223945.0 |     1 |             7075.0 |           28 |  301.17264 |  6.8514194 |
+
+### /splits_full_network/val.csv
+Total Rows (no header): 2,849,311  
+| steamid           |   appid | country | total_games_owned | total_playtime_minutes | median_playtime_minutes | unique_genres_played | name                          | genres                                                                          | developer                           | publisher              | platforms         | release_date | user_count | game_total_playtime_minutes | owned | user_game_playtime | friend_count | game_emb_0 | game_emb_1 |
+| ----------------- | ------: | ------- | ----------------: | ---------------------: | ----------------------: | -------------------: | ----------------------------- | ------------------------------------------------------------------------------- | ----------------------------------- | ---------------------- | ----------------- | ------------ | ---------: | --------------------------: | ----: | -----------------: | -----------: | ---------: | ---------: |
+| 76561198064675174 |  383870 | IT      |               168 |               498693.0 |                   588.0 |                   15 | Firewatch                     | Adventure;Indie                                                                 | Campo Santo                         | Panic;Campo Santo      | windows;mac;linux | 2016-02-09   |     1965.0 |                    657036.0 |     1 |                0.0 |           28 |  436.26642 |   91.57953 |
+| 76561198064675174 | 1142710 | IT      |               168 |               498693.0 |                   588.0 |                   15 | Total War: WARHAMMER III      | Action;Strategy                                                                 | CREATIVE ASSEMBLY;Feral Interactive | SEGA;Feral Interactive | windows;mac;linux | 2022-02-16   |     3318.0 |                   8461890.0 |     0 |                0.0 |           28 |     446.69 |   99.72569 |
+| 76561198064675174 |     220 | IT      |               168 |               498693.0 |                   588.0 |                   15 | Half-Life 2                   | Action                                                                          | Valve                               | Valve                  | windows;linux     | 2004-11-16   |    14705.0 |                   7310155.0 |     0 |                0.0 |           28 |  650.30035 |  247.49863 |
+| 76561198064675174 |  431960 | IT      |               168 |               498693.0 |                   588.0 |                   15 | Wallpaper Engine              | Casual;Indie;Animation & Modeling;Design & Illustration;Photo Editing;Utilities | Wallpaper Engine Team               | Wallpaper Engine Team  | windows           | 2018-11-16   |    21856.0 |                 101086825.0 |     0 |                0.0 |           28 |   685.4464 |  285.42285 |
+| 76561198064675174 | 1659040 | IT      |               168 |               498693.0 |                   588.0 |                   15 | HITMAN World of Assassination | Action;Adventure                                                                | IO Interactive A/S                  | IO Interactive A/S     | windows           | 2022-01-20   |     4142.0 |                   1943566.0 |     0 |                0.0 |           28 |  487.43997 |  129.55199 |
+
+### /splits_full_network/test.csv
+Total Rows (no header): 2,849,311
+| steamid           |   appid | country | total_games_owned | total_playtime_minutes | median_playtime_minutes | unique_genres_played | name                                  | genres                 | developer                                                                                                             | publisher    | platforms         | release_date | user_count | game_total_playtime_minutes | owned | user_game_playtime | friend_count | game_emb_0 |  game_emb_1 |
+| ----------------- | ------: | ------- | ----------------: | ---------------------: | ----------------------: | -------------------: | ------------------------------------- | ---------------------- | --------------------------------------------------------------------------------------------------------------------- | ------------ | ----------------- | ------------ | ---------: | --------------------------: | ----: | -----------------: | -----------: | ---------: | ----------: |
+| 76561198064675174 |  812140 | IT      |               168 |               498693.0 |                   588.0 |                   15 | Assassin's Creed® Odyssey             | Action;Adventure;RPG   | Ubisoft Quebec;Ubisoft Montreal;Ubisoft Bucharest;Ubisoft Singapore;Ubisoft Montpellier;Ubisoft Kiev;Ubisoft Shanghai | Ubisoft      | windows           | 2018-10-05   |     2614.0 |                   9709148.0 |     1 |                0.0 |           28 |  487.21033 |   131.40424 |
+| 76561198064675174 |  480650 | IT      |               168 |               498693.0 |                   588.0 |                   15 | Yu-Gi-Oh! Legacy of the Duelist       | Simulation             | Other Ocean Interactive                                                                                               | KONAMI       | windows           | 2016-12-07   |      313.0 |                    299365.0 |     0 |                0.0 |           28 |  145.10033 |  -23.422464 |
+| 76561198064675174 |  281920 | IT      |               168 |               498693.0 |                   588.0 |                   15 | Splatter - Zombiecalypse Now          | Action;Adventure;Indie | Dreamworlds                                                                                                           | Untold Tales | windows;mac;linux | 2014-06-04   |      906.0 |                   1141999.0 |     0 |                0.0 |           28 |  262.35147 | -13.2083025 |
+| 76561198064675174 |  345240 | IT      |               168 |               498693.0 |                   588.0 |                   15 | SHOGUN: Total War™ - Collection       | Action;Strategy        | CREATIVE ASSEMBLY                                                                                                     | SEGA         | windows           | 2015-06-25   |      306.0 |                     12515.0 |     0 |                0.0 |           28 |  129.27321 |  -43.377953 |
+| 76561198064675174 | 1158500 | IT      |               168 |               498693.0 |                   588.0 |                   15 | Between Two Castles - Digital Edition | Strategy               | Daisu Games                                                                                                           | Daisu Games  | windows           | 2019-11-15   |     1959.0 |                    185797.0 |     0 |                0.0 |           28 |   382.1363 |    55.21235 |
