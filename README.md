@@ -331,6 +331,10 @@ Total rows: 2,849,311
 | 76561198064675174 | 1271100 | IT      |               168 |               498693.0 |                   588.0 |                   15 | Deadly Premonition 2: A Blessing in Disguise | Action;Adventure       | Toy Box Inc.;White Owls Inc.                                                                                          | Rising Star Games           | windows           | 2022-06-11   |      262.0 |                     17896.0 |     0 |                0.0 |
 | 76561198064675174 |     100 | IT      |               168 |               498693.0 |                   588.0 |                   15 | Counter-Strike: Condition Zero               | Action                 | Valve                                                                                                                 | Valve                       | windows;mac;linux | 2004-03-01   |    12945.0 |                   3962266.0 |     0 |                0.0 |
 
+### embeddings: 
+<img width="1600" height="1000" alt="pca_cumulative_plot_k32_trainonly" src="https://github.com/user-attachments/assets/fc2ccbf3-4dfa-4a1d-a7ac-71527fabb1d4" />
+K=32  
+explained var: 0,9868  
 ### /splits_full_network/train.csv
 Total Rows (no headers) : 39,140,281  
 Total Columns: 50 (untill embedding 31)   
