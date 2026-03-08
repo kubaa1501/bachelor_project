@@ -368,3 +368,52 @@ Total Rows (no header): 2,849,311
 | 76561198064675174 |  281920 | IT      |               168 |               498693.0 |                   588.0 |                   15 | Splatter - Zombiecalypse Now          | Action;Adventure;Indie | Dreamworlds                                                                                                           | Untold Tales | windows;mac;linux | 2014-06-04   |      906.0 |                   1141999.0 |     0 |                0.0 |           28 |  262.35147 | -13.2083025 |
 | 76561198064675174 |  345240 | IT      |               168 |               498693.0 |                   588.0 |                   15 | SHOGUN: Total War™ - Collection       | Action;Strategy        | CREATIVE ASSEMBLY                                                                                                     | SEGA         | windows           | 2015-06-25   |      306.0 |                     12515.0 |     0 |                0.0 |           28 |  129.27321 |  -43.377953 |
 | 76561198064675174 | 1158500 | IT      |               168 |               498693.0 |                   588.0 |                   15 | Between Two Castles - Digital Edition | Strategy               | Daisu Games                                                                                                           | Daisu Games  | windows           | 2019-11-15   |     1959.0 |                    185797.0 |     0 |                0.0 |           28 |   382.1363 |    55.21235 |
+
+
+## Converting **user_game_playtime** to **user_playtime_group_... (for genres groups)** 
+GENRE_GROUPS = {
+    "Action": ['Action', 'Acción', 'Akcja', 'Aksiyon', 'Actie', 'Akční', 'Экшены', '動作'],  
+    "Adventure": ['Adventure', 'Aventura', 'Avontuur', '冒险', 'Приключенческие gry', 'Приключенческие игры', 'Macera'],  
+    "RPG": ['RPG', 'RYO', 'Rol', 'Ролевые игры', '角色扮演'],    
+    "Casual": ['Casual', 'Occasionnel', 'Казуальные игры'],  
+    "Indie": ['Indie', 'Indépendant', '独立', 'Инди'],  
+    "Racing": ['Racing'],  
+    "Simulation": ['Simulation', 'Simuladores', 'Symulacje', 'Симуляторы'],  
+    "Strategy": ['Strategy', 'Strategie', 'Стратегии'],  
+    "Sports": ['Sport', 'Sports'],  
+    "Violent": ['Gore', 'Violent'],  
+    "Adult": ['Nudity', 'Sexual Content'],  
+    "Non-gameplay_Tools": [
+        'Education', 'Documentary', 'Movie', 'Tutorial', 'Accounting', 'Audio Production',
+        'Video Production', 'Photo Editing', 'Design & Illustration', 'Web Publishing',
+        'Utilities', 'Software Training', 'Game Development', 'Animation & Modeling'
+    ],  
+    "Other": ['Early Access', 'Episodic', 'Free To Play', 'Massively Multiplayer', 'Бесплатные']  
+}  
+
+### splits_full_for_model/train.csv
+rows (without header): 39140281  
+n_cols: 29  
+### splits_full_for_model/val.csv
+rows (without header): 2849311  
+n_cols: 29  
+### splits_full_for_model/test.csv
+rows (without header): 2849311  
+n_cols: 29  
+**columns:**  
+steamid, appid, country, total_games_owned, total_playtime_minutes, median_playtime_minutes, unique_genres_played, name, genres, developer, publisher, platforms, release_date, user_count, game_total_playtime_minutes, owned, user_playtime_group_Action, user_playtime_group_Adventure, user_playtime_group_RPG, user_playtime_group_Casual, user_playtime_group_Indie, user_playtime_group_Racing, user_playtime_group_Simulation, user_playtime_group_Strategy, user_playtime_group_Sports, user_playtime_group_Violent, user_playtime_group_Adult, user_playtime_group_Non-gameplay_Tools, user_playtime_group_Other  
+  
+### splits_full_network_for_model/train.csv 
+rows (without header): 39140281  
+n_cols: 62  
+### splits_full_network_for_model/val.csv 
+rows (without header): 2849311    
+n_cols: 62  
+### splits_full_network_for_model/test.csv 
+rows (without header): 2849311   
+n_cols: 62  
+columns:  
+steamid, appid, country, total_games_owned, total_playtime_minutes, median_playtime_minutes, unique_genres_played, name, genres, developer, publisher, platforms, release_date, user_count, game_total_playtime_minutes, owned, friend_count, game_emb_0, game_emb_1, game_emb_2, game_emb_3, game_emb_4, game_emb_5, game_emb_6, game_emb_7, game_emb_8, game_emb_9, game_emb_10, game_emb_11, game_emb_12, game_emb_13, game_emb_14, game_emb_15, game_emb_16, game_emb_17, game_emb_18, game_emb_19, game_emb_20, game_emb_21, game_emb_22, game_emb_23, game_emb_24, game_emb_25, game_emb_26, game_emb_27, game_emb_28, game_emb_29, game_emb_30, game_emb_31, user_playtime_group_Action, user_playtime_group_Adventure, user_playtime_group_RPG, user_playtime_group_Casual, user_playtime_group_Indie, user_playtime_group_Racing, user_playtime_group_Simulation, user_playtime_group_Strategy, user_playtime_group_Sports, user_playtime_group_Violent, user_playtime_group_Adult, user_playtime_group_Non-gameplay_Tools, user_playtime_group_Other
+
+
+
