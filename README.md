@@ -280,56 +280,48 @@ We compute a **game×game cosine similarity** matrix using **TRAIN positives onl
 
 # NEW APPROACH 
 ## Datasets:
-### /splits_full/rain.csv
-Positives (owned=1): 3,954,054    
-Negatives (owned=0): 35,186,227    
-Total rows: 39,140,281  
-| steamid           | appid | country | total_games_owned | total_playtime_minutes | median_playtime_minutes | unique_genres_played | name                                   | genres           | developer                | publisher | platforms     | release_date | user_count | game_total_playtime_minutes | owned | user_game_playtime |
-| ----------------- | ----: | ------- | ----------------: | ---------------------: | ----------------------: | -------------------: | -------------------------------------- | ---------------- | ------------------------ | --------- | ------------- | ------------ | ---------: | --------------------------: | ----: | -----------------: |
-| 76561198064675174 |   400 | IT      |               168 |               498693.0 |                   588.0 |                   15 | Portal                                 | Action           | Valve                    | Valve     | windows;linux | 2007-10-10   |     7807.0 |                   2544088.0 |     1 |              367.0 |
-| 76561198064675174 |   500 | IT      |               168 |               498693.0 |                   588.0 |                   15 | Left 4 Dead                            | Action           | Valve                    | Valve     | windows       | 2008-11-17   |     6018.0 |                   7031495.0 |     1 |              117.0 |
-| 76561198064675174 |   550 | IT      |               168 |               498693.0 |                   588.0 |                   15 | Left 4 Dead 2                          | Action           | Valve                    | Valve     | windows;linux | 2009-11-16   |    16225.0 |                  67545173.0 |     1 |                0.0 |
-| 76561198064675174 |   620 | IT      |               168 |               498693.0 |                   588.0 |                   15 | Portal 2                               | Action;Adventure | Valve                    | Valve     | windows;linux | 2011-04-18   |    10717.0 |                  12417300.0 |     1 |              710.0 |
-| 76561198064675174 |  3900 | IT      |               168 |               498693.0 |                   588.0 |                   15 | Sid Meier's Civilization® IV           | Strategy         | Firaxis Games            | 2K        | windows;mac   | 2006-10-25   |      818.0 |                    223945.0 |     1 |             7075.0 |
-| 76561198064675174 |  3910 | IT      |               168 |               498693.0 |                   588.0 |                   15 | Sid Meier's Civilization® III Complete | Strategy         | Firaxis Games            | 2K        | windows       | 2006-10-25   |     2193.0 |                    292173.0 |     1 |                0.0 |
-| 76561198064675174 |  7650 | IT      |               168 |               498693.0 |                   588.0 |                   15 | X-COM: Terror From the Deep            | Strategy         | MicroProse Software, Inc | 2K        | windows       | 2007-05-04   |      615.0 |                     11687.0 |     1 |                0.0 |
-| 76561198064675174 |  7660 | IT      |               168 |               498693.0 |                   588.0 |                   15 | X-COM: Apocalypse                      | Strategy         | MicroProse Software, Inc | 2K        | windows       | 2008-09-04   |      615.0 |                     10957.0 |     1 |                0.0 |
-| 76561198064675174 |  7670 | IT      |               168 |               498693.0 |                   588.0 |                   15 | BioShock™                              | Action;RPG       | 2K Boston;2K Australia   | 2K        | windows       | 2007-08-21   |     3735.0 |                    616250.0 |     1 |              667.0 |
+**Saved to: /home/anci/new/correct_splits - train,test,val -.csv  
+**    
+Train positives: 3,954,054  
+Train negatives: 39,540,540  
+**Train total:     43,494,594  
+**  
+Val positives:   28,211  
+Val negatives:   2,821,100  
+**Val total:       2,849,311  
+**  
+Test positives:  28,211  
+Test negatives:  2,821,100  
+**Test total:      2,849,311  
+**  
+Expected target ratios:  
+  train: 1:10  
+  val:   1:100  
+  test:  1:100  
+  
+#### notes: 
+train size: 33700323      
+val size:   2834092    
+test size:  2834378    
+(to sa unikatowe rekordy: ten sam user-game para mogla zostac uzyta pare razy w tym samym secie - jezeli brakowalo popular i random do dobrania)   
+train ∩ val : 0  
+train ∩ test: 0  
+val ∩ test  : 0  
+
+### GENRE BUCKETS:
+-20813 records (+) with no genre "" from the training set ( ~0,5 % of all (+))  
+  
+| steamid           |   appid | country | total_games_owned | total_playtime_minutes | median_playtime_minutes | unique_genres_played | name              | genres                       | developer       | publisher               | platforms         | release_date | user_count | game_total_playtime_minutes | owned | user_playtime_group_Action | user_playtime_group_Adventure | user_playtime_group_RPG | user_playtime_group_Casual | user_playtime_group_Indie | user_playtime_group_Racing | user_playtime_group_Simulation | user_playtime_group_Strategy | user_playtime_group_Sports | user_playtime_group_Violent | user_playtime_group_Adult | user_playtime_group_Non-gameplay_Tools | user_playtime_group_Other |
+| ----------------- | ------: | ------- | ----------------: | ---------------------: | ----------------------: | -------------------: | ----------------- | ---------------------------- | --------------- | ----------------------- | ----------------- | ------------ | ---------: | --------------------------: | ----: | -------------------------: | ----------------------------: | ----------------------: | -------------------------: | ------------------------: | -------------------------: | -----------------------------: | ---------------------------: | -------------------------: | --------------------------: | ------------------------: | -------------------------------------: | ------------------------: |
+| 76561197960266945 |      10 | RU      |              1503 |              1091628.0 |                    60.0 |                   27 | Counter-Strike    | Action                       | Valve           | Valve                   | windows;mac;linux | 2000-11-01   |     8366.0 |                 107248640.0 |     1 |              575679.447619 |                 126260.064286 |            62692.183333 |               25453.047619 |              55046.947619 |                1200.797619 |                   17330.330952 |                 76800.397619 |                1220.666667 |                   86.000000 |                 86.000000 |                           62053.000000 |              84251.116667 |
+| 76561197960266945 | 1517290 | RU      |              1503 |              1091628.0 |                    60.0 |                   27 | Battlefield™ 2042 | Action;Adventure;Casual      | DICE            | Electronic Arts         | windows           | 19 Nov, 2021 |       6312 |                             |     0 |              577897.447619 |                 126260.064286 |            62692.183333 |               25453.047619 |              55046.947619 |                1200.797619 |                   17330.330952 |                 76800.397619 |                1220.666667 |                   86.000000 |                 86.000000 |                           62053.000000 |              84251.116667 |
+| 76561197960266945 | 1361000 | RU      |              1503 |              1091628.0 |                    60.0 |                   27 | In Silence        | Action                       | Ravenhood Games | Ravenhood Games         | windows;mac       | 29 Oct, 2021 |        753 |                             |     0 |              577897.447619 |                 126260.064286 |            62692.183333 |               25453.047619 |              55046.947619 |                1200.797619 |                   17330.330952 |                 76800.397619 |                1220.666667 |                   86.000000 |                 86.000000 |                           62053.000000 |              84251.116667 |
+| 76561197960266945 |  575550 | RU      |              1503 |              1091628.0 |                    60.0 |                   27 | Hell Girls        | Adventure;Indie;RPG;Strategy | Athena Works    | Athena Works;SakuraGame | windows;mac       | 12 Jan, 2017 |       1009 |                             |     0 |              577897.447619 |                 126260.064286 |            62692.183333 |               25453.047619 |              55046.947619 |                1200.797619 |                   17330.330952 |                 76800.397619 |                1220.666667 |                   86.000000 |                 86.000000 |                           62053.000000 |              84251.116667 |
+| 76561197960266945 |  793400 | RU      |              1503 |              1091628.0 |                    60.0 |                   27 | Fist of Brave     | Action;Adventure;Indie       | ALOOF PROJECT   | Beliebrave              | windows           | 19 Feb, 2018 |          6 |                             |     0 |              577897.447619 |                 126260.064286 |            62692.183333 |               25453.047619 |              55046.947619 |                1200.797619 |                   17330.330952 |                 76800.397619 |                1220.666667 |                   86.000000 |                 86.000000 |                           62053.000000 |              84251.116667 |
 
 
-### /splits_full/val.csv 
-Positives (owned=1): 28,211
-Negatives (owned=0): 2,821,100
-Total rows: 2,849,311
-
-| steamid           |   appid | country | total_games_owned | total_playtime_minutes | median_playtime_minutes | unique_genres_played | name                          | genres                                                                          | developer                                                                                | publisher                                                          | platforms         | release_date | user_count | game_total_playtime_minutes | owned | user_game_playtime |
-| ----------------- | ------: | ------- | ----------------: | ---------------------: | ----------------------: | -------------------: | ----------------------------- | ------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------ | ----------------- | ------------ | ---------: | --------------------------: | ----: | -----------------: |
-| 76561198064675174 |  383870 | IT      |               168 |               498693.0 |                   588.0 |                   15 | Firewatch                     | Adventure;Indie                                                                 | Campo Santo                                                                              | Panic;Campo Santo                                                  | windows;mac;linux | 2016-02-09   |     1965.0 |                    657036.0 |     1 |                0.0 |
-| 76561198064675174 | 1142710 | IT      |               168 |               498693.0 |                   588.0 |                   15 | Total War: WARHAMMER III      | Action;Strategy                                                                 | CREATIVE ASSEMBLY;Feral Interactive                                                      | SEGA;Feral Interactive                                             | windows;mac;linux | 2022-02-16   |     3318.0 |                   8461890.0 |     0 |                0.0 |
-| 76561198064675174 |     220 | IT      |               168 |               498693.0 |                   588.0 |                   15 | Half-Life 2                   | Action                                                                          | Valve                                                                                    | Valve                                                              | windows;linux     | 2004-11-16   |    14705.0 |                   7310155.0 |     0 |                0.0 |
-| 76561198064675174 |  431960 | IT      |               168 |               498693.0 |                   588.0 |                   15 | Wallpaper Engine              | Casual;Indie;Animation & Modeling;Design & Illustration;Photo Editing;Utilities | Wallpaper Engine Team                                                                    | Wallpaper Engine Team                                              | windows           | 2018-11-16   |    21856.0 |                 101086825.0 |     0 |                0.0 |
-| 76561198064675174 | 1659040 | IT      |               168 |               498693.0 |                   588.0 |                   15 | HITMAN World of Assassination | Action;Adventure                                                                | IO Interactive A/S                                                                       | IO Interactive A/S                                                 | windows           | 2022-01-20   |     4142.0 |                   1943566.0 |     0 |                0.0 |
-| 76561198064675174 |  642560 | IT      |               168 |               498693.0 |                   588.0 |                   15 | Art Of Gravity                | Casual;Indie;Strategy                                                           | Hamster On Coke Games                                                                    | Hamster On Coke Games                                              | windows;mac;linux | 2017-06-13   |      203.0 |                     19457.0 |     0 |                0.0 |
-| 76561198064675174 |  391220 | IT      |               168 |               498693.0 |                   588.0 |                   15 | Rise of the Tomb Raider™      | Action;Adventure                                                                | Crystal Dynamics;Eidos-Montréal;Feral Interactive (Mac);Feral Interactive (Linux);Nixxes | Crystal Dynamics;Feral Interactive (Mac);Feral Interactive (Linux) | windows;mac;linux | 2016-02-09   |     6565.0 |                   5362473.0 |     0 |                0.0 |
-| 76561198064675174 |  307780 | IT      |               168 |               498693.0 |                   588.0 |                   15 | Mortal Kombat X               | Action                                                                          | NetherRealm Studios;QLOC                                                                 | Warner Bros. Games;Warner Bros. Interactive Entertainment          | windows           | 2015-04-13   |     3376.0 |                   4842706.0 |     0 |                0.0 |
-| 76561198064675174 |  204360 | IT      |               168 |               498693.0 |                   588.0 |                   15 | Castle Crashers®              | Action;Adventure;Casual;Indie;RPG                                               | The Behemoth                                                                             | The Behemoth                                                       | windows;mac       | 2012-09-26   |     6829.0 |                   2699609.0 |     0 |                0.0 |
-
-### /splits_full/test.csv
-Positives (owned=1): 28,211    
-Negatives (owned=0): 2,821,100  
-Total rows: 2,849,311  
-
-| steamid           |   appid | country | total_games_owned | total_playtime_minutes | median_playtime_minutes | unique_genres_played | name                                         | genres                 | developer                                                                                                             | publisher                   | platforms         | release_date | user_count | game_total_playtime_minutes | owned | user_game_playtime |
-| ----------------- | ------: | ------- | ----------------: | ---------------------: | ----------------------: | -------------------: | -------------------------------------------- | ---------------------- | --------------------------------------------------------------------------------------------------------------------- | --------------------------- | ----------------- | ------------ | ---------: | --------------------------: | ----: | -----------------: |
-| 76561198064675174 |  812140 | IT      |               168 |               498693.0 |                   588.0 |                   15 | Assassin's Creed® Odyssey                    | Action;Adventure;RPG   | Ubisoft Quebec;Ubisoft Montreal;Ubisoft Bucharest;Ubisoft Singapore;Ubisoft Montpellier;Ubisoft Kiev;Ubisoft Shanghai | Ubisoft                     | windows           | 2018-10-05   |     2614.0 |                   9709148.0 |     1 |                0.0 |
-| 76561198064675174 |  480650 | IT      |               168 |               498693.0 |                   588.0 |                   15 | Yu-Gi-Oh! Legacy of the Duelist              | Simulation             | Other Ocean Interactive                                                                                               | KONAMI                      | windows           | 2016-12-07   |      313.0 |                    299365.0 |     0 |                0.0 |
-| 76561198064675174 |  281920 | IT      |               168 |               498693.0 |                   588.0 |                   15 | Splatter - Zombiecalypse Now                 | Action;Adventure;Indie | Dreamworlds                                                                                                           | Untold Tales                | windows;mac;linux | 2014-06-04   |      906.0 |                   1141999.0 |     0 |                0.0 |
-| 76561198064675174 |  345240 | IT      |               168 |               498693.0 |                   588.0 |                   15 | SHOGUN: Total War™ - Collection              | Action;Strategy        | CREATIVE ASSEMBLY                                                                                                     | SEGA                        | windows           | 2015-06-25   |      306.0 |                     12515.0 |     0 |                0.0 |
-| 76561198064675174 | 1158500 | IT      |               168 |               498693.0 |                   588.0 |                   15 | Between Two Castles - Digital Edition        | Strategy               | Daisu Games                                                                                                           | Daisu Games                 | windows           | 2019-11-15   |     1959.0 |                    185797.0 |     0 |                0.0 |
-| 76561198064675174 |  532190 | IT      |               168 |               498693.0 |                   588.0 |                   15 | Super Blood Hockey                           | Indie;Sports           | Loren Lemcke                                                                                                          | Loren Lemcke                | windows;mac;linux | 2017-08-17   |      204.0 |                     16104.0 |     0 |                0.0 |
-| 76561198064675174 |  354860 | IT      |               168 |               498693.0 |                   588.0 |                   15 | The Adventures of Tree                       | Adventure;Indie;RPG    | Dune Clockidy                                                                                                         | Dune Clockidy;Tiger Studios | windows;mac;linux | 2016-03-01   |      522.0 |                    113408.0 |     0 |                0.0 |
-| 76561198064675174 | 1271100 | IT      |               168 |               498693.0 |                   588.0 |                   15 | Deadly Premonition 2: A Blessing in Disguise | Action;Adventure       | Toy Box Inc.;White Owls Inc.                                                                                          | Rising Star Games           | windows           | 2022-06-11   |      262.0 |                     17896.0 |     0 |                0.0 |
-| 76561198064675174 |     100 | IT      |               168 |               498693.0 |                   588.0 |                   15 | Counter-Strike: Condition Zero               | Action                 | Valve                                                                                                                 | Valve                       | windows;mac;linux | 2004-03-01   |    12945.0 |                   3962266.0 |     0 |                0.0 |
+### NETWORK FEATURES:
+steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_minutes;unique_genres_played;name;genres;developer;publisher;platforms;release_date;user_count;game_total_playtime_minutes;owned;user_playtime_group_Action;user_playtime_group_Adventure;user_playtime_group_RPG;user_playtime_group_Casual;user_playtime_group_Indie;user_playtime_group_Racing;user_playtime_group_Simulation;user_playtime_group_Strategy;user_playtime_group_Sports;user_playtime_group_Violent;user_playtime_group_Adult;user_playtime_group_Non-gameplay_Tools;user_playtime_group_Other;friend_count;game_emb_0;game_emb_1;game_emb_2;game_emb_3;game_emb_4;game_emb_5;game_emb_6;game_emb_7;game_emb_8;game_emb_9;game_emb_10;game_emb_11;game_emb_12;game_emb_13;game_emb_14;game_emb_15;game_emb_16;game_emb_17;game_emb_18;game_emb_19;game_emb_20;game_emb_21;game_emb_22;game_emb_23;game_emb_24;game_emb_25;game_emb_26;game_emb_27;game_emb_28;game_emb_29;game_emb_30;game_emb_31
 
 ### embeddings: 
 <img width="1600" height="1000" alt="pca_cumulative_plot_k32_trainonly" src="https://github.com/user-attachments/assets/fc2ccbf3-4dfa-4a1d-a7ac-71527fabb1d4" />
@@ -337,83 +329,7 @@ Total rows: 2,849,311
 - K=32      
 - explained var: 0,9868    
   
-### /splits_full_network/train.csv  
-Total Rows (no headers) : 39,140,281  
-Total Columns: 50 (untill embedding 31)   
 
-| steamid           | appid | country | total_games_owned | total_playtime_minutes | median_playtime_minutes | unique_genres_played | name                         | genres           | developer     | publisher | platforms     | release_date | user_count | game_total_playtime_minutes | owned | user_game_playtime | friend_count | game_emb_0 | game_emb_1 |
-| ----------------- | ----: | ------- | ----------------: | ---------------------: | ----------------------: | -------------------: | ---------------------------- | ---------------- | ------------- | --------- | ------------- | ------------ | ---------: | --------------------------: | ----: | -----------------: | -----------: | ---------: | ---------: |
-| 76561198064675174 |   400 | IT      |               168 |               498693.0 |                   588.0 |                   15 | Portal                       | Action           | Valve         | Valve     | windows;linux | 2007-10-10   |     7807.0 |                   2544088.0 |     1 |              367.0 |           28 |   633.3285 |  233.05273 |
-| 76561198064675174 |   500 | IT      |               168 |               498693.0 |                   588.0 |                   15 | Left 4 Dead                  | Action           | Valve         | Valve     | windows       | 2008-11-17   |     6018.0 |                   7031495.0 |     1 |              117.0 |           28 |   602.6439 |  212.20387 |
-| 76561198064675174 |   550 | IT      |               168 |               498693.0 |                   588.0 |                   15 | Left 4 Dead 2                | Action           | Valve         | Valve     | windows;linux | 2009-11-16   |    16225.0 |                  67545173.0 |     1 |                0.0 |           28 |   690.1665 |  284.01422 |
-| 76561198064675174 |   620 | IT      |               168 |               498693.0 |                   588.0 |                   15 | Portal 2                     | Action;Adventure | Valve         | Valve     | windows;linux | 2011-04-18   |    10717.0 |                  12417300.0 |     1 |              710.0 |           28 |  670.31323 |  264.53372 |
-| 76561198064675174 |  3900 | IT      |               168 |               498693.0 |                   588.0 |                   15 | Sid Meier's Civilization® IV | Strategy         | Firaxis Games | 2K        | windows;mac   | 2006-10-25   |      818.0 |                    223945.0 |     1 |             7075.0 |           28 |  301.17264 |  6.8514194 |
-
-### /splits_full_network/val.csv
-Total Rows (no header): 2,849,311  
-| steamid           |   appid | country | total_games_owned | total_playtime_minutes | median_playtime_minutes | unique_genres_played | name                          | genres                                                                          | developer                           | publisher              | platforms         | release_date | user_count | game_total_playtime_minutes | owned | user_game_playtime | friend_count | game_emb_0 | game_emb_1 |
-| ----------------- | ------: | ------- | ----------------: | ---------------------: | ----------------------: | -------------------: | ----------------------------- | ------------------------------------------------------------------------------- | ----------------------------------- | ---------------------- | ----------------- | ------------ | ---------: | --------------------------: | ----: | -----------------: | -----------: | ---------: | ---------: |
-| 76561198064675174 |  383870 | IT      |               168 |               498693.0 |                   588.0 |                   15 | Firewatch                     | Adventure;Indie                                                                 | Campo Santo                         | Panic;Campo Santo      | windows;mac;linux | 2016-02-09   |     1965.0 |                    657036.0 |     1 |                0.0 |           28 |  436.26642 |   91.57953 |
-| 76561198064675174 | 1142710 | IT      |               168 |               498693.0 |                   588.0 |                   15 | Total War: WARHAMMER III      | Action;Strategy                                                                 | CREATIVE ASSEMBLY;Feral Interactive | SEGA;Feral Interactive | windows;mac;linux | 2022-02-16   |     3318.0 |                   8461890.0 |     0 |                0.0 |           28 |     446.69 |   99.72569 |
-| 76561198064675174 |     220 | IT      |               168 |               498693.0 |                   588.0 |                   15 | Half-Life 2                   | Action                                                                          | Valve                               | Valve                  | windows;linux     | 2004-11-16   |    14705.0 |                   7310155.0 |     0 |                0.0 |           28 |  650.30035 |  247.49863 |
-| 76561198064675174 |  431960 | IT      |               168 |               498693.0 |                   588.0 |                   15 | Wallpaper Engine              | Casual;Indie;Animation & Modeling;Design & Illustration;Photo Editing;Utilities | Wallpaper Engine Team               | Wallpaper Engine Team  | windows           | 2018-11-16   |    21856.0 |                 101086825.0 |     0 |                0.0 |           28 |   685.4464 |  285.42285 |
-| 76561198064675174 | 1659040 | IT      |               168 |               498693.0 |                   588.0 |                   15 | HITMAN World of Assassination | Action;Adventure                                                                | IO Interactive A/S                  | IO Interactive A/S     | windows           | 2022-01-20   |     4142.0 |                   1943566.0 |     0 |                0.0 |           28 |  487.43997 |  129.55199 |
-
-### /splits_full_network/test.csv
-Total Rows (no header): 2,849,311
-| steamid           |   appid | country | total_games_owned | total_playtime_minutes | median_playtime_minutes | unique_genres_played | name                                  | genres                 | developer                                                                                                             | publisher    | platforms         | release_date | user_count | game_total_playtime_minutes | owned | user_game_playtime | friend_count | game_emb_0 |  game_emb_1 |
-| ----------------- | ------: | ------- | ----------------: | ---------------------: | ----------------------: | -------------------: | ------------------------------------- | ---------------------- | --------------------------------------------------------------------------------------------------------------------- | ------------ | ----------------- | ------------ | ---------: | --------------------------: | ----: | -----------------: | -----------: | ---------: | ----------: |
-| 76561198064675174 |  812140 | IT      |               168 |               498693.0 |                   588.0 |                   15 | Assassin's Creed® Odyssey             | Action;Adventure;RPG   | Ubisoft Quebec;Ubisoft Montreal;Ubisoft Bucharest;Ubisoft Singapore;Ubisoft Montpellier;Ubisoft Kiev;Ubisoft Shanghai | Ubisoft      | windows           | 2018-10-05   |     2614.0 |                   9709148.0 |     1 |                0.0 |           28 |  487.21033 |   131.40424 |
-| 76561198064675174 |  480650 | IT      |               168 |               498693.0 |                   588.0 |                   15 | Yu-Gi-Oh! Legacy of the Duelist       | Simulation             | Other Ocean Interactive                                                                                               | KONAMI       | windows           | 2016-12-07   |      313.0 |                    299365.0 |     0 |                0.0 |           28 |  145.10033 |  -23.422464 |
-| 76561198064675174 |  281920 | IT      |               168 |               498693.0 |                   588.0 |                   15 | Splatter - Zombiecalypse Now          | Action;Adventure;Indie | Dreamworlds                                                                                                           | Untold Tales | windows;mac;linux | 2014-06-04   |      906.0 |                   1141999.0 |     0 |                0.0 |           28 |  262.35147 | -13.2083025 |
-| 76561198064675174 |  345240 | IT      |               168 |               498693.0 |                   588.0 |                   15 | SHOGUN: Total War™ - Collection       | Action;Strategy        | CREATIVE ASSEMBLY                                                                                                     | SEGA         | windows           | 2015-06-25   |      306.0 |                     12515.0 |     0 |                0.0 |           28 |  129.27321 |  -43.377953 |
-| 76561198064675174 | 1158500 | IT      |               168 |               498693.0 |                   588.0 |                   15 | Between Two Castles - Digital Edition | Strategy               | Daisu Games                                                                                                           | Daisu Games  | windows           | 2019-11-15   |     1959.0 |                    185797.0 |     0 |                0.0 |           28 |   382.1363 |    55.21235 |
-
-
-## Converting **user_game_playtime** to **user_playtime_group_... (for genres groups)** 
-GENRE_GROUPS = {
-    "Action": ['Action', 'Acción', 'Akcja', 'Aksiyon', 'Actie', 'Akční', 'Экшены', '動作'],  
-    "Adventure": ['Adventure', 'Aventura', 'Avontuur', '冒险', 'Приключенческие gry', 'Приключенческие игры', 'Macera'],  
-    "RPG": ['RPG', 'RYO', 'Rol', 'Ролевые игры', '角色扮演'],    
-    "Casual": ['Casual', 'Occasionnel', 'Казуальные игры'],  
-    "Indie": ['Indie', 'Indépendant', '独立', 'Инди'],  
-    "Racing": ['Racing'],  
-    "Simulation": ['Simulation', 'Simuladores', 'Symulacje', 'Симуляторы'],  
-    "Strategy": ['Strategy', 'Strategie', 'Стратегии'],  
-    "Sports": ['Sport', 'Sports'],  
-    "Violent": ['Gore', 'Violent'],  
-    "Adult": ['Nudity', 'Sexual Content'],  
-    "Non-gameplay_Tools": [
-        'Education', 'Documentary', 'Movie', 'Tutorial', 'Accounting', 'Audio Production',
-        'Video Production', 'Photo Editing', 'Design & Illustration', 'Web Publishing',
-        'Utilities', 'Software Training', 'Game Development', 'Animation & Modeling'
-    ],  
-    "Other": ['Early Access', 'Episodic', 'Free To Play', 'Massively Multiplayer', 'Бесплатные']  
-}  
-
-### splits_full_for_model/train.csv
-rows (without header): 39140281  
-n_cols: 29  
-### splits_full_for_model/val.csv
-rows (without header): 2849311  
-n_cols: 29  
-### splits_full_for_model/test.csv
-rows (without header): 2849311  
-n_cols: 29  
-**columns:**  
-steamid, appid, country, total_games_owned, total_playtime_minutes, median_playtime_minutes, unique_genres_played, name, genres, developer, publisher, platforms, release_date, user_count, game_total_playtime_minutes, owned, user_playtime_group_Action, user_playtime_group_Adventure, user_playtime_group_RPG, user_playtime_group_Casual, user_playtime_group_Indie, user_playtime_group_Racing, user_playtime_group_Simulation, user_playtime_group_Strategy, user_playtime_group_Sports, user_playtime_group_Violent, user_playtime_group_Adult, user_playtime_group_Non-gameplay_Tools, user_playtime_group_Other  
-  
-### splits_full_network_for_model/train.csv 
-rows (without header): 39140281  
-n_cols: 62  
-### splits_full_network_for_model/val.csv 
-rows (without header): 2849311    
-n_cols: 62  
-### splits_full_network_for_model/test.csv 
-rows (without header): 2849311   
-n_cols: 62  
-columns:  
-steamid, appid, country, total_games_owned, total_playtime_minutes, median_playtime_minutes, unique_genres_played, name, genres, developer, publisher, platforms, release_date, user_count, game_total_playtime_minutes, owned, friend_count, game_emb_0, game_emb_1, game_emb_2, game_emb_3, game_emb_4, game_emb_5, game_emb_6, game_emb_7, game_emb_8, game_emb_9, game_emb_10, game_emb_11, game_emb_12, game_emb_13, game_emb_14, game_emb_15, game_emb_16, game_emb_17, game_emb_18, game_emb_19, game_emb_20, game_emb_21, game_emb_22, game_emb_23, game_emb_24, game_emb_25, game_emb_26, game_emb_27, game_emb_28, game_emb_29, game_emb_30, game_emb_31, user_playtime_group_Action, user_playtime_group_Adventure, user_playtime_group_RPG, user_playtime_group_Casual, user_playtime_group_Indie, user_playtime_group_Racing, user_playtime_group_Simulation, user_playtime_group_Strategy, user_playtime_group_Sports, user_playtime_group_Violent, user_playtime_group_Adult, user_playtime_group_Non-gameplay_Tools, user_playtime_group_Other
 
 
 
