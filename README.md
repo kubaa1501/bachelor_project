@@ -280,7 +280,7 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
       
 ## LOGISTIC REGRESSION BASELINE:
   
-"test_roc_auc": 0.9035307763305926,  
+ "test_roc_auc": 0.9035307763305926,  
   "HitRate@10": 0.748537804402538,  
   "Recall@10": 0.748537804402538,  
   "NDCG@10": 0.42749191661367153,  
@@ -297,7 +297,21 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
     
 ## LOGISTIC REGRESSION NETWORK:
   
-running  
+  "test_roc_auc": 0.9876183344254614,
+  "HitRate@10": 0.9606890929070221,
+  "Recall@10": 0.9606890929070221,
+  "NDCG@10": 0.9150393074077323,
+  "HitRate@20": 0.9785544645705576,
+  "Recall@20": 0.9785544645705576,
+  "NDCG@20": 0.9195517694895029,  
+  "MRR": 0.902257312245997    
+  "HitRate@1": 0.8684201198114211  
+  "Recall@1": 0.8684201198114211  
+  "NDCG@1": 0.8684201198114211  
+  "HitRate@5": 0.941653964765517  
+  "Recall@5": 0.941653964765517  
+  "NDCG@5": 0.908881431345946  
+
   
 ## RANDOM FOREST BASELINE:
   
@@ -318,7 +332,7 @@ running
     
 ## RANDOM FOREST NETWORK:
   
-"test_roc_auc": 0.9999666700517238,  
+ "test_roc_auc": 0.9999666700517238,  
   "HitRate@10": 0.9998936585020027,  
   "Recall@10": 0.9998936585020027,  
   "NDCG@10": 0.9998936585020027,  
