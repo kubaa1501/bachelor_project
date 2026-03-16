@@ -382,24 +382,69 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
   "NDCG@5": 0.9998936585020027  
 
   ## lightGCN
-  
-  "test_roc_auc": 0.5017154173048873,  
-  "test_n_users_evaluated": 28211,  
-  "test_HitRate@1": 0.012264719435681116,  
-  "test_Recall@1": 0.012264719435681116,  
-  "test_NDCG@1": 0.012264719435681116,  
-  "test_HitRate@5": 0.05465952997057885,  
-  "test_Recall@5": 0.05465952997057885,  
-  "test_NDCG@5": 0.03204746370036403,  
-  "test_HitRate@10": 0.09393498989755769,  
-  "test_Recall@10": 0.09393498989755769,  
-  "test_NDCG@10": 0.04445006818142832,  
-  "test_HitRate@20": 0.20215518769274396,  
-  "test_Recall@20": 0.20215518769274396,  
-  "test_NDCG@20": 0.07144485446466974,  
-  "test_MRR": 0.05291763148532581  
-    
-  
+      
+  "test_roc_auc": 0.745641667637136,  
+  "test_HitRate@1": 0.10953174293715218,  
+  "test_Recall@1": 0.10953174293715218,  
+  "test_NDCG@1": 0.10953174293715218,  
+  "test_HitRate@5": 0.32377441423558184,  
+  "test_Recall@5": 0.32377441423558184,  
+  "test_NDCG@5": 0.21826246219471468,  
+  "test_HitRate@10": 0.47626812236361704,  
+  "test_Recall@10": 0.47626812236361704,  
+  "test_NDCG@10": 0.2672034446425509,  
+  "test_HitRate@20": 0.6584665555988799,  
+  "test_Recall@20": 0.6584665555988799,  
+  "test_NDCG@20": 0.3131695800171958,  
+  "test_MRR": 0.2242679398076897 
+
+  ## NN_baseline (BPR)   
+        
+  "test_roc_auc": 0.9115379317137908,  
+  "test_HitRate@1": 0.17599517918542412,  
+  "test_Recall@1": 0.17599517918542412,  
+  "test_NDCG@1": 0.17599517918542412,  
+  "test_HitRate@5": 0.479422920137535,  
+  "test_Recall@5": 0.479422920137535,  
+  "test_NDCG@5": 0.3299697215176235,  
+  "test_HitRate@10": 0.6729289993265039,  
+  "test_Recall@10": 0.6729289993265039,  
+  "test_NDCG@10": 0.3924237983859982,  
+  "test_HitRate@20": 0.867959306653433,  
+  "test_Recall@20": 0.867959306653433,  
+  "test_NDCG@20": 0.4420244575384093,  
+  "test_MRR": 0.32489356440774336  
+
+  ## NN_network (BPR) 
+  "test_roc_auc": 0.9114223090543274,  
+  "test_HitRate@1": 0.16777143667363795,  
+  "test_Recall@1": 0.16777143667363795,  
+  "test_NDCG@1": 0.16777143667363795,  
+  "test_HitRate@5": 0.4712346247917479,  
+  "test_Recall@5": 0.4712346247917479,  
+  "test_NDCG@5": 0.3207774007209469,  
+  "test_HitRate@10": 0.6757293254404311,  
+  "test_Recall@10": 0.6757293254404311,  
+  "test_NDCG@10": 0.38684166284709987,  
+  "test_HitRate@20": 0.8696253234553898,  
+  "test_Recall@20": 0.8696253234553898,  
+  "test_NDCG@20": 0.43615097499379407,  
+  "test_MRR": 0.3168876048201971  
+
+  ## 
 
 
+| Model                        |    AUC | HitRate@1 | HitRate@5 | HitRate@10 |
+| ---------------------------- | -----: | --------: | --------: | ---------: |
+| Naive Random                 |      — |    0.0111 |    0.0526 |     0.1021 |
+| Naive Popularity             |      — |    0.1506 |    0.4048 |     0.5879 |
+| Logistic Regression Baseline | 0.9035 |    0.1610 |    0.5761 |     0.7485 |
+| Logistic Regression Network  | 0.9876 |    0.8684 |    0.9417 |     0.9607 |
+| Random Forest Baseline       | 0.9497 |    0.6298 |    0.7825 |     0.8369 |
+| Random Forest Network        | 1.0000 |    0.9999 |    0.9999 |     0.9999 |
+| XGBoost Baseline             | 0.9681 |    0.7763 |    0.8649 |     0.8994 |
+| XGBoost Network              | 0.9999 |    0.9999 |    0.9999 |     0.9999 |
+| LightGCN                     | 0.7456 |    0.1095 |    0.3238 |     0.4763 |
+| NN Baseline (BPR)            | 0.9115 |    0.1760 |    0.4794 |     0.6729 |
+| NN Network (BPR)             | 0.9114 |    0.1678 |    0.4712 |     0.6757 |
 
