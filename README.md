@@ -308,9 +308,24 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
   "NDCG@20": 0.8446513533056069,  
   "MRR": 0.8189992466505192  
         
-## XGB NETWORK: RUNNINH
-       
-  
+## XGB NETWORK: 
+
+   "test_roc_auc": 0.9999295428551607,  
+  "n_users_evaluated": 28211,  
+  "HitRate@1": 0.9998936585020027,  
+  "Recall@1": 0.9998936585020027,  
+  "NDCG@1": 0.9998936585020027,  
+  "HitRate@5": 0.9998936585020027,  
+  "Recall@5": 0.9998936585020027,  
+  "NDCG@5": 0.9998936585020027,  
+  "HitRate@10": 0.9998936585020027,  
+  "Recall@10": 0.9998936585020027,  
+  "NDCG@10": 0.9998936585020027,  
+  "HitRate@20": 0.9998936585020027,  
+  "Recall@20": 0.9998936585020027,  
+  "NDCG@20": 0.9998936585020027,  
+  "MRR": 0.9998951378949843  
+    
 ## lightGCN RUNNING
       
 
@@ -323,5 +338,12 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
 ## graph SAGE baseline 
 
 ## graph SAGE network 
-   
+  
+----------------------------------------------------------------------
 
+## XGB embeddings only:
+  
+## XGB 1 embedding only:
+  
+## XGB embeddings + unique_genres_played + total_minutes_played
+    
