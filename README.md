@@ -278,22 +278,63 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
   "Recall@5": 0.052639041508631385,  
   "NDCG@5": 0.031199634786967252    
       
-## LOGISTIC REGRESSION BASELINE: RUNNING
+## LOGISTIC REGRESSION BASELINE: 
   
+  "test_roc_auc": 0.9035307763305926,  
+  "HitRate@1": 0.1609655808018149,  
+  "Recall@1": 0.1609655808018149,  
+  "NDCG@1": 0.1609655808018149,  
+  "HitRate@5": 0.5760873418170217,  
+  "Recall@5": 0.5760873418170217,  
+  "NDCG@5": 0.37077277924236496,  
+  "HitRate@10": 0.748537804402538,  
+  "Recall@10": 0.748537804402538,  
+  "NDCG@10": 0.42749191661367153,  
+  "HitRate@20": 0.8400269398461593,  
+  "Recall@20": 0.8400269398461593,  
+  "NDCG@20": 0.45076122932644225,  
+  "MRR": 0.3383544483777126  
     
 ## LOGISTIC REGRESSION NETWORK: RUNNING
-
   
+  "test_roc_auc": 0.9876183344254614,  
+  "HitRate@1": 0.8684201198114211,  
+  "Recall@1": 0.8684201198114211,  
+  "NDCG@1": 0.8684201198114211,  
+  "HitRate@5": 0.941653964765517,  
+  "Recall@5": 0.941653964765517,  
+  "NDCG@5": 0.908881431345946,  
+  "HitRate@10": 0.9606890929070221,  
+  "Recall@10": 0.9606890929070221,  
+  "NDCG@10": 0.9150393074077323,  
+  "HitRate@20": 0.9785544645705576,  
+  "Recall@20": 0.9785544645705576,  
+  "NDCG@20": 0.9195517694895029,  
+  "MRR": 0.902257312245997  
+    
 ## RANDOM FOREST BASELINE: RUNNING
   
     
-## RANDOM FOREST NETWORK: RUNNING
+## RANDOM FOREST NETWORK: 
   
-    
+  "test_roc_auc": 0.9999666700517238,  
+  "HitRate@1": 0.9998936585020027,  
+  "Recall@1": 0.9998936585020027,  
+  "NDCG@1": 0.9998936585020027,  
+  "HitRate@5": 0.9998936585020027,  
+  "Recall@5": 0.9998936585020027,  
+  "NDCG@5": 0.9998936585020027,  
+  "HitRate@10": 0.9998936585020027,  
+  "Recall@10": 0.9998936585020027,  
+  "NDCG@10": 0.9998936585020027,  
+  "HitRate@20": 0.9998936585020027,  
+  "Recall@20": 0.9998936585020027,  
+  "NDCG@20": 0.9998936585020027,  
+  "MRR": 0.9998969782819882  
+      
 ## XGB BASELINE:
     
   "test_roc_auc": 0.9681250719433537,  
-  "n_users_evaluated": 28211,  
   "HitRate@1": 0.7762929353798164,  
   "Recall@1": 0.7762929353798164,  
   "NDCG@1": 0.7762929353798164,  
@@ -311,7 +352,6 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
 ## XGB NETWORK: 
 
    "test_roc_auc": 0.9999295428551607,  
-  "n_users_evaluated": 28211,  
   "HitRate@1": 0.9998936585020027,  
   "Recall@1": 0.9998936585020027,  
   "NDCG@1": 0.9998936585020027,  
@@ -326,9 +366,23 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
   "NDCG@20": 0.9998936585020027,  
   "MRR": 0.9998951378949843  
     
-## lightGCN RUNNING
+## lightGCN 
       
-
+  "test_roc_auc": 0.9296967167315993,  
+  "test_HitRate@1": 0.2797844812307256,  
+  "test_Recall@1": 0.2797844812307256,  
+  "test_NDCG@1": 0.2797844812307256,  
+  "test_HitRate@5": 0.6278047570096771,  
+  "test_Recall@5": 0.6278047570096771,  
+  "test_NDCG@5": 0.4587482133121356,  
+  "test_HitRate@10": 0.7994399347772145,  
+  "test_Recall@10": 0.7994399347772145,  
+  "test_NDCG@10": 0.5143682537824952,  
+  "test_HitRate@20": 0.9305590018078055,  
+  "test_Recall@20": 0.9305590018078055,  
+  "test_NDCG@20": 0.5478593963439246,  
+  "test_MRR": 0.4379026748253812  
+    
 ## NN_baseline (BPR)  RUNNING 
 
       
@@ -343,7 +397,52 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
 
 ## XGB embeddings only:
   
+  "test_roc_auc": 0.8652521319247597,  
+  "HitRate@1": 0.10612881500124065,  
+  "Recall@1": 0.10612881500124065,  
+  "NDCG@1": 0.10612881500124065,  
+  "HitRate@5": 0.3431285668710787,  
+  "Recall@5": 0.3431285668710787,  
+  "NDCG@5": 0.22622908929954413,  
+  "HitRate@10": 0.5091630924107617,  
+  "Recall@10": 0.5091630924107617,  
+  "NDCG@10": 0.27951479942938,  
+  "HitRate@20": 0.7474389422565666,  
+  "Recall@20": 0.7474389422565666,  
+  "NDCG@20": 0.3395649118854531,  
+  "MRR": 0.23425836968159186  
+    
 ## XGB 1 embedding only:
   
+  "test_roc_auc": 0.999922165268454,  
+  "HitRate@1": 0.9998936585020027,  
+  "Recall@1": 0.9998936585020027,  
+  "NDCG@1": 0.9998936585020027,  
+  "HitRate@5": 0.9998936585020027,  
+  "Recall@5": 0.9998936585020027,  
+  "NDCG@5": 0.9998936585020027,  
+  "HitRate@10": 0.9998936585020027,  
+  "Recall@10": 0.9998936585020027,  
+  "NDCG@10": 0.9998936585020027,  
+  "HitRate@20": 0.9998936585020027,  
+  "Recall@20": 0.9998936585020027,  
+  "NDCG@20": 0.9998936585020027,  
+  "MRR": 0.999894960948379  
+    
 ## XGB embeddings + unique_genres_played + total_minutes_played
+
+  "test_roc_auc": 0.8984196370886451,  
+  "HitRate@1": 0.15873240934387295,  
+  "Recall@1": 0.15873240934387295,  
+  "NDCG@1": 0.15873240934387295,  
+  "HitRate@5": 0.42036794158307045,  
+  "Recall@5": 0.42036794158307045,  
+  "NDCG@5": 0.2911270281102486,  
+  "HitRate@10": 0.6116762964800965,  
+  "Recall@10": 0.6116762964800965,  
+  "NDCG@10": 0.3528269063107399,  
+  "HitRate@20": 0.829924497536422,  
+  "Recall@20": 0.829924497536422,  
+  "NDCG@20": 0.4080475869535707,  
+  "MRR": 0.2949994593681889  
     
