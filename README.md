@@ -445,4 +445,34 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
   "Recall@20": 0.829924497536422,  
   "NDCG@20": 0.4080475869535707,  
   "MRR": 0.2949994593681889  
+
+## XGB COMPARE:
+| XGB model                   | HitRate@1 | HitRate@10 |      MRR |
+| --------------------------- | --------: | ---------: | -------: |
+| XGB Baseline                |  0.776293 |   0.899365 | 0.818999 |
+| XGB Network                 |  0.999894 |   0.999894 | 0.999895 |
+| XGB embeddings only         |  0.106129 |   0.509163 | 0.234258 |
+| XGB embeddings + basic info |  0.158732 |   0.611676 | 0.294999 |
+| XGB one embedding           |  0.999894 |   0.999894 | 0.999895 |
+
+## MODELS COMPARE:
+| Model                        |                     HitRate@1 |                    HitRate@10 |                           MRR |
+| ---------------------------- | ----------------------------: | ----------------------------: | ----------------------------: |
+| Naive Random                 |                      0.011130 |                      0.102123 |                      0.053034 |
+| Naive Popularity             |                      0.150580 |                      0.587856 |                      0.284082 |
+| LightGCN                     |                      0.279784 |                      0.799440 |                      0.437903 |
+| Logistic Regression Baseline |                      0.160966 |                      0.748538 |                      0.338354 |
+| Logistic Regression Network  |                      0.868420 |                      0.960689 |                      0.902257 |
+| Random Forest Baseline       |                       RUNNING |                       RUNNING |                       RUNNING |
+| Random Forest Network        |                      0.999894 |                      0.999894 |                      0.999897 |
+| NN_baseline (BPR)            |                       RUNNING |                       RUNNING |                       RUNNING |
+| NN_network (BPR)             |                       RUNNING |                       RUNNING |                       RUNNING |
+| XGB Baseline                 |                      0.776293 |                      0.899365 |                      0.818999 |
+| XGB Network                  |                      0.999894 |                      0.999894 |                      0.999895 |
+| XGB one embedding            |                      0.999894 |                      0.999894 |                      0.999895 |
+| XGB embeddings only          |                      0.106129 |                      0.509163 |                      0.234258 |
+| XGB embeddings + basic info  |                      0.158732 |                      0.611676 |                      0.294999 |
+| GraphSAGE baseline           |                       RUNNING |                       RUNNING |                       RUNNING |
+| GraphSAGE network            |                       RUNNING |                       RUNNING  |                      RUNNING |
+
     
