@@ -312,8 +312,22 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
   "NDCG@20": 0.9195517694895029,  
   "MRR": 0.902257312245997  
     
-## RANDOM FOREST BASELINE: RUNNING
-  
+## RANDOM FOREST BASELINE: 
+   "test_roc_auc": 0.9491964679135025,  
+  "n_users_evaluated": 28211,  
+  "HitRate@1": 0.6197228031618872,  
+  "Recall@1": 0.6197228031618872,  
+  "NDCG@1": 0.6197228031618872,  
+  "HitRate@5": 0.7798730991457233,  
+  "Recall@5": 0.7798730991457233,  
+  "NDCG@5": 0.70644178503317,  
+  "HitRate@10": 0.8367658005742441,  
+  "Recall@10": 0.8367658005742441,  
+  "NDCG@10": 0.7248064641263446,  
+  "HitRate@20": 0.8991882598986211,  
+  "Recall@20": 0.8991882598986211,  
+  "NDCG@20": 0.7405922572858965,  
+  "MRR": 0.6967694601919562  
     
 ## RANDOM FOREST NETWORK: 
   
@@ -493,7 +507,7 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
 | LightGCN                     |                      0.279784 |                      0.799440 |                      0.437903 |
 | Logistic Regression Baseline |                      0.160966 |                      0.748538 |                      0.338354 |
 | Logistic Regression Network  |                      0.868420 |                      0.960689 |                      0.902257 |
-| Random Forest Baseline       |                       RUNNING |                       RUNNING |                       RUNNING |
+| Random Forest Baseline       |                       0.61972 |                       0.83676 |                       0.69677 |
 | Random Forest Network        |                      0.999894 |                      0.999894 |                      0.999897 |
 | NN_baseline (BPR)            |                       0.18837 |                      0.667896 |                      0.332651 |
 | NN_network (BPR)             |                       0.19946 |                       0.71018 |                       0.35114 |
