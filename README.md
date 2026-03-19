@@ -519,4 +519,33 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
 | GraphSAGE baseline           |                       RUNNING |                       RUNNING |                       RUNNING |
 | GraphSAGE network            |                       RUNNING |                       RUNNING  |                      RUNNING |
 
-    
+
+## RANKING BY MRR:
+Random Forest Network — 0.999897  
+  
+XGB Network — 0.999895    
+  
+XGB one embedding — 0.999895  
+  
+Logistic Regression Network — 0.902257  
+  
+XGB Baseline — 0.818999  
+  
+Random Forest Baseline — 0.696770  
+  
+LightGCN — 0.437903  
+  
+NN_network (BPR) — 0.351140  
+  
+Logistic Regression Baseline — 0.338354  
+  
+NN_baseline (BPR) — 0.332651  
+  
+XGB embeddings + basic info — 0.294999  
+  
+Naive Popularity — 0.284082  
+  
+XGB embeddings only — 0.234258  
+  
+Naive Random — 0.053034  
+      
