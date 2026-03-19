@@ -399,39 +399,37 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
     
 ## NN_baseline (BPR)  
   
-  "test_roc_auc": 0.9108374124452895,  
-  "test_n_users_evaluated": 28211,  
-  "test_HitRate@1": 0.18836624011910247,  
-  "test_Recall@1": 0.18836624011910247,  
-  "test_NDCG@1": 0.18836624011910247,  
-  "test_HitRate@5": 0.4783949523235617,  
-  "test_Recall@5": 0.4783949523235617,  
-  "test_NDCG@5": 0.3359105284475896,  
-  "test_HitRate@10": 0.6678955017546347,  
-  "test_Recall@10": 0.6678955017546347,  
-  "test_NDCG@10": 0.3971262382493521,  
-  "test_HitRate@20": 0.8629258090815639,  
-  "test_Recall@20": 0.8629258090815639,  
-  "test_NDCG@20": 0.4465822746992153,  
-  "test_MRR": 0.3326507812681941  
+  "n_users_evaluated": 28211,  
+    "HitRate@1": 0.21115876785650986,  
+    "Recall@1": 0.21115876785650986,  
+    "NDCG@1": 0.21115876785650986,  
+    "HitRate@5": 0.5297933430222254,  
+    "Recall@5": 0.5297933430222254,  
+    "NDCG@5": 0.37409319978341726,  
+    "HitRate@10": 0.7206054375952643,  
+    "Recall@10": 0.7206054375952643,  
+    "NDCG@10": 0.43571650935395834,  
+    "HitRate@20": 0.8909290702208359,  
+    "Recall@20": 0.8909290702208359,  
+    "NDCG@20": 0.47906482228723923,  
+    "MRR": 0.36406691633984173  
       
 ## NN_network (BPR) 
   
-  "test_roc_auc": 0.9195833527468062,  
-  "test_n_users_evaluated": 28211,  
-  "test_HitRate@1": 0.199461203076814,  
-  "test_Recall@1": 0.199461203076814,  
-  "test_NDCG@1": 0.199461203076814,  
-  "test_HitRate@5": 0.5135939881606466,  
-  "test_Recall@5": 0.5135939881606466,  
-  "test_NDCG@5": 0.3591680160978233,  
-  "test_HitRate@10": 0.7101839707915352,  
-  "test_Recall@10": 0.7101839707915352,  
-  "test_NDCG@10": 0.42274338291299635,  
-  "test_HitRate@20": 0.8880578497749105,  
-  "test_Recall@20": 0.8880578497749105,  
-  "test_NDCG@20": 0.4679670694631618,  
-  "test_MRR": 0.35114036665668014  
+  "n_users_evaluated": 28211,  
+    "HitRate@1": 0.3338414093793201,  
+    "Recall@1": 0.3338414093793201,  
+    "NDCG@1": 0.3338414093793201,  
+    "HitRate@5": 0.6895182730140725,  
+    "Recall@5": 0.6895182730140725,  
+    "NDCG@5": 0.5192855905767376,  
+    "HitRate@10": 0.8433589734500727,  
+    "Recall@10": 0.8433589734500727,  
+    "NDCG@10": 0.5694762472416068,  
+    "HitRate@20": 0.9496295771153096,  
+    "Recall@20": 0.9496295771153096,  
+    "NDCG@20": 0.5966241071996167,  
+    "MRR": 0.4933085945607166  
       
 ## graph SAGE baseline 
 
@@ -509,8 +507,8 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
 | Logistic Regression Network  |                      0.868420 |                      0.960689 |                      0.902257 |
 | Random Forest Baseline       |                       0.61972 |                       0.83676 |                       0.69677 |
 | Random Forest Network        |                      0.999894 |                      0.999894 |                      0.999897 |
-| NN_baseline (BPR)            |                       0.18837 |                      0.667896 |                      0.332651 |
-| NN_network (BPR)             |                       0.19946 |                       0.71018 |                       0.35114 |
+| NN_baseline (BPR)            |                       0.21115 |                      0.72060 |                      0.364067 |
+| NN_network (BPR)             |                       0.33384 |                       0.84336 |                       0.49331 |
 | XGB Baseline                 |                      0.776293 |                      0.899365 |                      0.818999 |
 | XGB Network                  |                      0.999894 |                      0.999894 |                      0.999895 |
 | XGB one embedding            |                      0.999894 |                      0.999894 |                      0.999895 |
@@ -532,14 +530,14 @@ Logistic Regression Network — 0.902257
 XGB Baseline — 0.818999  
   
 Random Forest Baseline — 0.696770  
+
+NN_network (BPR) — 0.493309  
   
 LightGCN — 0.437903  
-  
-NN_network (BPR) — 0.351140  
-  
-Logistic Regression Baseline — 0.338354  
-  
-NN_baseline (BPR) — 0.332651  
+
+NN_baseline (BPR) — 0.3640669
+      
+Logistic Regression Baseline — 0.338354    
   
 XGB embeddings + basic info — 0.294999  
   
