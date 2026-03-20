@@ -546,4 +546,204 @@ Naive Popularity — 0.284082
 XGB embeddings only — 0.234258  
   
 Naive Random — 0.053034  
-      
+
+
+# FEATURE IMPORTANCE:
+## xgb baseline:
+| Feature                                  | Mean drop in NDCG@10 |        Std | Mean permuted NDCG@10 |
+| ---------------------------------------- | -------------------: | ---------: | --------------------: |
+| `game_total_playtime_minutes`            |       **0.58292324** | 0.00155112 |            0.25105577 |
+| `user_count`                             |       **0.56902361** | 0.00164226 |            0.26495539 |
+| `release_date`                           |       **0.16499448** | 0.00050787 |            0.66898453 |
+| `genres`                                 |       **0.13768380** | 0.00051125 |            0.69629521 |
+| `developer`                              |       **0.12377001** | 0.00068134 |            0.71020900 |
+| `publisher`                              |       **0.10204180** | 0.00037157 |            0.73193721 |
+| `platforms`                              |           0.03544365 | 0.00036427 |            0.79853536 |
+| `total_games_owned`                      |           0.01032169 | 0.00031582 |            0.82365732 |
+| `user_playtime_group_Violent`            |           0.00204458 | 0.00009196 |            0.83193443 |
+| `median_playtime_minutes`                |           0.00137048 | 0.00010929 |            0.83260853 |
+| `user_playtime_group_Non-gameplay_Tools` |           0.00067957 | 0.00015038 |            0.83329944 |
+| `unique_genres_played`                   |           0.00054665 | 0.00010147 |            0.83343236 |
+| `user_playtime_group_Other`              |           0.00032175 | 0.00011275 |            0.83365725 |
+| `country`                                |           0.00022009 | 0.00014627 |            0.83375892 |
+| `user_playtime_group_Casual`             |           0.00009159 | 0.00003826 |            0.83388742 |
+| `user_playtime_group_Sports`             |           0.00007552 | 0.00000640 |            0.83390349 |
+| `user_playtime_group_Indie`              |           0.00006984 | 0.00004772 |            0.83390917 |
+| `user_playtime_group_Action`             |           0.00005110 | 0.00012138 |            0.83392790 |
+| `total_playtime_minutes`                 |           0.00004807 | 0.00000985 |            0.83393094 |
+| `user_playtime_group_Simulation`         |           0.00002744 | 0.00001835 |            0.83395157 |
+| `user_playtime_group_Strategy`           |           0.00000271 | 0.00002659 |            0.83397629 |
+| `user_playtime_group_RPG`                |          -0.00001566 | 0.00001532 |            0.83399467 |
+| `user_playtime_group_Racing`             |          -0.00001622 | 0.00002376 |            0.83399523 |
+| `user_playtime_group_Adult`              |          -0.00002528 | 0.00001999 |            0.83400429 |
+| `user_playtime_group_Adventure`          |          -0.00005992 | 0.00006962 |            0.83403893 |
+
+## xgb network:
+| Feature                                  | Group       | Mean drop in NDCG@10 |        Std | Mean permuted NDCG@10 |
+| ---------------------------------------- | ----------- | -------------------: | ---------: | --------------------: |
+| `game_total_playtime_minutes`            | numeric     |       **0.45987492** | 0.00027930 |            0.54008963 |
+| `game_emb_0`                             | embedding   |          -0.00001182 | 0.00001671 |            0.99997637 |
+| `total_games_owned`                      | numeric     |           0.00000000 | 0.00000000 |            0.99996455 |
+| `total_playtime_minutes`                 | numeric     |           0.00000000 | 0.00000000 |            0.99996455 |
+| `median_playtime_minutes`                | numeric     |           0.00000000 | 0.00000000 |            0.99996455 |
+| `unique_genres_played`                   | numeric     |           0.00000000 | 0.00000000 |            0.99996455 |
+| `user_count`                             | numeric     |           0.00000000 | 0.00000000 |            0.99996455 |
+| `release_date`                           | numeric     |           0.00000000 | 0.00000000 |            0.99996455 |
+| `friend_count`                           | numeric     |           0.00000000 | 0.00000000 |            0.99996455 |
+| `game_emb_1`                             | embedding   |           0.00000000 | 0.00000000 |            0.99996455 |
+| `game_emb_2`                             | embedding   |           0.00000000 | 0.00000000 |            0.99996455 |
+| `game_emb_3`                             | embedding   |           0.00000000 | 0.00000000 |            0.99996455 |
+| `game_emb_4`                             | embedding   |           0.00000000 | 0.00000000 |            0.99996455 |
+| `game_emb_5`                             | embedding   |           0.00000000 | 0.00000000 |            0.99996455 |
+| `game_emb_6`                             | embedding   |           0.00000000 | 0.00000000 |            0.99996455 |
+| `game_emb_7`                             | embedding   |           0.00000000 | 0.00000000 |            0.99996455 |
+| `game_emb_8`                             | embedding   |           0.00000000 | 0.00000000 |            0.99996455 |
+| `game_emb_9`                             | embedding   |           0.00000000 | 0.00000000 |            0.99996455 |
+| `game_emb_10`                            | embedding   |           0.00000000 | 0.00000000 |            0.99996455 |
+| `game_emb_11`                            | embedding   |           0.00000000 | 0.00000000 |            0.99996455 |
+| `game_emb_12`                            | embedding   |           0.00000000 | 0.00000000 |            0.99996455 |
+| `game_emb_13`                            | embedding   |           0.00000000 | 0.00000000 |            0.99996455 |
+| `game_emb_14`                            | embedding   |           0.00000000 | 0.00000000 |            0.99996455 |
+| `game_emb_15`                            | embedding   |           0.00000000 | 0.00000000 |            0.99996455 |
+| `game_emb_16`                            | embedding   |           0.00000000 | 0.00000000 |            0.99996455 |
+| `game_emb_17`                            | embedding   |           0.00000000 | 0.00000000 |            0.99996455 |
+| `game_emb_18`                            | embedding   |           0.00000000 | 0.00000000 |            0.99996455 |
+| `game_emb_19`                            | embedding   |           0.00000000 | 0.00000000 |            0.99996455 |
+| `game_emb_20`                            | embedding   |           0.00000000 | 0.00000000 |            0.99996455 |
+| `game_emb_21`                            | embedding   |           0.00000000 | 0.00000000 |            0.99996455 |
+| `game_emb_22`                            | embedding   |           0.00000000 | 0.00000000 |            0.99996455 |
+| `game_emb_23`                            | embedding   |           0.00000000 | 0.00000000 |            0.99996455 |
+| `game_emb_24`                            | embedding   |           0.00000000 | 0.00000000 |            0.99996455 |
+| `game_emb_25`                            | embedding   |           0.00000000 | 0.00000000 |            0.99996455 |
+| `game_emb_26`                            | embedding   |           0.00000000 | 0.00000000 |            0.99996455 |
+| `game_emb_27`                            | embedding   |           0.00000000 | 0.00000000 |            0.99996455 |
+| `game_emb_28`                            | embedding   |           0.00000000 | 0.00000000 |            0.99996455 |
+| `game_emb_29`                            | embedding   |           0.00000000 | 0.00000000 |            0.99996455 |
+| `game_emb_30`                            | embedding   |           0.00000000 | 0.00000000 |            0.99996455 |
+| `game_emb_31`                            | embedding   |           0.00000000 | 0.00000000 |            0.99996455 |
+| `user_playtime_group_Action`             | numeric     |           0.00000000 | 0.00000000 |            0.99996455 |
+| `user_playtime_group_Adventure`          | numeric     |           0.00000000 | 0.00000000 |            0.99996455 |
+| `user_playtime_group_Adult`              | numeric     |           0.00000000 | 0.00000000 |            0.99996455 |
+| `user_playtime_group_Casual`             | numeric     |           0.00000000 | 0.00000000 |            0.99996455 |
+| `user_playtime_group_Indie`              | numeric     |           0.00000000 | 0.00000000 |            0.99996455 |
+| `user_playtime_group_Racing`             | numeric     |           0.00000000 | 0.00000000 |            0.99996455 |
+| `user_playtime_group_RPG`                | numeric     |           0.00000000 | 0.00000000 |            0.99996455 |
+| `user_playtime_group_Simulation`         | numeric     |           0.00000000 | 0.00000000 |            0.99996455 |
+| `user_playtime_group_Strategy`           | numeric     |           0.00000000 | 0.00000000 |            0.99996455 |
+| `user_playtime_group_Sports`             | numeric     |           0.00000000 | 0.00000000 |            0.99996455 |
+| `user_playtime_group_Violent`            | numeric     |           0.00000000 | 0.00000000 |            0.99996455 |
+| `user_playtime_group_Non-gameplay_Tools` | numeric     |           0.00000000 | 0.00000000 |            0.99996455 |
+| `user_playtime_group_Other`              | numeric     |           0.00000000 | 0.00000000 |            0.99996455 |
+| `genres`                                 | categorical |           0.00000000 | 0.00000000 |            0.99996455 |
+| `country`                                | categorical |           0.00000000 | 0.00000000 |            0.99996455 |
+| `publisher`                              | categorical |           0.00000000 | 0.00000000 |            0.99996455 |
+| `developer`                              | categorical |           0.00000000 | 0.00000000 |            0.99996455 |
+| `platforms`                              | categorical |           0.00000000 | 0.00000000 |            0.99996455 |
+
+
+## xgb one embedding:
+| Feature                                  | Group       | Mean drop in NDCG@10 |        Std | Mean permuted NDCG@10 |
+| ---------------------------------------- | ----------- | -------------------: | ---------: | --------------------: |
+| `game_total_playtime_minutes`            | numeric     |       **0.54477562** | 0.00008476 |            0.45518894 |
+| `game_emb_0`                             | embedding   |          -0.00001182 | 0.00001671 |            0.99997637 |
+| `total_playtime_minutes`                 | numeric     |           0.00000000 | 0.00000000 |            0.99996455 |
+| `total_games_owned`                      | numeric     |           0.00000000 | 0.00000000 |            0.99996455 |
+| `median_playtime_minutes`                | numeric     |           0.00000000 | 0.00000000 |            0.99996455 |
+| `unique_genres_played`                   | numeric     |           0.00000000 | 0.00000000 |            0.99996455 |
+| `user_count`                             | numeric     |           0.00000000 | 0.00000000 |            0.99996455 |
+| `release_date`                           | numeric     |           0.00000000 | 0.00000000 |            0.99996455 |
+| `friend_count`                           | numeric     |           0.00000000 | 0.00000000 |            0.99996455 |
+| `user_playtime_group_Action`             | numeric     |           0.00000000 | 0.00000000 |            0.99996455 |
+| `user_playtime_group_Adventure`          | numeric     |           0.00000000 | 0.00000000 |            0.99996455 |
+| `user_playtime_group_RPG`                | numeric     |           0.00000000 | 0.00000000 |            0.99996455 |
+| `user_playtime_group_Adult`              | numeric     |           0.00000000 | 0.00000000 |            0.99996455 |
+| `user_playtime_group_Casual`             | numeric     |           0.00000000 | 0.00000000 |            0.99996455 |
+| `user_playtime_group_Indie`              | numeric     |           0.00000000 | 0.00000000 |            0.99996455 |
+| `user_playtime_group_Racing`             | numeric     |           0.00000000 | 0.00000000 |            0.99996455 |
+| `user_playtime_group_Simulation`         | numeric     |           0.00000000 | 0.00000000 |            0.99996455 |
+| `user_playtime_group_Strategy`           | numeric     |           0.00000000 | 0.00000000 |            0.99996455 |
+| `user_playtime_group_Sports`             | numeric     |           0.00000000 | 0.00000000 |            0.99996455 |
+| `user_playtime_group_Violent`            | numeric     |           0.00000000 | 0.00000000 |            0.99996455 |
+| `genres`                                 | categorical |           0.00000000 | 0.00000000 |            0.99996455 |
+| `user_playtime_group_Non-gameplay_Tools` | numeric     |           0.00000000 | 0.00000000 |            0.99996455 |
+| `user_playtime_group_Other`              | numeric     |           0.00000000 | 0.00000000 |            0.99996455 |
+| `country`                                | categorical |           0.00000000 | 0.00000000 |            0.99996455 |
+| `publisher`                              | categorical |           0.00000000 | 0.00000000 |            0.99996455 |
+| `developer`                              | categorical |           0.00000000 | 0.00000000 |            0.99996455 |
+| `platforms`                              | categorical |           0.00000000 | 0.00000000 |            0.99996455 |
+
+## xgb only embeddings:
+| Embedding dimension | Mean drop in NDCG@10 |        Std | Mean permuted NDCG@10 |
+| ------------------- | -------------------: | ---------: | --------------------: |
+| `game_emb_0`        |       **0.14224194** | 0.00171487 |            0.12830817 |
+| `game_emb_1`        |       **0.06144283** | 0.00136823 |            0.20910728 |
+| `game_emb_6`        |           0.00349115 | 0.00169083 |            0.26705897 |
+| `game_emb_8`        |           0.00325253 | 0.00003011 |            0.26729758 |
+| `game_emb_3`        |           0.00147313 | 0.00018580 |            0.26907698 |
+| `game_emb_15`       |           0.00116910 | 0.00006209 |            0.26938101 |
+| `game_emb_28`       |           0.00088728 | 0.00017180 |            0.26966283 |
+| `game_emb_29`       |           0.00088703 | 0.00011552 |            0.26966308 |
+| `game_emb_2`        |           0.00081123 | 0.00008229 |            0.26973888 |
+| `game_emb_16`       |           0.00080329 | 0.00006958 |            0.26974682 |
+| `game_emb_14`       |           0.00063307 | 0.00006620 |            0.26991704 |
+| `game_emb_31`       |           0.00051383 | 0.00009130 |            0.27003628 |
+| `game_emb_24`       |           0.00039220 | 0.00008960 |            0.27015791 |
+| `game_emb_25`       |           0.00038720 | 0.00007029 |            0.27016291 |
+| `game_emb_23`       |           0.00034507 | 0.00014277 |            0.27020504 |
+| `game_emb_26`       |           0.00024270 | 0.00001970 |            0.27030741 |
+| `game_emb_27`       |           0.00021993 | 0.00002063 |            0.27033019 |
+| `game_emb_22`       |           0.00019195 | 0.00008518 |            0.27035816 |
+| `game_emb_20`       |           0.00017971 | 0.00004726 |            0.27037040 |
+| `game_emb_21`       |           0.00011915 | 0.00002033 |            0.27043096 |
+| `game_emb_18`       |           0.00007733 | 0.00013792 |            0.27047279 |
+| `game_emb_19`       |           0.00005886 | 0.00005151 |            0.27049125 |
+| `game_emb_30`       |          -0.00018510 | 0.00001987 |            0.27073521 |
+| `game_emb_12`       |          -0.00035705 | 0.00002569 |            0.27090716 |
+| `game_emb_13`       |          -0.00060055 | 0.00012872 |            0.27115067 |
+| `game_emb_7`        |          -0.00064567 | 0.00023109 |            0.27119578 |
+| `game_emb_9`        |          -0.00067322 | 0.00010843 |            0.27122334 |
+| `game_emb_17`       |          -0.00071608 | 0.00009099 |            0.27126619 |
+| `game_emb_10`       |          -0.00177374 | 0.00020598 |            0.27232385 |
+| `game_emb_11`       |          -0.00193819 | 0.00010962 |            0.27248831 |
+| `game_emb_5`        |          -0.00266256 | 0.00011444 |            0.27321267 |
+| `game_emb_4`        |          -0.00433035 | 0.00058855 |            0.27488046 |
+
+## xgb embeddings +basic info:
+| Feature                  | Group      | Mean drop in NDCG@10 |        Std | Mean permuted NDCG@10 |
+| ------------------------ | ---------- | -------------------: | ---------: | --------------------: |
+| `game_emb_0`             | embedding  |       **0.18233298** | 0.00173202 |            0.15736434 |
+| `game_emb_1`             | embedding  |       **0.05392925** | 0.00074630 |            0.28576807 |
+| `unique_genres_played`   | basic_info |       **0.03714114** | 0.00078417 |            0.30255619 |
+| `total_playtime_minutes` | basic_info |       **0.01415943** | 0.00011515 |            0.32553789 |
+| `game_emb_17`            | embedding  |           0.00715162 | 0.00013173 |            0.33254571 |
+| `game_emb_7`             | embedding  |           0.00367668 | 0.00048933 |            0.33602065 |
+| `game_emb_6`             | embedding  |           0.00330213 | 0.00017736 |            0.33639520 |
+| `game_emb_3`             | embedding  |           0.00139456 | 0.00015272 |            0.33830277 |
+| `game_emb_11`            | embedding  |           0.00133717 | 0.00012759 |            0.33836016 |
+| `game_emb_13`            | embedding  |           0.00132002 | 0.00004839 |            0.33837731 |
+| `game_emb_14`            | embedding  |           0.00112750 | 0.00031100 |            0.33856983 |
+| `game_emb_30`            | embedding  |           0.00091958 | 0.00013383 |            0.33877775 |
+| `game_emb_25`            | embedding  |           0.00087075 | 0.00006504 |            0.33882658 |
+| `game_emb_8`             | embedding  |           0.00085805 | 0.00013961 |            0.33883928 |
+| `game_emb_4`             | embedding  |           0.00076964 | 0.00016104 |            0.33892769 |
+| `game_emb_15`            | embedding  |           0.00063313 | 0.00017703 |            0.33906419 |
+| `game_emb_12`            | embedding  |           0.00044186 | 0.00016977 |            0.33925547 |
+| `game_emb_28`            | embedding  |           0.00038310 | 0.00023094 |            0.33931422 |
+| `game_emb_16`            | embedding  |           0.00033865 | 0.00002938 |            0.33935867 |
+| `game_emb_18`            | embedding  |           0.00032969 | 0.00007096 |            0.33936763 |
+| `game_emb_19`            | embedding  |           0.00029126 | 0.00016577 |            0.33940607 |
+| `game_emb_20`            | embedding  |           0.00023488 | 0.00007678 |            0.33946244 |
+| `game_emb_21`            | embedding  |           0.00020974 | 0.00006371 |            0.33948759 |
+| `game_emb_29`            | embedding  |           0.00017286 | 0.00005543 |            0.33952447 |
+| `game_emb_27`            | embedding  |           0.00002701 | 0.00008394 |            0.33967032 |
+| `game_emb_26`            | embedding  |          -0.00002923 | 0.00011191 |            0.33972655 |
+| `game_emb_24`            | embedding  |          -0.00008983 | 0.00030121 |            0.33978716 |
+| `game_emb_22`            | embedding  |          -0.00014303 | 0.00003232 |            0.33984036 |
+| `game_emb_10`            | embedding  |          -0.00016807 | 0.00004281 |            0.33986540 |
+| `game_emb_23`            | embedding  |          -0.00020482 | 0.00009209 |            0.33990215 |
+| `game_emb_5`             | embedding  |          -0.00026474 | 0.00020016 |            0.33996207 |
+| `game_emb_31`            | embedding  |          -0.00042300 | 0.00020492 |            0.34012033 |
+| `game_emb_2`             | embedding  |          -0.00050708 | 0.00034453 |            0.34020441 |
+| `game_emb_9`             | embedding  |          -0.00148062 | 0.00009238 |            0.34117795 |
+
+
