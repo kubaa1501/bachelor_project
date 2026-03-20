@@ -518,33 +518,54 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
 | GraphSAGE network            |                       RUNNING |                       RUNNING  |                      RUNNING |
 
 
-## RANKING BY MRR:
+# cold-start 
+## xgb baseline SIM
+"test_roc_auc": 0.9692379662500001,  
+  *"n_users_evaluated": 2000,*  
+  **"HitRate@1": 0.789,**  
+  "Recall@1": 0.789,  
+  "NDCG@1": 0.789,  
+  "HitRate@5": 0.8745,  
+  "Recall@5": 0.8745,  
+  "NDCG@5": 0.8344077084303314,  
+  "HitRate@10": 0.904,  
+  "Recall@10": 0.904,  
+  "NDCG@10": 0.8441139157628107,  
+  "HitRate@20": 0.935,  
+  "Recall@20": 0.935,  
+  "NDCG@20": 0.8519491261317037,  
+  **"MRR": 0.829184008444931**  
+## xgb baseline 
+   "test_roc_auc": 0.9681250719433537,  
+ *"n_users_evaluated": 28211,*  
+  **"HitRate@1": 0.7762929353798164,**  
+  "Recall@1": 0.7762929353798164,  
+  "NDCG@1": 0.7762929353798164,  
+  "HitRate@5": 0.8649462975435114,  
+  "Recall@5": 0.8649462975435114,  
+  "NDCG@5": 0.8237206918322882,  
+  "HitRate@10": 0.8993654957286165,  
+  "Recall@10": 0.8993654957286165,  
+  "NDCG@10": 0.8348392225148182,  
+  "HitRate@20": 0.9380738009996101,  
+  "Recall@20": 0.9380738009996101,  
+  "NDCG@20": 0.8446513533056069,  
+  **"MRR": 0.8189992466505192**  
+  
+# RANKING BY MRR:
 Random Forest Network — 0.999897  
-  
 XGB Network — 0.999895    
-  
 XGB one embedding — 0.999895  
-  
 Logistic Regression Network — 0.902257  
-  
 XGB Baseline — 0.818999  
-  
 Random Forest Baseline — 0.696770  
-
 NN_network (BPR) — 0.493309  
-  
-LightGCN — 0.437903  
-
+LightGCN — 0.437903   
 NN_baseline (BPR) — 0.3640669
-      
 Logistic Regression Baseline — 0.338354    
-  
 XGB embeddings + basic info — 0.294999  
-  
 Naive Popularity — 0.284082  
-  
 XGB embeddings only — 0.234258  
-  
 Naive Random — 0.053034  
 
 
