@@ -554,8 +554,8 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
   
 # RANKING BY MRR:
 Random Forest Network — 0.999897  
-XGB Network — 0.999895    
-XGB one embedding — 0.999895  
+**XGB Network — 0.999895**    
+**XGB one embedding — 0.999895**  
 Logistic Regression Network — 0.902257  
 XGB Baseline — 0.818999  
 Random Forest Baseline — 0.696770  
