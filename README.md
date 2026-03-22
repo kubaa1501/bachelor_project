@@ -590,10 +590,10 @@ Logistic Regression Network — 0.902257
 XGB Baseline — 0.818999  
 Random Forest Baseline — 0.696770  
 NN_network (BPR) — 0.493309  
-LightGCN — 0.437903
+LightGCN — 0.437903  
 GraphSAGE network — 0.398809  
 GraphSAGE baseline — 0.37765  
-NN_baseline (BPR) — 0.3640669
+NN_baseline (BPR) — 0.3640669  
 Logistic Regression Baseline — 0.338354    
 XGB embeddings + basic info — 0.294999  
 Naive Popularity — 0.284082  
