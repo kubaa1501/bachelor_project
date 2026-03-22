@@ -431,9 +431,39 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
     "NDCG@20": 0.5966241071996167,  
     "MRR": 0.4933085945607166  
       
-## graph SAGE baseline 
+## GraphSAGE baseline 
 
-## graph SAGE network 
+  "n_users_evaluated": 28211,
+    "HitRate@1": 0.21885080287830988,
+    "HitRate@5": 0.5589663606394669,
+    "HitRate@10": 0.7456311367906135,
+    "HitRate@20": 0.9064549289284322,
+    "Recall@1": 0.21885080287830988,
+    "Recall@5": 0.5589663606394669,
+    "Recall@10": 0.7456311367906135,
+    "Recall@20": 0.9064549289284322,
+    "NDCG@1": 0.21885080287830988,
+    "NDCG@5": 0.39268880519877153,
+    "NDCG@10": 0.45310978599422186,
+    "NDCG@20": 0.4940778856724079,
+    "MRR": 0.37765876291923967
+
+## GraphSAGE network
+
+   "n_users_evaluated": 28211,
+    "HitRate@1": 0.2383112970118039,
+    "HitRate@5": 0.5864024671227536,
+    "HitRate@10": 0.7683527701960229,
+    "HitRate@20": 0.9173726560561483,
+    "Recall@1": 0.2383112970118039,
+    "Recall@5": 0.5864024671227536,
+    "Recall@10": 0.7683527701960229,
+    "Recall@20": 0.9173726560561483,
+    "NDCG@1": 0.2383112970118039,
+    "NDCG@5": 0.41673376281394714,
+    "NDCG@10": 0.47577682836312957,
+    "NDCG@20": 0.5137141266891314,
+    "MRR": 0.3988092625712067
   
 ----------------------------------------------------------------------
 
@@ -507,15 +537,15 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
 | Logistic Regression Network  |                      0.868420 |                      0.960689 |                      0.902257 |
 | Random Forest Baseline       |                       0.61972 |                       0.83676 |                       0.69677 |
 | Random Forest Network        |                      0.999894 |                      0.999894 |                      0.999897 |
-| NN_baseline (BPR)            |                       0.21115 |                      0.72060 |                      0.364067 |
+| NN_baseline (BPR)            |                       0.21115 |                      0.72060 |                       0.364067 |
 | NN_network (BPR)             |                       0.33384 |                       0.84336 |                       0.49331 |
 | XGB Baseline                 |                      0.776293 |                      0.899365 |                      0.818999 |
 | XGB Network                  |                      0.999894 |                      0.999894 |                      0.999895 |
 | XGB one embedding            |                      0.999894 |                      0.999894 |                      0.999895 |
 | XGB embeddings only          |                      0.106129 |                      0.509163 |                      0.234258 |
 | XGB embeddings + basic info  |                      0.158732 |                      0.611676 |                      0.294999 |
-| GraphSAGE baseline           |                       RUNNING |                       RUNNING |                       RUNNING |
-| GraphSAGE network            |                       RUNNING |                       RUNNING  |                      RUNNING |
+| GraphSAGE Baseline           |                       0.21885 |                      0.745631 |                       0.37765 |
+| GraphSAGE Network            |                       0.23831 |                      0.768352 |                      0.398809 |
 
 
 # cold-start 
@@ -560,7 +590,9 @@ Logistic Regression Network — 0.902257
 XGB Baseline — 0.818999  
 Random Forest Baseline — 0.696770  
 NN_network (BPR) — 0.493309  
-LightGCN — 0.437903   
+LightGCN — 0.437903
+GraphSAGE network — 0.398809
+GraphSAGE baseline — 0.37765
 NN_baseline (BPR) — 0.3640669
 Logistic Regression Baseline — 0.338354    
 XGB embeddings + basic info — 0.294999  
