@@ -433,7 +433,7 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
       
 ## GraphSAGE baseline 
 
-  "n_users_evaluated": 28211,
+   "n_users_evaluated": 28211,
     "HitRate@1": 0.21885080287830988,
     "HitRate@5": 0.5589663606394669,
     "HitRate@10": 0.7456311367906135,
@@ -450,7 +450,7 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
 
 ## GraphSAGE network
 
-   "n_users_evaluated": 28211,
+   "n_users_evaluated": 28211, 
     "HitRate@1": 0.2383112970118039,
     "HitRate@5": 0.5864024671227536,
     "HitRate@10": 0.7683527701960229,
