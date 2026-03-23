@@ -295,22 +295,23 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
   "NDCG@20": 0.45076122932644225,  
   "MRR": 0.3383544483777126  
     
-## LOGISTIC REGRESSION NETWORK: RUNNING
+## LOGISTIC REGRESSION NETWORK: 
   
-  "test_roc_auc": 0.9876183344254614,  
-  "HitRate@1": 0.8684201198114211,  
-  "Recall@1": 0.8684201198114211,  
-  "NDCG@1": 0.8684201198114211,  
-  "HitRate@5": 0.941653964765517,  
-  "Recall@5": 0.941653964765517,  
-  "NDCG@5": 0.908881431345946,  
-  "HitRate@10": 0.9606890929070221,  
-  "Recall@10": 0.9606890929070221,  
-  "NDCG@10": 0.9150393074077323,  
-  "HitRate@20": 0.9785544645705576,  
-  "Recall@20": 0.9785544645705576,  
-  "NDCG@20": 0.9195517694895029,  
-  "MRR": 0.902257312245997  
+ "test_roc_auc": 0.9805927306953324,  
+  "n_users_evaluated": 28211,  
+  "HitRate@1": 0.7772500088617915,  
+  "Recall@1": 0.7772500088617915,  
+  "NDCG@1": 0.7772500088617915,  
+  "HitRate@5": 0.9182942823721244,  
+  "Recall@5": 0.9182942823721244,  
+  "NDCG@5": 0.8575702121735289,  
+  "HitRate@10": 0.9447024210414378,  
+  "Recall@10": 0.9447024210414378,  
+  "NDCG@10": 0.8661613480999315,  
+  "HitRate@20": 0.9682747864308249,  
+  "Recall@20": 0.9682747864308249,  
+  "NDCG@20": 0.8721455885062763,  
+  "MRR": 0.8430285803213402    
     
 ## RANDOM FOREST BASELINE: 
    "test_roc_auc": 0.9491964679135025,  
@@ -331,20 +332,21 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
     
 ## RANDOM FOREST NETWORK: 
   
-  "test_roc_auc": 0.9999666700517238,  
-  "HitRate@1": 0.9998936585020027,  
-  "Recall@1": 0.9998936585020027,  
-  "NDCG@1": 0.9998936585020027,  
-  "HitRate@5": 0.9998936585020027,  
-  "Recall@5": 0.9998936585020027,  
-  "NDCG@5": 0.9998936585020027,  
-  "HitRate@10": 0.9998936585020027,  
-  "Recall@10": 0.9998936585020027,  
-  "NDCG@10": 0.9998936585020027,  
-  "HitRate@20": 0.9998936585020027,  
-  "Recall@20": 0.9998936585020027,  
-  "NDCG@20": 0.9998936585020027,  
-  "MRR": 0.9998969782819882  
+  "test_roc_auc": 0.9933895985148382,  
+  "n_users_evaluated": 28211,  
+  "HitRate@1": 0.9582786856190848,  
+  "Recall@1": 0.9582786856190848,  
+  "NDCG@1": 0.9582786856190848,  
+  "HitRate@5": 0.9729892595087023,  
+  "Recall@5": 0.9729892595087023,  
+  "NDCG@5": 0.966191174803908,  
+  "HitRate@10": 0.9786962532345539,  
+  "Recall@10": 0.9786962532345539,  
+  "NDCG@10": 0.9680310637945264,  
+  "HitRate@20": 0.986423735422353,  
+  "Recall@20": 0.986423735422353,  
+  "NDCG@20": 0.9699606498427581,  
+  "MRR": 0.9655960307906203  
       
 ## XGB BASELINE:
     
@@ -365,21 +367,22 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
         
 ## XGB NETWORK: 
 
-   "test_roc_auc": 0.9999295428551607,  
-  "HitRate@1": 0.9998936585020027,  
-  "Recall@1": 0.9998936585020027,  
-  "NDCG@1": 0.9998936585020027,  
-  "HitRate@5": 0.9998936585020027,  
-  "Recall@5": 0.9998936585020027,  
-  "NDCG@5": 0.9998936585020027,  
-  "HitRate@10": 0.9998936585020027,  
-  "Recall@10": 0.9998936585020027,  
-  "NDCG@10": 0.9998936585020027,  
-  "HitRate@20": 0.9998936585020027,  
-  "Recall@20": 0.9998936585020027,  
-  "NDCG@20": 0.9998936585020027,  
-  "MRR": 0.9998951378949843  
-    
+ "test_roc_auc": 0.9992328183030956,  
+  "n_users_evaluated": 28211,  
+  "HitRate@1": 0.9940094289461557,  
+  "Recall@1": 0.9940094289461557,  
+  "NDCG@1": 0.9940094289461557,  
+  "HitRate@5": 0.9965261777320903,  
+  "Recall@5": 0.9965261777320903,  
+  "NDCG@5": 0.995330068733848,  
+  "HitRate@10": 0.9976959342100599,  
+  "Recall@10": 0.9976959342100599,  
+  "NDCG@10": 0.9957064439365918,  
+  "HitRate@20": 0.9985112190280387,  
+  "Recall@20": 0.9985112190280387,  
+  "NDCG@20": 0.995915275127317,  
+  "MRR": 0.9951880134703508  
+      
 ## lightGCN 
       
   "test_roc_auc": 0.9296967167315993,  
@@ -414,7 +417,7 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
     "NDCG@20": 0.47906482228723923,  
     "MRR": 0.36406691633984173  
       
-## NN_network (BPR) 
+## NN_network (BPR)  RUNNING 
   
   "n_users_evaluated": 28211,  
     "HitRate@1": 0.3338414093793201,  
@@ -469,7 +472,8 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
 
 ## XGB embeddings only:
   
-  "test_roc_auc": 0.8652521319247597,  
+"test_roc_auc": 0.8652521319247597,  
+  "n_users_evaluated": 28211,  
   "HitRate@1": 0.10612881500124065,  
   "Recall@1": 0.10612881500124065,  
   "NDCG@1": 0.10612881500124065,  
@@ -486,24 +490,26 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
     
 ## XGB 1 embedding only:
   
-  "test_roc_auc": 0.999922165268454,  
-  "HitRate@1": 0.9998936585020027,  
-  "Recall@1": 0.9998936585020027,  
-  "NDCG@1": 0.9998936585020027,  
-  "HitRate@5": 0.9998936585020027,  
-  "Recall@5": 0.9998936585020027,  
-  "NDCG@5": 0.9998936585020027,  
-  "HitRate@10": 0.9998936585020027,  
-  "Recall@10": 0.9998936585020027,  
-  "NDCG@10": 0.9998936585020027,  
-  "HitRate@20": 0.9998936585020027,  
-  "Recall@20": 0.9998936585020027,  
-  "NDCG@20": 0.9998936585020027,  
-  "MRR": 0.999894960948379  
+"test_roc_auc": 0.9978354337543525,  
+  "n_users_evaluated": 28211,  
+  "HitRate@1": 0.9844386941264046,   
+  "Recall@1": 0.9844386941264046,  
+  "NDCG@1": 0.9844386941264046,  
+  "HitRate@5": 0.990960972670235,  
+  "Recall@5": 0.990960972670235,  
+  "NDCG@5": 0.9879858600115983,  
+  "HitRate@10": 0.9936904044521641,  
+  "Recall@10": 0.9936904044521641,  
+  "NDCG@10": 0.9888747285715469,  
+  "HitRate@20": 0.9958881287441069,  
+  "Recall@20": 0.9958881287441069,  
+  "NDCG@20": 0.9894290867061667,  
+  "MRR": 0.9876156515164041  
     
 ## XGB embeddings + unique_genres_played + total_minutes_played
 
-  "test_roc_auc": 0.8984196370886451,  
+ "test_roc_auc": 0.8984196370886451,  
+  "n_users_evaluated": 28211,  
   "HitRate@1": 0.15873240934387295,  
   "Recall@1": 0.15873240934387295,  
   "NDCG@1": 0.15873240934387295,  
@@ -517,91 +523,65 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
   "Recall@20": 0.829924497536422,  
   "NDCG@20": 0.4080475869535707,  
   "MRR": 0.2949994593681889  
-
+  
 ## XGB COMPARE:
 | XGB model                   | HitRate@1 | HitRate@10 |      MRR |
 | --------------------------- | --------: | ---------: | -------: |
 | XGB Baseline                |  0.776293 |   0.899365 | 0.818999 |
-| XGB Network                 |  0.999894 |   0.999894 | 0.999895 |
+| XGB Network                 |  0.994009 |   0.997696 | 0.995188 |
 | XGB embeddings only         |  0.106129 |   0.509163 | 0.234258 |
 | XGB embeddings + basic info |  0.158732 |   0.611676 | 0.294999 |
-| XGB one embedding           |  0.999894 |   0.999894 | 0.999895 |
+| XGB one embedding           |  0.984439 |   0.993690 | 0.987616 |
+
 
 ## MODELS COMPARE:
-| Model                        |                     HitRate@1 |                    HitRate@10 |                           MRR |
-| ---------------------------- | ----------------------------: | ----------------------------: | ----------------------------: |
-| Naive Random                 |                      0.011130 |                      0.102123 |                      0.053034 |
-| Naive Popularity             |                      0.150580 |                      0.587856 |                      0.284082 |
-| LightGCN                     |                      0.279784 |                      0.799440 |                      0.437903 |
-| Logistic Regression Baseline |                      0.160966 |                      0.748538 |                      0.338354 |
-| Logistic Regression Network  |                      0.868420 |                      0.960689 |                      0.902257 |
-| Random Forest Baseline       |                       0.61972 |                       0.83676 |                       0.69677 |
-| Random Forest Network        |                      0.999894 |                      0.999894 |                      0.999897 |
-| NN_baseline (BPR)            |                       0.21115 |                      0.72060 |                       0.364067 |
-| NN_network (BPR)             |                       0.33384 |                       0.84336 |                       0.49331 |
-| XGB Baseline                 |                      0.776293 |                      0.899365 |                      0.818999 |
-| XGB Network                  |                      0.999894 |                      0.999894 |                      0.999895 |
-| XGB one embedding            |                      0.999894 |                      0.999894 |                      0.999895 |
-| XGB embeddings only          |                      0.106129 |                      0.509163 |                      0.234258 |
-| XGB embeddings + basic info  |                      0.158732 |                      0.611676 |                      0.294999 |
-| GraphSAGE Baseline           |                       0.21885 |                      0.745631 |                       0.37765 |
-| GraphSAGE Network            |                       0.23831 |                      0.768352 |                      0.398809 |
+| Model                                                        | HitRate@1 | HitRate@10 |      MRR |
+| ------------------------------------------------------------ | --------: | ---------: | -------: |
+| Naive Popularity                                             |  0.150580 |   0.587856 | 0.284082 |
+| Naive Random                                                 |  0.011130 |   0.102123 | 0.053034 |
+| Logistic Regression Baseline                                 |  0.160966 |   0.748538 | 0.338354 |
+| Logistic Regression Network                                  |  0.777250 |   0.944702 | 0.843029 |
+| Random Forest Baseline                                       |  0.619723 |   0.836766 | 0.696769 |
+| Random Forest Network                                        |  0.958279 |   0.978696 | 0.965596 |
+| XGB Baseline                                                 |  0.776293 |   0.899365 | 0.818999 |
+| XGB Network                                                  |  0.994009 |   0.997696 | 0.995188 |
+| LightGCN                                                     |  0.279784 |   0.799440 | 0.437903 |
+| NN Baseline (BPR)                                            |  0.211159 |   0.720605 | 0.364067 |
+| NN Network (BPR)                                             |  0.333841 |   0.843359 | 0.493309 |
+| GraphSAGE Baseline                                           |  0.218851 |   0.745631 | 0.377659 |
+| GraphSAGE Network                                            |  0.238311 |   0.768353 | 0.398809 |
+| XGB Embeddings Only                                          |  0.106129 |   0.509163 | 0.234258 |
+| XGB 1 Embedding Only                                         |  0.984439 |   0.993690 | 0.987616 |
+| XGB Embeddings + unique_genres_played + total_minutes_played |  0.158732 |   0.611676 | 0.294999 |
 
 
-# cold-start 
-## xgb baseline SIM
-"test_roc_auc": 0.9692379662500001,  
-  *"n_users_evaluated": 2000,*  
-  **"HitRate@1": 0.789,**  
-  "Recall@1": 0.789,  
-  "NDCG@1": 0.789,  
-  "HitRate@5": 0.8745,  
-  "Recall@5": 0.8745,  
-  "NDCG@5": 0.8344077084303314,  
-  "HitRate@10": 0.904,  
-  "Recall@10": 0.904,  
-  "NDCG@10": 0.8441139157628107,  
-  "HitRate@20": 0.935,  
-  "Recall@20": 0.935,  
-  "NDCG@20": 0.8519491261317037,  
-  **"MRR": 0.829184008444931**  
-## xgb baseline 
-   "test_roc_auc": 0.9681250719433537,  
- *"n_users_evaluated": 28211,*  
-  **"HitRate@1": 0.7762929353798164,**  
-  "Recall@1": 0.7762929353798164,  
-  "NDCG@1": 0.7762929353798164,  
-  "HitRate@5": 0.8649462975435114,  
-  "Recall@5": 0.8649462975435114,  
-  "NDCG@5": 0.8237206918322882,  
-  "HitRate@10": 0.8993654957286165,  
-  "Recall@10": 0.8993654957286165,  
-  "NDCG@10": 0.8348392225148182,  
-  "HitRate@20": 0.9380738009996101,  
-  "Recall@20": 0.9380738009996101,  
-  "NDCG@20": 0.8446513533056069,  
-  **"MRR": 0.8189992466505192**  
+| Model                                                        |      MRR |
+| ------------------------------------------------------------ | -------: |
+| XGB Network                                                  | 0.995188 |
+| XGB 1 Embedding Only                                         | 0.987616 |
+| Random Forest Network                                        | 0.965596 |
+| Logistic Regression Network                                  | 0.843029 |
+| XGB Baseline                                                 | 0.818999 |
+| Random Forest Baseline                                       | 0.696769 |
+| NN Network (BPR)                                             | 0.493309 |
+| LightGCN                                                     | 0.437903 |
+| GraphSAGE Network                                            | 0.398809 |
+| GraphSAGE Baseline                                           | 0.377659 |
+| NN Baseline (BPR)                                            | 0.364067 |
+| Logistic Regression Baseline                                 | 0.338354 |
+| XGB Embeddings + unique_genres_played + total_minutes_played | 0.294999 |
+| Naive Popularity                                             | 0.284082 |
+| XGB Embeddings Only                                          | 0.234258 |
+| Naive Random                                                 | 0.053034 |
   
-# RANKING BY MRR:
-Random Forest Network — 0.999897  
-**XGB Network — 0.999895**    
-**XGB one embedding — 0.999895**  
-Logistic Regression Network — 0.902257  
-XGB Baseline — 0.818999  
-Random Forest Baseline — 0.696770  
-NN_network (BPR) — 0.493309  
-LightGCN — 0.437903  
-GraphSAGE network — 0.398809  
-GraphSAGE baseline — 0.37765  
-NN_baseline (BPR) — 0.3640669  
-Logistic Regression Baseline — 0.338354    
-XGB embeddings + basic info — 0.294999  
-Naive Popularity — 0.284082  
-XGB embeddings only — 0.234258  
-Naive Random — 0.053034  
+# cold-start  recalculating...  
+## xgb baseline SIM
+
+## xgb baseline  SIM
 
 
-# FEATURE IMPORTANCE:
+
+# FEATURE IMPORTANCE: recalculating...
 ## xgb baseline:
 | Feature                                  | Mean drop in NDCG@10 |        Std | Mean permuted NDCG@10 |
 | ---------------------------------------- | -------------------: | ---------: | --------------------: |
