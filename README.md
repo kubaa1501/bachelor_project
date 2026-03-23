@@ -612,7 +612,66 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
 | `user_playtime_group_Adventure`          |          -0.00005992 | 0.00006962 |            0.83403893 |
 
 ## xgb network:
-running...
+| Rank | Feature                                | Feature group | Mean drop in NDCG@10 | Std drop |
+| ---: | -------------------------------------- | ------------- | -------------------: | -------: |
+|    1 | game_emb_0                             | embedding     |             0.987965 | 0.000272 |
+|    2 | game_emb_1                             | embedding     |             0.916040 | 0.000843 |
+|    3 | user_count                             | numeric       |             0.450489 | 0.000141 |
+|    4 | game_emb_2                             | embedding     |             0.009604 | 0.000182 |
+|    5 | game_total_playtime_minutes            | numeric       |             0.002632 | 0.000014 |
+|    6 | game_emb_4                             | embedding     |             0.002138 | 0.000151 |
+|    7 | game_emb_12                            | embedding     |             0.002096 | 0.000074 |
+|    8 | game_emb_6                             | embedding     |             0.001822 | 0.000081 |
+|    9 | game_emb_7                             | embedding     |             0.001739 | 0.000090 |
+|   10 | game_emb_8                             | embedding     |             0.000758 | 0.000043 |
+|   11 | game_emb_14                            | embedding     |             0.000637 | 0.000083 |
+|   12 | total_games_owned                      | numeric       |             0.000410 | 0.000021 |
+|   13 | game_emb_18                            | embedding     |             0.000406 | 0.000030 |
+|   14 | game_emb_11                            | embedding     |             0.000280 | 0.000022 |
+|   15 | release_date                           | numeric       |             0.000265 | 0.000025 |
+|   16 | game_emb_30                            | embedding     |             0.000245 | 0.000031 |
+|   17 | game_emb_29                            | embedding     |             0.000242 | 0.000023 |
+|   18 | genres                                 | categorical   |             0.000216 | 0.000007 |
+|   19 | game_emb_5                             | embedding     |             0.000215 | 0.000037 |
+|   20 | game_emb_10                            | embedding     |             0.000204 | 0.000034 |
+|   21 | game_emb_17                            | embedding     |             0.000192 | 0.000024 |
+|   22 | game_emb_28                            | embedding     |             0.000177 | 0.000016 |
+|   23 | game_emb_20                            | embedding     |             0.000166 | 0.000028 |
+|   24 | publisher                              | categorical   |             0.000140 | 0.000009 |
+|   25 | game_emb_3                             | embedding     |             0.000132 | 0.000010 |
+|   26 | game_emb_26                            | embedding     |             0.000126 | 0.000028 |
+|   27 | game_emb_22                            | embedding     |             0.000120 | 0.000001 |
+|   28 | game_emb_24                            | embedding     |             0.000118 | 0.000021 |
+|   29 | country                                | categorical   |             0.000115 | 0.000014 |
+|   30 | game_emb_19                            | embedding     |             0.000109 | 0.000023 |
+|   31 | game_emb_9                             | embedding     |             0.000109 | 0.000033 |
+|   32 | game_emb_13                            | embedding     |             0.000108 | 0.000017 |
+|   33 | game_emb_15                            | embedding     |             0.000107 | 0.000007 |
+|   34 | user_playtime_group_Violent            | numeric       |             0.000095 | 0.000031 |
+|   35 | developer                              | categorical   |             0.000094 | 0.000026 |
+|   36 | game_emb_31                            | embedding     |             0.000093 | 0.000018 |
+|   37 | game_emb_27                            | embedding     |             0.000090 | 0.000030 |
+|   38 | median_playtime_minutes                | numeric       |             0.000090 | 0.000017 |
+|   39 | friend_count                           | numeric       |             0.000081 | 0.000020 |
+|   40 | user_playtime_group_Action             | numeric       |             0.000070 | 0.000011 |
+|   41 | user_playtime_group_Non-gameplay_Tools | numeric       |             0.000060 | 0.000003 |
+|   42 | game_emb_25                            | embedding     |             0.000058 | 0.000004 |
+|   43 | game_emb_16                            | embedding     |             0.000056 | 0.000009 |
+|   44 | user_playtime_group_Casual             | numeric       |             0.000053 | 0.000020 |
+|   45 | user_playtime_group_Racing             | numeric       |             0.000043 | 0.000030 |
+|   46 | game_emb_21                            | embedding     |             0.000036 | 0.000022 |
+|   47 | unique_genres_played                   | numeric       |             0.000036 | 0.000001 |
+|   48 | user_playtime_group_Other              | numeric       |             0.000035 | 0.000018 |
+|   49 | user_playtime_group_RPG                | numeric       |             0.000035 | 0.000012 |
+|   50 | user_playtime_group_Adult              | numeric       |             0.000034 | 0.000009 |
+|   51 | game_emb_23                            | embedding     |             0.000026 | 0.000014 |
+|   52 | user_playtime_group_Simulation         | numeric       |             0.000017 | 0.000006 |
+|   53 | total_playtime_minutes                 | numeric       |             0.000010 | 0.000001 |
+|   54 | user_playtime_group_Adventure          | numeric       |             0.000006 | 0.000019 |
+|   55 | user_playtime_group_Strategy           | numeric       |             0.000003 | 0.000013 |
+|   56 | user_playtime_group_Indie              | numeric       |             0.000000 | 0.000012 |
+|   57 | platforms                              | categorical   |             0.000000 | 0.000000 |
+|   58 | user_playtime_group_Sports             | numeric       |            -0.000005 | 0.000004 |
 
 
 ## xgb one embedding:
