@@ -523,15 +523,34 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
   "Recall@20": 0.829924497536422,  
   "NDCG@20": 0.4080475869535707,  
   "MRR": 0.2949994593681889  
+    
+## XGB emb0 + playtime **NEW** 
   
+  "test_roc_auc": 0.8844167444259997,  
+  "n_users_evaluated": 28211,  
+  "HitRate@1": 0.1355499627804757,  
+  "Recall@1": 0.1355499627804757,  
+  "NDCG@1": 0.1355499627804757,  
+  "HitRate@5": 0.3804544326681082,  
+  "Recall@5": 0.3804544326681082,  
+  "NDCG@5": 0.2597729322938029,  
+  "HitRate@10": 0.5697777462691858,  
+  "Recall@10": 0.5697777462691858,  
+  "NDCG@10": 0.3203092175224023,  
+  "HitRate@20": 0.8063166849810358,  
+  "Recall@20": 0.8063166849810358,  
+  "NDCG@20": 0.3801327502536333,  
+  "MRR": 0.2676715606500115  
+    
 ## XGB COMPARE:
 | XGB model                   | HitRate@1 | HitRate@10 |      MRR |
 | --------------------------- | --------: | ---------: | -------: |
-| XGB Baseline                |  0.776293 |   0.899365 | 0.818999 |
 | XGB Network                 |  0.994009 |   0.997696 | 0.995188 |
-| XGB embeddings only         |  0.106129 |   0.509163 | 0.234258 |
-| XGB embeddings + basic info |  0.158732 |   0.611676 | 0.294999 |
 | XGB one embedding           |  0.984439 |   0.993690 | 0.987616 |
+| XGB Baseline                |  0.776293 |   0.899365 | 0.818999 |
+| XGB embeddings + basic info |  0.158732 |   0.611676 | 0.294999 |
+| XGB emb0 + playtime         |  0.135549 |   0.569778 | 0.267672 |
+| XGB embeddings only         |  0.106129 |   0.509163 | 0.234258 |
 
 
 ## MODELS COMPARE:
@@ -571,6 +590,7 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
 | Logistic Regression Baseline                                 | 0.338354 |
 | XGB Embeddings + unique_genres_played + total_minutes_played | 0.294999 |
 | Naive Popularity                                             | 0.284082 |
+| XGB emb0 + playtime                                          | 0.267672 |
 | XGB Embeddings Only                                          | 0.234258 |
 | Naive Random                                                 | 0.053034 |
   
