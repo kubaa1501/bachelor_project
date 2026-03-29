@@ -917,3 +917,7 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
 <img width="1980" height="1320" alt="06_binned_emb0_vs_mean_log_playtime" src="https://github.com/user-attachments/assets/0cb9d3c7-4552-44bf-b7d0-25a9eeaf6131" />
 <img width="1540" height="1320" alt="07_spearman_correlation_heatmap" src="https://github.com/user-attachments/assets/98ae00d4-f02e-4ade-9e30-56e3c6dd4969" />
 
+<img width="3937" height="3773" alt="genre_one_vs_rest_panels_mapped" src="https://github.com/user-attachments/assets/c4922a68-89de-4816-bf66-0f094bc8f2d9" />
+
+<img width="3080" height="1540" alt="genre_share_across_emb0_bins_heatmap_mapped" src="https://github.com/user-attachments/assets/70907484-79a0-4fba-a812-1b754a87b5c2" />
+
