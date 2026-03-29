@@ -439,36 +439,37 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
 ### GraphSAGE baseline 
 
    "n_users_evaluated": 28211,  
-    "HitRate@1": 0.21885080287830988,  
-    "HitRate@5": 0.5589663606394669,  
-    "HitRate@10": 0.7456311367906135,  
-    "HitRate@20": 0.9064549289284322,  
-    "Recall@1": 0.21885080287830988,  
-    "Recall@5": 0.5589663606394669,  
-    "Recall@10": 0.7456311367906135,  
-    "Recall@20": 0.9064549289284322,  
-    "NDCG@1": 0.21885080287830988,  
-    "NDCG@5": 0.39268880519877153,  
-    "NDCG@10": 0.45310978599422186,  
-    "NDCG@20": 0.4940778856724079,  
-    "MRR": 0.37765876291923967  
+    "HitRate@1": 0.20289957817872462,  
+    "HitRate@5": 0.5338343199461203,  
+    "HitRate@10": 0.7291127574350431,  
+    "HitRate@20": 0.8961752507886994,  
+    "Recall@1": 0.20289957817872462,  
+    "Recall@5": 0.5338343199461203,  
+    "Recall@10": 0.7291127574350431,  
+    "Recall@20": 0.8961752507886994,  
+    "NDCG@1": 0.20289957817872462,  
+    "NDCG@5": 0.3717026091676068,  
+    "NDCG@10": 0.4348885044361438,  
+    "NDCG@20": 0.4773046721774314,  
+    "MRR": 0.359860154228877  
 
 ### GraphSAGE network
 
    "n_users_evaluated": 28211,  
-    "HitRate@1": 0.2383112970118039,  
-    "HitRate@5": 0.5864024671227536,  
-    "HitRate@10": 0.7683527701960229,  
-    "HitRate@20": 0.9173726560561483,  
-    "Recall@1": 0.2383112970118039,  
-    "Recall@5": 0.5864024671227536,  
-    "Recall@10": 0.7683527701960229,  
-    "Recall@20": 0.9173726560561483,  
-    "NDCG@1": 0.2383112970118039,  
-    "NDCG@5": 0.41673376281394714,  
-    "NDCG@10": 0.47577682836312957,  
-    "NDCG@20": 0.5137141266891314,  
-    "MRR": 0.3988092625712067  
+    "HitRate@1": 0.20729502676261033,  
+    "HitRate@5": 0.5461344865478005,  
+    "HitRate@10": 0.7365566622948495,  
+    "HitRate@20": 0.9004289107085889,  
+    "Recall@1": 0.20729502676261033,  
+    "Recall@5": 0.5461344865478005,  
+    "Recall@10": 0.7365566622948495,  
+    "Recall@20": 0.9004289107085889,  
+    "NDCG@1": 0.20729502676261033,  
+    "NDCG@5": 0.3810175742678832,  
+    "NDCG@10": 0.4426932551793056,  
+    "NDCG@20": 0.48441930026704577,  
+    "MRR": 0.367246234841923  
+
 </details>  
 <details>
 <summary><b>XGB variations</b></summary>
@@ -574,8 +575,8 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
 | LightGCN | 0.279784 | 0.799440 | 0.437903 |
 | NN Baseline (BPR) | 0.211159 | 0.720605 | 0.364067 |
 | NN Network (BPR) | 0.333841 | 0.843359 | 0.493309 |
-| GraphSAGE Baseline | 0.218851 | 0.745631 | 0.377659 |
-| GraphSAGE Network | 0.238311 | 0.768353 | 0.398809 |
+| GraphSAGE Baseline | 0.202899 | 0.729112 |  0.359860 |
+| GraphSAGE Network | 0.2072950 | 0.736556 | 0.367246 |
 | XGB Embeddings Only | 0.106129 | 0.509163 | 0.234258 |
 | XGB 1 Embedding Only | 0.984439 | 0.993690 | 0.987616 |
 | XGB Embeddings + unique_genres_played + total_minutes_played | 0.158732 | 0.611676 | 0.294999 |
@@ -592,9 +593,9 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
 | Random Forest Baseline | 0.696769 |
 | NN Network (BPR) | 0.493309 |
 | LightGCN | 0.437903 |
-| GraphSAGE Network | 0.398809 |
-| GraphSAGE Baseline | 0.377659 |
+| GraphSAGE Network | 0.3672462 |
 | NN Baseline (BPR) | 0.364067 |
+| GraphSAGE Baseline | 0.359860 |
 | Logistic Regression Baseline | 0.338354 |
 | XGB Embeddings + unique_genres_played + total_minutes_played | 0.294999 |
 | Naive Popularity | 0.284082 |
