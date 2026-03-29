@@ -242,10 +242,12 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
   
 - K=32      
 - explained var: 0,9868
-
-# MODELS:
-
-## NAIVE POPULARITY:
+<details>
+<summary><b>MODELS</b></summary>
+    
+## MODELS:
+  
+### NAIVE POPULARITY:
   
   "HitRate@10": 0.5878558009287157,  
   "Recall@10": 0.5878558009287157,  
@@ -261,7 +263,7 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
   "Recall@5": 0.40484208287547413,  
   "NDCG@5": 0.2793162612233727  
     
-## NAIVE RANDOM:
+### NAIVE RANDOM:
   
   "n_runs": 100,  
   "HitRate@10": 0.1021232852433448,  
@@ -278,7 +280,7 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
   "Recall@5": 0.052639041508631385,  
   "NDCG@5": 0.031199634786967252    
       
-## LOGISTIC REGRESSION BASELINE: 
+### LOGISTIC REGRESSION BASELINE: 
   
   "test_roc_auc": 0.9035307763305926,  
   "HitRate@1": 0.1609655808018149,  
@@ -295,7 +297,7 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
   "NDCG@20": 0.45076122932644225,  
   "MRR": 0.3383544483777126  
     
-## LOGISTIC REGRESSION NETWORK: 
+### LOGISTIC REGRESSION NETWORK: 
   
  "test_roc_auc": 0.9805927306953324,  
   "n_users_evaluated": 28211,  
@@ -313,7 +315,7 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
   "NDCG@20": 0.8721455885062763,  
   "MRR": 0.8430285803213402    
     
-## RANDOM FOREST BASELINE: 
+### RANDOM FOREST BASELINE: 
    "test_roc_auc": 0.9491964679135025,  
   "n_users_evaluated": 28211,  
   "HitRate@1": 0.6197228031618872,  
@@ -330,7 +332,7 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
   "NDCG@20": 0.7405922572858965,  
   "MRR": 0.6967694601919562  
     
-## RANDOM FOREST NETWORK: 
+### RANDOM FOREST NETWORK: 
   
   "test_roc_auc": 0.9933895985148382,  
   "n_users_evaluated": 28211,  
@@ -348,7 +350,7 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
   "NDCG@20": 0.9699606498427581,  
   "MRR": 0.9655960307906203  
       
-## XGB BASELINE:
+### XGB BASELINE:
     
   "test_roc_auc": 0.9681250719433537,  
   "HitRate@1": 0.7762929353798164,  
@@ -365,7 +367,7 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
   "NDCG@20": 0.8446513533056069,  
   "MRR": 0.8189992466505192  
         
-## XGB NETWORK: 
+### XGB NETWORK: 
 
  "test_roc_auc": 0.9992328183030956,  
   "n_users_evaluated": 28211,  
@@ -383,7 +385,7 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
   "NDCG@20": 0.995915275127317,  
   "MRR": 0.9951880134703508  
       
-## lightGCN 
+### lightGCN 
       
   "test_roc_auc": 0.9296967167315993,  
   "test_HitRate@1": 0.2797844812307256,  
@@ -400,7 +402,7 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
   "test_NDCG@20": 0.5478593963439246,  
   "test_MRR": 0.4379026748253812  
     
-## NN_baseline (BPR)  
+### NN_baseline (BPR)  
   
   "n_users_evaluated": 28211,  
     "HitRate@1": 0.21115876785650986,  
@@ -417,7 +419,7 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
     "NDCG@20": 0.47906482228723923,  
     "MRR": 0.36406691633984173  
       
-## NN_network (BPR)  RUNNING 
+### NN_network (BPR)   
   
   "n_users_evaluated": 28211,  
     "HitRate@1": 0.3338414093793201,  
@@ -434,7 +436,7 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
     "NDCG@20": 0.5966241071996167,  
     "MRR": 0.4933085945607166  
       
-## GraphSAGE baseline 
+### GraphSAGE baseline 
 
    "n_users_evaluated": 28211,  
     "HitRate@1": 0.21885080287830988,  
@@ -451,7 +453,7 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
     "NDCG@20": 0.4940778856724079,  
     "MRR": 0.37765876291923967  
 
-## GraphSAGE network
+### GraphSAGE network
 
    "n_users_evaluated": 28211,  
     "HitRate@1": 0.2383112970118039,  
@@ -467,10 +469,11 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
     "NDCG@10": 0.47577682836312957,  
     "NDCG@20": 0.5137141266891314,  
     "MRR": 0.3988092625712067  
+</details>  
+<details>
+<summary><b>XGB variations</b></summary>
   
-----------------------------------------------------------------------
-
-## XGB embeddings only:
+### XGB embeddings only:
   
 "test_roc_auc": 0.8652521319247597,  
   "n_users_evaluated": 28211,  
@@ -552,57 +555,150 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
 | XGB emb0 + playtime         |  0.135549 |   0.569778 | 0.267672 |
 | XGB embeddings only         |  0.106129 |   0.509163 | 0.234258 |
 
+</details>
+<details>
+<summary><b>MODELS COMPARISON</b></summary>
 
-## MODELS COMPARE:
-| Model                                                        | HitRate@1 | HitRate@10 |      MRR |
-| ------------------------------------------------------------ | --------: | ---------: | -------: |
-| Naive Popularity                                             |  0.150580 |   0.587856 | 0.284082 |
-| Naive Random                                                 |  0.011130 |   0.102123 | 0.053034 |
-| Logistic Regression Baseline                                 |  0.160966 |   0.748538 | 0.338354 |
-| Logistic Regression Network                                  |  0.777250 |   0.944702 | 0.843029 |
-| Random Forest Baseline                                       |  0.619723 |   0.836766 | 0.696769 |
-| Random Forest Network                                        |  0.958279 |   0.978696 | 0.965596 |
-| XGB Baseline                                                 |  0.776293 |   0.899365 | 0.818999 |
-| XGB Network                                                  |  0.994009 |   0.997696 | 0.995188 |
-| LightGCN                                                     |  0.279784 |   0.799440 | 0.437903 |
-| NN Baseline (BPR)                                            |  0.211159 |   0.720605 | 0.364067 |
-| NN Network (BPR)                                             |  0.333841 |   0.843359 | 0.493309 |
-| GraphSAGE Baseline                                           |  0.218851 |   0.745631 | 0.377659 |
-| GraphSAGE Network                                            |  0.238311 |   0.768353 | 0.398809 |
-| XGB Embeddings Only                                          |  0.106129 |   0.509163 | 0.234258 |
-| XGB 1 Embedding Only                                         |  0.984439 |   0.993690 | 0.987616 |
-| XGB Embeddings + unique_genres_played + total_minutes_played |  0.158732 |   0.611676 | 0.294999 |
+### Main comparison
 
+| Model | HitRate@1 | HitRate@10 | MRR |
+|---|---:|---:|---:|
+| Naive Popularity | 0.150580 | 0.587856 | 0.284082 |
+| Naive Random | 0.011130 | 0.102123 | 0.053034 |
+| Logistic Regression Baseline | 0.160966 | 0.748538 | 0.338354 |
+| Logistic Regression Network | 0.777250 | 0.944702 | 0.843029 |
+| Random Forest Baseline | 0.619723 | 0.836766 | 0.696769 |
+| Random Forest Network | 0.958279 | 0.978696 | 0.965596 |
+| XGB Baseline | 0.776293 | 0.899365 | 0.818999 |
+| XGB Network | 0.994009 | 0.997696 | 0.995188 |
+| LightGCN | 0.279784 | 0.799440 | 0.437903 |
+| NN Baseline (BPR) | 0.211159 | 0.720605 | 0.364067 |
+| NN Network (BPR) | 0.333841 | 0.843359 | 0.493309 |
+| GraphSAGE Baseline | 0.218851 | 0.745631 | 0.377659 |
+| GraphSAGE Network | 0.238311 | 0.768353 | 0.398809 |
+| XGB Embeddings Only | 0.106129 | 0.509163 | 0.234258 |
+| XGB 1 Embedding Only | 0.984439 | 0.993690 | 0.987616 |
+| XGB Embeddings + unique_genres_played + total_minutes_played | 0.158732 | 0.611676 | 0.294999 |
 
-| Model                                                        |      MRR |
-| ------------------------------------------------------------ | -------: |
-| XGB Network                                                  | 0.995188 |
-| XGB 1 Embedding Only                                         | 0.987616 |
-| Random Forest Network                                        | 0.965596 |
-| Logistic Regression Network                                  | 0.843029 |
-| XGB Baseline                                                 | 0.818999 |
-| Random Forest Baseline                                       | 0.696769 |
-| NN Network (BPR)                                             | 0.493309 |
-| LightGCN                                                     | 0.437903 |
-| GraphSAGE Network                                            | 0.398809 |
-| GraphSAGE Baseline                                           | 0.377659 |
-| NN Baseline (BPR)                                            | 0.364067 |
-| Logistic Regression Baseline                                 | 0.338354 |
+### Ranking by MRR
+
+| Model | MRR |
+|---|---:|
+| XGB Network | 0.995188 |
+| XGB 1 Embedding Only | 0.987616 |
+| Random Forest Network | 0.965596 |
+| Logistic Regression Network | 0.843029 |
+| XGB Baseline | 0.818999 |
+| Random Forest Baseline | 0.696769 |
+| NN Network (BPR) | 0.493309 |
+| LightGCN | 0.437903 |
+| GraphSAGE Network | 0.398809 |
+| GraphSAGE Baseline | 0.377659 |
+| NN Baseline (BPR) | 0.364067 |
+| Logistic Regression Baseline | 0.338354 |
 | XGB Embeddings + unique_genres_played + total_minutes_played | 0.294999 |
-| Naive Popularity                                             | 0.284082 |
-| XGB emb0 + playtime                                          | 0.267672 |
-| XGB Embeddings Only                                          | 0.234258 |
-| Naive Random                                                 | 0.053034 |
+| Naive Popularity | 0.284082 |
+| XGB emb0 + playtime | 0.267672 |
+| XGB Embeddings Only | 0.234258 |
+| Naive Random | 0.053034 |
+
+</details>
+<details>
+  <summary><b>Cold-start split stats</b></summary>
   
-# cold-start  recalculating...  
-## xgb baseline SIM
+  ### database:
+    
+  "random_seed": 42,  
+  "n_users_requested": 2000,  
+  "common_users_count": 28211,  
+  "heldout_users_count": 2000,  
+  "train_users_before": 31021,  
+  "val_users_before": 28211,  
+  "test_users_before": 28211,  
+  "train_rows_before": 43494594,  
+  "val_rows_before": 2849311,  
+  "test_rows_before": 2849311,  
+  "train_users_after": 29021,  
+  "val_users_after": 2000,  
+  "test_users_after": 2000,  
+  "train_rows_after": 40443381,  
+  "val_rows_after": 202000,  
+  "test_rows_after": 202000,  
+  "train_overlap_with_heldout": 0,  
+  "val_equals_heldout": true,  
+  "test_equals_heldout": true,  
+  "val_equals_test": true  
 
-## xgb baseline  SIM
+-------------------------------------------------------------    
+### xgb baseline SIM
+  "test_roc_auc": 0.9667584362499999,  
+  "n_users_evaluated": 2000,  
+  "HitRate@1": 0.7745,  
+  "Recall@1": 0.7745,  
+  "NDCG@1": 0.7745,  
+  "HitRate@5": 0.8575,  
+  "Recall@5": 0.8575,  
+  "NDCG@5": 0.8195664995750498,  
+  "HitRate@10": 0.891,  
+  "Recall@10": 0.891,  
+  "NDCG@10": 0.8303920669838222,  
+  "HitRate@20": 0.9325,  
+  "Recall@20": 0.9325,  
+  "NDCG@20": 0.8409538876976344,  
+  "MRR": 0.8161863790621792  
+    
+### xgb network SIM  
+ "test_roc_auc": 0.9991920975,  
+  "n_users_evaluated": 2000,  
+  "HitRate@1": 0.995,  
+  "Recall@1": 0.995,  
+  "NDCG@1": 0.995,  
+  "HitRate@5": 0.996,  
+  "Recall@5": 0.996,  
+  "NDCG@5": 0.995508891280403,  
+  "HitRate@10": 0.997,  
+  "Recall@10": 0.997,  
+  "NDCG@10": 0.9958536615406236,  
+  "HitRate@20": 0.998,  
+  "Recall@20": 0.998,  
+  "NDCG@20": 0.9961282520906628,  
+  "MRR": 0.9956616644366645  
 
+## **COMPARISON:**
+| Metric            | XGB Baseline | XGB Baseline SIM |         Δ |
+| ----------------- | -----------: | ---------------: | --------: |
+| test_roc_auc      |       0.9681 |           0.9668 | -0.001367 |
+| HitRate@1         |       0.7763 |           0.7745 | -0.001793 |
+| NDCG@1            |       0.7763 |           0.7745 | -0.001793 |
+| HitRate@5         |       0.8649 |           0.8575 | -0.007446 |
+| NDCG@5            |       0.8237 |           0.8196 | -0.004154 |
+| HitRate@10        |       0.8994 |           0.8910 | -0.008365 |
+| NDCG@10           |       0.8348 |           0.8304 | -0.004447 |
+| HitRate@20        |       0.9381 |           0.9325 | -0.005574 |
+| NDCG@20           |       0.8447 |           0.8410 | -0.003697 |
+| MRR               |       0.8190 |           0.8162 | -0.002813 |
+  
+  
+| Metric            | XGB Network | XGB Network SIM |         Δ |
+| ----------------- | ----------: | --------------: | --------: |
+| test_roc_auc      |      0.9992 |          0.9992 | -0.000041 |
+| HitRate@1         |      0.9940 |          0.9950 | +0.000991 |
+| NDCG@1            |      0.9940 |          0.9950 | +0.000991 |
+| HitRate@5         |      0.9965 |          0.9960 | -0.000526 |
+| NDCG@5            |      0.9953 |          0.9955 | +0.000179 |
+| HitRate@10        |      0.9977 |          0.9970 | -0.000696 |
+| NDCG@10           |      0.9957 |          0.9959 | +0.000147 |
+| HitRate@20        |      0.9985 |          0.9980 | -0.000511 |
+| NDCG@20           |      0.9959 |          0.9961 | +0.000213 |
+| MRR               |      0.9952 |          0.9957 | +0.000474 |
+  
+</details> 
 
-
-# FEATURE IMPORTANCE: 
+<details>
+  <summary><b>feature importance</b></summary> 
+    
 ## xgb baseline:
+  
 | Feature                                  | Mean drop in NDCG@10 |        Std | Mean permuted NDCG@10 |
 | ---------------------------------------- | -------------------: | ---------: | --------------------: |
 | `game_total_playtime_minutes`            |       **0.58292324** | 0.00155112 |            0.25105577 |
@@ -803,4 +899,21 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
 |   34 | game_emb_9             | embedding     |            -0.001481 | 0.000092 |
 
 
+</details> 
+<details>
+  <summary><b>plots</b></summary> 
+  <img width="2200" height="1760" alt="01_scatter_emb0_emb1_color_usercount_size_playtime" src="https://github.com/user-attachments/assets/6ea5bd7e-9be7-4d49-98ef-d1f47ed00ce7" />
+  
+<img width="2200" height="1760" alt="emb0_emb1_hexbin_mean_log_playtime" src="https://github.com/user-attachments/assets/aedd45fb-4272-4cce-b93a-a625d8fae93b" />
+
+<img width="2200" height="1760" alt="emb0_emb1_hexbin_mean_log_user_count" src="https://github.com/user-attachments/assets/cd0b3244-1322-4792-a770-695a94042884" />
+
+
+     
+  <img width="1980" height="1540" alt="02_hexbin_emb0_vs_log_user_count" src="https://github.com/user-attachments/assets/93d10fd9-77da-4a54-94f7-75662162c3e4" />
+<img width="1980" height="1540" alt="03_hexbin_emb0_vs_log_game_total_playtime" src="https://github.com/user-attachments/assets/da779f39-2c55-4cfd-bd28-26600146993d" />
+<img width="2200" height="1540" alt="04_hist_emb0_by_popularity_group" src="https://github.com/user-attachments/assets/d76bf7a0-76e4-4d37-9e40-a17af4a31ac0" />
+<img width="1980" height="1320" alt="05_binned_emb0_vs_mean_log_user_count" src="https://github.com/user-attachments/assets/b68f66d3-39c8-47bb-a4fe-83b26b2edf55" />
+<img width="1980" height="1320" alt="06_binned_emb0_vs_mean_log_playtime" src="https://github.com/user-attachments/assets/0cb9d3c7-4552-44bf-b7d0-25a9eeaf6131" />
+<img width="1540" height="1320" alt="07_spearman_correlation_heatmap" src="https://github.com/user-attachments/assets/98ae00d4-f02e-4ade-9e30-56e3c6dd4969" />
 
