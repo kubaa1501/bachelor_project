@@ -576,7 +576,7 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
 | NN Baseline | 0.191308 | 0.690936 | 0.340198 |
 | NN Network | 0.195172 | 0.697387 | 0.344302 |
 | GraphSAGE Baseline | 0.202899 | 0.729112 |  0.359860 |
-| GraphSAGE Network | 0.2072950 | 0.736556 | 0.367246 |
+| GraphSAGE Network | 0.207295 | 0.736556 | 0.367246 |
 | XGB Embeddings Only | 0.106129 | 0.509163 | 0.234258 |
 | XGB 1 Embedding Only | 0.984439 | 0.993690 | 0.987616 |
 | XGB Embeddings + unique_genres_played + total_minutes_played | 0.158732 | 0.611676 | 0.294999 |
