@@ -405,18 +405,18 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
 ### NN_baseline   
   
   "n_users_evaluated": 28211,  
-    "HitRate@1": 0.191308354897026,
-    "HitRate@5": 0.4951614618411258,
-    "HitRate@10": 0.6909361596540357,
-    "HitRate@20": 0.8784516677891603,
-    "Recall@1": 0.191308354897026,
-    "Recall@5": 0.4951614618411258,
-    "Recall@10": 0.6909361596540357,
-    "Recall@20": 0.8784516677891603,
-    "NDCG@1": 0.191308354897026,
-    "NDCG@5": 0.3459096007433145,
-    "NDCG@10": 0.4090438561030869,
-    "NDCG@20": 0.45665369839857356,
+    "HitRate@1": 0.191308354897026,  
+    "HitRate@5": 0.4951614618411258,  
+    "HitRate@10": 0.6909361596540357,  
+    "HitRate@20": 0.8784516677891603,  
+    "Recall@1": 0.191308354897026,  
+    "Recall@5": 0.4951614618411258,  
+    "Recall@10": 0.6909361596540357,  
+    "Recall@20": 0.8784516677891603,  
+    "NDCG@1": 0.191308354897026,  
+    "NDCG@5": 0.3459096007433145,  
+    "NDCG@10": 0.4090438561030869,  
+    "NDCG@20": 0.45665369839857356,  
     "MRR": 0.3401984308816658  
       
 ### NN_network    
@@ -574,7 +574,7 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
 | XGB Network | 0.994009 | 0.997696 | 0.995188 |
 | LightGCN | 0.279784 | 0.799440 | 0.437903 |
 | NN Baseline | 0.191308 | 0.690936 | 0.340198 |
-| NN Network | 0.1951720 | 0.6973875 | 0.344302 |
+| NN Network | 0.195172 | 0.697387 | 0.344302 |
 | GraphSAGE Baseline | 0.202899 | 0.729112 |  0.359860 |
 | GraphSAGE Network | 0.2072950 | 0.736556 | 0.367246 |
 | XGB Embeddings Only | 0.106129 | 0.509163 | 0.234258 |
@@ -592,7 +592,7 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
 | XGB Baseline | 0.818999 |
 | Random Forest Baseline | 0.696769 |
 | LightGCN | 0.437903 |
-| GraphSAGE Network | 0.3672462 |
+| GraphSAGE Network | 0.367246 |
 | GraphSAGE Baseline | 0.359860 |
 | NN Network | 0.344302 |  
 | NN Baseline | 0.340198 |
