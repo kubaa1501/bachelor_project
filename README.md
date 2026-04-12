@@ -564,7 +564,7 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
   "NDCG@20": 0.8395611181090973,  
   "MRR": 0.8131311751978452  
 
-## XGB naseline +emb0 - user-count **NEW**
+## XGB baseline +emb0 - user-count **NEW**
   
 "test_roc_auc": 0.9077119983502737,  
   "n_users_evaluated": 28211, 
@@ -617,12 +617,32 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
   "Recall@20": 0.9387472971535926,  
   "NDCG@20": 0.8402310884684286,  
   "MRR": 0.8133206940685888  
+
+## XGB emb0 + user_count
+
+  "test_roc_auc": 0.9956989212309476,  
+  "n_users_evaluated": 28211,  
+  "HitRate@1": 0.9528552692212258,  
+  "Recall@1": 0.9528552692212258,  
+  "NDCG@1": 0.9528552692212258,  
+  "HitRate@5": 0.9792279607245401,  
+  "Recall@5": 0.9792279607245401,  
+  "NDCG@5": 0.9670199796936525,  
+  "HitRate@10": 0.9878416220623161,  
+  "Recall@10": 0.9878416220623161,  
+  "NDCG@10": 0.9698228477061712,  
+  "HitRate@20": 0.9936549572861649,  
+  "Recall@20": 0.9936549572861649,  
+  "NDCG@20": 0.9713046652004863,  
+  "MRR": 0.9647126537762174  
+    
     
 ## XGB COMPARE:
 | XGB model                   | HitRate@1 | HitRate@10 |      MRR |
 | --------------------------- | --------: | ---------: | -------: |
 | XGB Network                 |  0.994009 |   0.997696 | 0.995188 |
 | XGB one embedding           |  0.984439 |   0.993690 | 0.987616 |
+| XGB emb0 + user_count       |  0.964712 |   0.952855 | 0.987841 |
 | XGB Baseline                |  0.776293 |   0.899365 | 0.818999 |
 | XGB Baseline double user_cou|  0.771684 |   0.771685 | 0.813321 |
 | XGB Baseline (log)          |  0.769983 |   0.895112 | 0.813131 |
