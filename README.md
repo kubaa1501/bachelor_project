@@ -546,7 +546,7 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
   "NDCG@20": 0.3801327502536333,  
   "MRR": 0.2676715606500115  
     
-## XGB baseline (log(user_count)):
+## XGB baseline (log(user_count)):  **NEW**
 
   "test_roc_auc": 0.9670098515541268,  
   "n_users_evaluated": 28211,  
@@ -563,9 +563,45 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
   "Recall@20": 0.9363014426996562,  
   "NDCG@20": 0.8395611181090973,  
   "MRR": 0.8131311751978452  
-    
 
-    
+## XGB naseline +emb0 - user-count **NEW**
+  
+"test_roc_auc": 0.9077119983502737,  
+  "n_users_evaluated": 28211, 
+  "HitRate@1": 0.18811810995710893,  
+  "Recall@1": 0.18811810995710893,  
+  "NDCG@1": 0.18811810995710893,  
+  "HitRate@5": 0.464499663251923,  
+  "Recall@5": 0.464499663251923,  
+  "NDCG@5": 0.32795707236574256,  
+  "HitRate@10": 0.650809967743079,  
+  "Recall@10": 0.650809967743079,  
+  "NDCG@10": 0.38810799734545176,  
+  "HitRate@20": 0.8473999503739676,  
+  "Recall@20": 0.8473999503739676,  
+  "NDCG@20": 0.4380110230719495, 
+  "MRR": 0.3268621656777562  
+
+  ## XGB baseline - user_count **NEW**
+     
+  "test_roc_auc": 0.898825278116792,  
+  "n_users_evaluated": 28211,  
+  "HitRate@1": 0.17876005813335225,  
+  "Recall@1": 0.17876005813335225,  
+  "NDCG@1": 0.17876005813335225,  
+  "HitRate@5": 0.4426642089964907,  
+  "Recall@5": 0.4426642089964907,  
+  "NDCG@5": 0.3123512229518346,  
+  "HitRate@10": 0.625500691219737,  
+  "Recall@10": 0.625500691219737,  
+  "NDCG@10": 0.37125162655488037,  
+  "HitRate@20": 0.8226578285066108,  
+  "Recall@20": 0.8226578285066108,  
+  "NDCG@20": 0.42125113163138717,  
+  "MRR": 0.31345076987935355  
+
+
+  **NEW**
 ## XGB COMPARE:
 | XGB model                   | HitRate@1 | HitRate@10 |      MRR |
 | --------------------------- | --------: | ---------: | -------: |
@@ -573,6 +609,8 @@ steamid;appid;country;total_games_owned;total_playtime_minutes;median_playtime_m
 | XGB one embedding           |  0.984439 |   0.993690 | 0.987616 |
 | XGB Baseline                |  0.776293 |   0.899365 | 0.818999 |
 | XGB Baseline (log)          |  0.769983 |   0.895112 | 0.813131 |
+| XGB +emb0 - user_count      |  0.188118 |   0.65081  | 0.326862 |
+| XGB baseline - user_count   |  0.178760 |   0.625501 | 0.313451 |
 | XGB embeddings + basic info |  0.158732 |   0.611676 | 0.294999 |
 | XGB emb0 + playtime         |  0.135549 |   0.569778 | 0.267672 |
 | XGB embeddings only         |  0.106129 |   0.509163 | 0.234258 |
