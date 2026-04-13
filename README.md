@@ -1064,19 +1064,46 @@ This suggests the embedding is used together with popularity and recency signals
 
 ## Plots:
 <img width="1588" height="1078" alt="scatter_num__game_total_playtime_minutes" src="https://github.com/user-attachments/assets/baeacf80-2809-40fa-8997-a6096a564988" />
+popular game (user_count (popularity) playtime (game activity) -> models score goes up 
 <img width="1593" height="1078" alt="scatter_num__median_playtime_minutes" src="https://github.com/user-attachments/assets/788c58c2-5169-4145-993b-87ca07ea8c85" />
+no stabile sygnal  if SHAP score <0 -> prediction goes down
 <img width="1588" height="1078" alt="scatter_num__release_date" src="https://github.com/user-attachments/assets/eaba991d-06fd-425a-a9a3-99ef4cdca300" />
+old games -> SHAP lower  
+new games -> SHAP up   
 <img width="1588" height="1078" alt="scatter_num__total_games_owned" src="https://github.com/user-attachments/assets/d99ada5d-56eb-40f4-b196-31092a52f51d" />
+more games owned = higher SHAP   
+player with 2000 games is more likely to have that particular game
 <img width="1571" height="1078" alt="scatter_num__user_count" src="https://github.com/user-attachments/assets/b29e9f40-09fc-497f-983f-d72e8eafaee8" />
+biggr user_count -> lower SHAP -> model score lower (punishing)
+baseline without user_count (0.32 MRR)  
+baseline (0.82 MRR)  
+popularity (0.60 MRR)   
 <img width="1616" height="1078" alt="scatter_num__user_playtime_group_Indie" src="https://github.com/user-attachments/assets/c935377a-7cb9-4409-b80b-2610f5e3b371" />
+indie -> lower score
 <img width="1583" height="1078" alt="scatter_num__user_playtime_group_Other" src="https://github.com/user-attachments/assets/28862e96-4a84-4245-aa89-ea2f9cd7886e" />
+weak signal
 <img width="1620" height="1078" alt="scatter_num__user_playtime_group_Strategy" src="https://github.com/user-attachments/assets/25208743-7a74-45fc-ad27-c365f79e8b32" />
+strategy -> lower score.
+### Model prediction is here about popularity - not about what fits your preferences
+
 <img width="1795" height="2509" alt="shap_bar" src="https://github.com/user-attachments/assets/2e69c181-7575-405f-b632-b8dade2868eb" />
+core of model : user_count+playtime+release_date - rest is minor 
 <img width="1789" height="2068" alt="shap_beeswarm" src="https://github.com/user-attachments/assets/b2ca6660-6431-4a65-9ab2-0004cd28a70c" />
+(one dot = user-game pair)
+-> right -> score goes up (more "owned")  
+<- left <- lowering the score  
 <img width="1789" height="2068" alt="shap_violin" src="https://github.com/user-attachments/assets/e7b174a7-9c72-46cf-a67c-9c2a443669db" />
 <img width="1844" height="2494" alt="waterfall_highest_prediction" src="https://github.com/user-attachments/assets/0e07d31d-9239-4ddb-a77a-2091592b2ca4" />
+HIGHEST PREDICTION
 <img width="1854" height="2494" alt="waterfall_lowest_prediction" src="https://github.com/user-attachments/assets/2cc59862-1890-4164-96fe-ebd22a5d2c92" />
+LOWEST PREDICTION
 <img width="1784" height="2494" alt="waterfall_median_prediction" src="https://github.com/user-attachments/assets/c146c054-4239-4330-b98e-21dbbd2a7de0" />
+MEDIAN PREDICTION 
+
+## SO IT IS ABOUT:
+- for high prediction - low popularity -> boost  
+- for lowest prediction - big popularity -> decrease  
+  so if the game is popular- decrease it, if the game is neeshe- boost. so user_count works like a correction.  
   
 ## Top features from `xgb_one_embedding`
     
@@ -1095,7 +1122,10 @@ This suggests the embedding is used together with popularity and recency signals
 
 ## Plots:
 <img width="1604" height="1078" alt="scatter_num__friend_count" src="https://github.com/user-attachments/assets/e040682b-b99d-4361-9ef5-50be27cdb8db" />
+friend_count ↑ → prediction ↑
+- if a user has a lot of friends -> he is active? -> buys/has more games THEORY 
 <img width="1592" height="1078" alt="scatter_num__game_emb_0" src="https://github.com/user-attachments/assets/9e4d597f-7e95-419b-a852-a0c3186bc063" />
+emb0 = popularity + data structrure
 <img width="1596" height="1078" alt="scatter_num__game_total_playtime_minutes" src="https://github.com/user-attachments/assets/04e7d5a3-8989-484e-a023-ba5a169222ca" />
 <img width="1572" height="1078" alt="scatter_num__median_playtime_minutes" src="https://github.com/user-attachments/assets/5b7135ff-9220-40c8-bacb-ab9bbdabd966" />
 <img width="1595" height="1078" alt="scatter_num__release_date" src="https://github.com/user-attachments/assets/b2c52f73-4f4a-41d8-bc5b-ef3fb7ea3f95" />
