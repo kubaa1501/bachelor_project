@@ -12,7 +12,7 @@ Inputs:
 -  `validation_user_game_pairs.csv`
 -  `test_user_game_pairs.csv`
   
- *These holdout pairs are excluded when computing features, so only training interactions contribute to user- and game-level aggregates.*
+ *These holdout pairs are excluded when computing training-based features, so validation and test interactions do not contribute to aggregate or interaction-level feature values.*
    
 -----------------------------------   
 #### Playtime capping strategy
@@ -68,7 +68,8 @@ The script adds:
 `owned = 1`  
 for every row in the output dataset.  
 
-This means the resulting file represents only positive interactions, enriched with recalculated features.  
+This means the resulting file still contains only positive interactions, now enriched with recomputed features.  
+  
 #### Leakage prevention
 The script is careful not to use validation and test interactions when building features.  
   
