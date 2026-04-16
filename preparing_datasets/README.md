@@ -1,8 +1,8 @@
 ### CODE: make_positive_splits_from_pairs.py
 Inputs:  
-- **baseline_features_playtime_capped_owned_semicolon.csv ** 
-- **validation_user_game_pairs.csv **
-- **test_user_game_pairs.csv **
+- **baseline_features_playtime_capped_owned_semicolon.csv** 
+- **validation_user_game_pairs.csv**
+- **test_user_game_pairs.csv**
   
 Outputs:
 - train_positive.csv  
@@ -29,14 +29,14 @@ Negatives per positive:
 
 Negative sampling strategy (weighted sampling): 
 Target:  
-- 30 % popular games
-- 70% random
+- **30 % popular games**
+- **70% random**
 If its not possible (user has not enough popular games to sample from for remaining negatives -> fill with random, if not enough random -> duplicates here are allowed inside a split)
   
-It uses a **"round robin"** for processing order  
+It uses a **round robin** for processing order  
 train → val → test → train → val → test ...  
   
-**Why? ** 
+**Why?** 
   
 To make sure:  
   
