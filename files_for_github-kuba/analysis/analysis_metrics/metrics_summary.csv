@@ -1,0 +1,2 @@
+n_test_rows,n_games,n_users,score_separation_baseline,score_separation_emb0,spearman_delta_vs_emb0,spearman_delta_vs_graph_degree,spearman_emb0_vs_graph_degree,partial_spearman_emb0_controlling_deg,mean_top10_overlap,mean_rank_base,mean_rank_emb0,percent_positives_promoted
+2879593,20918,28211,0.591380554755663,0.9480396587180525,-0.6742154227632265,-0.7248233072600881,0.973127025009646,0.09156322849833587,1.7645244762681223,4.48615788167736,1.2589769947892666,0.2233880401261919
