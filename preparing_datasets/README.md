@@ -382,8 +382,11 @@ Outputs:
 <summary>build_network_dataset_correct_splits.py</summary>
 
 ### CODE: build_network_dataset_correct_splits.py
+
+It enriches the datasets with additional network features.  
+  
 Input:
-- train.csv
+- `train.csv`
   
 <details>
 <summary>Show train.csv</summary>
@@ -396,7 +399,7 @@ Input:
   
 </details>
   
-- val.csv
+- `val.csv`
 
 <details>
 <summary>Show val.csv</summary>
@@ -408,7 +411,8 @@ Input:
 | 76561197960266945 | 1190340 | RU      | 1503              | 1091628.0              | 60.0                    | 27                   | SUPER PEOPLE       | Action;Casual;Massively Multiplayer;Free To Play;Early Access | Wonder People     | Wonder Games      | windows            | 41.0         | 1378.0     | 484742.0                    | 0     | 577897.447619              | 126260.064286                 | 62692.183333            | 25453.047619               | 55046.947619              | 1200.797619                | 17330.330952                  | 76800.397619                | 1220.666667                | 86.0                       | 86.0                     | 62053.0                                 | 84251.116667              |
   
  </details> 
-- test.csv
+   
+- `test.csv`
   
 <details>
 <summary>Show test.csv</summary>
@@ -419,7 +423,59 @@ Input:
 | 76561197960266945 | 451020 | RU      | 1503              | 1091628.0              | 60.0                    | 27                   | Battle Chasers: Nightwar | Indie;RPG                   | Airship Syndicate | THQ Nordic        | windows;mac;linux  | 101.0        | 763.0      | 227626.0                    | 0     | 577897.447619              | 126260.064286                 | 62692.183333            | 25453.047619               | 55046.947619              | 1200.797619                | 17330.330952                  | 76800.397619                | 1220.666667                | 86.0                       | 86.0                     | 62053.0                                 | 84251.116667              |
 | 76561197960266945 | 516480 | RU      | 1503              | 1091628.0              | 60.0                    | 27                   | Pinkman                 | Action;Adventure;Casual;Indie | Viridino Studios  | Viridino Studios  | windows            | 110.0        | 151.0      | 26798.0                     | 0     | 577897.447619              | 126260.064286                 | 62692.183333            | 25453.047619               | 55046.947619              | 1200.797619                | 17330.330952                  | 76800.397619                | 1220.666667                | 86.0                       | 86.0                     | 62053.0                                 | 84251.116667              |
   
- </details>
-   
-  
+</details>
 
+- `users_friend_counts.csv`
+  
+<details>
+<summary>Show users_friend_counts.csv</summary>
+
+  | steamid           | friend_count |
+|-------------------|-------------|
+| 76561198064675174 | 28          |
+| 76561198109425210 | 16          |
+| 76561198281198045 | 22          |
+  
+</details>
+   
+- `game_pca_embeddings_k32_trainonly.csv`
+<details>
+<summary>Show game_pca_embeddings_k32_trainonly.csv</summary>
+
+  | game_emb_0 | game_emb_1 | game_emb_2 | game_emb_3 | ... | game_emb_30 | game_emb_31 | game_index | appid |
+|------------|------------|------------|------------|-----|-------------|-------------|------------|-------|
+| 646.1727   | 249.22913  | 88.80311   | 43.777756  | ... | -1.5141871  | 0.69528323  | 0          | 10    |
+| 547.0699   | 167.5004   | 39.855713  | 11.052478  | ... | 0.20238768  | -1.7163113  | 1          | 20    |
+| 536.5776   | 162.22127  | 39.3537    | 12.142582  | ... | 1.0581001   | -3.8984723  | 2          | 30    |
+  
+</details>
+  -----------------------------------
+
+#### Friend count feature:
+  
+The script loads user-level friend counts from `users_friend_counts.csv`.  
+
+For each row:  
+  
+the steamid is used to look up the user’s number of friends   
+the value is stored in a new column:  
+    
+- `friend_count`
+  
+#### Game embedding features
+
+The script also loads PCA-based game embeddings from:  
+  
+- `game_pca_embeddings_k32_trainonly.csv`
+  
+For each row:  
+  
+the appid is used to look up the game embedding  
+all embedding dimensions are appended as new columns.  
+  
+Outputs:
+- train.csv  
+- val.csv  
+- test.csv
+
+</details>
