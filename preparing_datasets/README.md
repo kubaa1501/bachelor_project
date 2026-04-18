@@ -461,7 +461,7 @@ the steamid is used to look up the user’s number of friends
 the value is stored in a new column:  
     
 - `friend_count`
-  
+ -----------------------------------  
 #### Game embedding features
 
 The script also loads PCA-based game embeddings from:  
@@ -472,10 +472,54 @@ For each row:
   
 the appid is used to look up the game embedding  
 all embedding dimensions are appended as new columns.  
-  
+ -----------------------------------  
 Outputs:
 - train.csv  
 - val.csv  
 - test.csv
-
+ -----------------------------------
 </details>
+
+
+<details>
+<summary>fill_game_total_playtime_from_baseline.py</summary>
+
+### CODE: fill_game_total_playtime_from_baseline.py
+
+#### FIX 
+This script repairs missing `game_total_playtime_minutes` values in both `with_genre_groups` and `with_genre_groups_network` datasets by mapping each `appid` to the corresponding value from `baseline_features_playtime_capped_owned_semicolon.csv`.  
+  
+ -----------------------------------
+   
+Inputs:
+- "with_genre_groups" / `train.csv`
+- "with_genre_groups" / `val.csv`
+- "with_genre_groups" / `test.csv`
+-  "with_genre_groups_network" / `train.csv`
+-  "with_genre_groups_network" / `val.csv`
+- "with_genre_groups_network" / `test.csv`
+  
+*train, val and test sets for both datasets, with and without netwoek features* 
+ -----------------------------------
+ 
+The script reads:  
+  
+- `appid`
+- `game_total_playtime_minutes`
+  
+from the baseline feature dataset and builds an `appid` → `game_total_playtime_minutes` mapping using the first non-null value available for each game.  
+  
+Then, for each target file:  
+  
+- rows with missing `game_total_playtime_minutes` are identified
+- missing values are filled by matching on `appid`
+-----------------------------------
+#### Backup behavior
+  
+Before overwriting each repaired file, the script creates a backup copy with the extension:
+`.bak`  
+
+The script overwrites the original dataset files after filling missing values.  
+As a result, the corrected versions remain in the same directories. 
+
+*the "with_genre_groups_network" was then renamed manually for "with_genre_groups_network_fixed" as input to models*
