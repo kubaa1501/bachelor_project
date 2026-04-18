@@ -1,3 +1,6 @@
+<details>
+<summary> Random & Popularity model </summary>
+    
 ### MODEL: train_naive.py
 It trains and evaluates two naive ranking baselines:  
   
@@ -58,9 +61,53 @@ Both naive baselines are evaluated as ranking models using:
 - MRR
     
 Metrics are computed per user and then averaged across all evaluated users.  
-
+  
+----------------------------------------------
+  
 ### Results:
+  
+-  "model_type": "naive",
+-  "dataset_type": "baseline",
+-  "seed": 42,
+-  "train_rows": 43494594,
+-  "val_rows": 2849311,
+-  "test_rows": 2849311,
+-  "n_random_runs": 100,
+
+<details>
+<summary>Show results for Random baseline:</summary>
 
 #### Random baseline:
 
+
+| Metric           | Value      |
+|-----------------|-----------|
+| Runs            | 100       |
+| HitRate@10      | 0.0989    |
+| Recall@10       | 0.0989    |
+| NDCG@10         | 0.0449    |
+| HitRate@20      | 0.1980    |
+| Recall@20       | 0.1980    |
+| NDCG@20         | 0.0697    |
+| MRR             | 0.0514    |
+  
+    
+</details>
+<details>
+<summary>Show results for Popularity baseline: </summary>
+
 #### Popularity baseline:
+
+
+| Metric           | Value      |
+|-----------------|-----------|
+| HitRate@10      | 0.5879    |
+| Recall@10       | 0.5879    |
+| NDCG@10         | 0.3383    |
+| HitRate@20      | 0.8112    |
+| Recall@20       | 0.8112    |
+| NDCG@20         | 0.3947    |
+| MRR             | 0.2841    |
+  
+</details>
+</details>
