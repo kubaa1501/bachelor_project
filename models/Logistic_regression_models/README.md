@@ -315,6 +315,9 @@ Outputs:
 </details>
   
 </details>
+
+-------------------------------------
+  
 </details>
 
 <details> 
@@ -722,8 +725,21 @@ Outputs:
 | MRR             | 0.8430 |
   
 </details>
+
+<details> 
+<summary>Show Learning Curves</summary>
+    
+#### Learning Curves:
+  
+<img width="1600" height="1000" alt="learning_curve_roc_auc" src="https://github.com/user-attachments/assets/b95de323-6406-47a6-b48c-673ec4c13dfc" />
+<img width="1600" height="1000" alt="learning_curve_ranking" src="https://github.com/user-attachments/assets/6f08ced5-d214-4eeb-bf32-78748b25b3f6" />
   
 </details>
+  
+</details>
+  
+-------------------------------------
+  
 </details>
 
 <details>
