@@ -1,6 +1,3 @@
-<details>
-<summary> Random & Popularity model </summary>
-    
 ### MODEL: train_naive.py
 It trains and evaluates two naive ranking baselines:  
   
@@ -110,4 +107,4 @@ Metrics are computed per user and then averaged across all evaluated users.
 | MRR             | 0.2841    |
   
 </details>
-</details>
+
