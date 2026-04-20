@@ -7,7 +7,7 @@ Sections
      1b. Missing values per raw file (bar chart)
      1c. Public vs Private users (bar chart)
      1d. Missing values for public users only
-     1e. Users with no games (raw users vs user_games_raw)
+     1e. Users with no game data available
 
   2. Final Data — Users
      2a. Country distribution (top 15)
@@ -17,7 +17,7 @@ Sections
      3a. Top 20 games by user count  (computed from user_games.csv)
      3b. Games per user distribution
      3c. Playtime distribution (log scale)
-     3d. Genre breakdown (grouped, weighted by ownership from user_games.csv)
+     3d. Genre breakdown (unique games per genre group)
 
   4. Final Data — Social
      4a. Friend count distribution
@@ -26,11 +26,10 @@ Sections
      5a. Summary statistics table
      5b. Degree distribution (log-log + power-law reference)
      5c. Degree CDF + CCDF
-     5d. Hub analysis (top-20 highest-degree users)
-     5e. Clustering coefficient vs degree
-     5f. User-game bipartite summary table
-     5g. Bipartite distributions (games per user, owners per game)
-     5h. Total playtime vs social degree
+     5d. Clustering coefficient vs degree
+     5e. User-game bipartite summary table
+     5f. Bipartite distributions (games per user, owners per game)
+     5g. Total playtime vs social degree
 
 All figures saved to /home/jaga/results/eda/
 
@@ -116,7 +115,7 @@ GENRE_GROUPS = {
     "RPG":         ['RPG','RYO','Ролевые игры','角色扮演'],
     "Casual":      ['Casual','Occasionnel','Казуальные игры'],
     "Indie":       ['Indie','Indépendant','独立','Инди'],
-    "Racing":      ['Racing','Rol'],
+    "Racing":      ['Racing'],                              # 'Rol' removed — was a typo
     "Simulation":  ['Simulation','Simuladores','Symulacje','Симуляторы'],
     "Strategy":    ['Strategy','Strategie','Стратегии'],
     "Sports":      ['Sport','Sports'],
@@ -130,14 +129,8 @@ GENRE_GROUPS = {
                     'Massively Multiplayer','Бесплатные'],
 }
 
-def map_genre(raw_genres_str):
-    if pd.isna(raw_genres_str):
-        return "Unknown"
-    tags = [g.strip() for g in str(raw_genres_str).split(",")]
-    for group, members in GENRE_GROUPS.items():
-        if any(t in members for t in tags):
-            return group
-    return "Other"
+# Reverse map: individual tag → group name
+genre_to_group = {tag: group for group, tags in GENRE_GROUPS.items() for tag in tags}
 
 
 # ═══════════════════════════════════════════════════════════════════
@@ -184,7 +177,7 @@ for key, df in raw_dfs.items():
 if missing_summary:
     labels = list(missing_summary.keys())
     vals   = list(missing_summary.values())
-    colors = [WARN_COL if v > 20 else "#DD8452" if v > 5 else ACCENT for v in vals]
+    colors = ["#8C8C8C" for _ in vals]
     fig, ax = plt.subplots(figsize=(max(8, len(labels) * 0.9), 5))
     bars = ax.bar(labels, vals, color=colors, width=0.6, zorder=3)
     for bar, v in zip(bars, vals):
@@ -228,8 +221,7 @@ if "users_raw" in raw_dfs:
         missing_pub = (pub_df.isna().sum() / total_pub * 100).round(1)
         missing_pub = missing_pub[missing_pub > 0]
         if not missing_pub.empty:
-            colors = [WARN_COL if v > 20 else "#DD8452" if v > 5 else ACCENT
-                      for v in missing_pub.values]
+            colors = ["#8C8C8C" for _ in missing_pub.values]
             fig, ax = plt.subplots(figsize=(6, 4))
             ax.bar(missing_pub.index, missing_pub.values,
                    color=colors, width=0.45, zorder=3)
@@ -242,8 +234,8 @@ if "users_raw" in raw_dfs:
             ax.set_ylim(0, missing_pub.max() * 1.2)
             save(fig, "1d_public_users_missing.png")
 
-# ── 1e. Users with no games ───────────────────────────────────────
-print("[1e] Users with no games …")
+# ── 1e. Users with no game data available ────────────────────────
+print("[1e] Users with no game data …")
 if "users_raw" in raw_dfs and "user_games_raw" in raw_dfs:
     ug_raw           = raw_dfs["user_games_raw"]
     users_raw        = raw_dfs["users_raw"].copy()
@@ -256,27 +248,28 @@ if "users_raw" in raw_dfs and "user_games_raw" in raw_dfs:
     total      = len(users_raw)
     no_games   = (~users_raw["has_games"]).sum()
     with_games = users_raw["has_games"].sum()
-    print(f"  Total crawled:     {total:,}")
-    print(f"  With games:        {with_games:,} ({with_games/total:.1%})")
-    print(f"  Without any games: {no_games:,} ({no_games/total:.1%})")
+    print(f"  Total crawled:              {total:,}")
+    print(f"  Game data available:        {with_games:,} ({with_games/total:.1%})")
+    print(f"  Game data unavailable:      {no_games:,} ({no_games/total:.1%})")
 
     breakdown = (users_raw.groupby(["status", "has_games"])
                  .size().unstack(fill_value=0))
-    breakdown.columns = ["No games", "Has games"]
-    breakdown["Total"]      = breakdown.sum(axis=1)
-    breakdown["No games %"] = (breakdown["No games"] / breakdown["Total"] * 100).round(1)
+    breakdown.columns = ["Game data unavailable", "Game data available"]
+    breakdown["Total"]       = breakdown.sum(axis=1)
+    breakdown["Unavail. %"]  = (breakdown["Game data unavailable"] /
+                                breakdown["Total"] * 100).round(1)
 
-    groups   = breakdown.index.tolist()
-    has_vals = breakdown["Has games"].values
-    no_vals  = breakdown["No games"].values
+    groups    = breakdown.index.tolist()
+    avail     = breakdown["Game data available"].values
+    unavail   = breakdown["Game data unavailable"].values
 
     fig, ax = plt.subplots(figsize=(6, 4.5))
-    ax.bar(range(len(groups)), has_vals, label="Has games",
+    ax.bar(range(len(groups)), avail, label="Game data available",
            color=ACCENT, zorder=3)
-    ax.bar(range(len(groups)), no_vals, bottom=has_vals,
-           label="No games", color=WARN_COL, zorder=3, alpha=0.85)
+    ax.bar(range(len(groups)), unavail, bottom=avail,
+           label="Game data unavailable", color=PALETTE[7], zorder=3, alpha=0.85)
     for i, (h, n, tot) in enumerate(
-            zip(has_vals, no_vals, breakdown["Total"].values)):
+            zip(avail, unavail, breakdown["Total"].values)):
         ax.text(i, h / 2, f"{h:,}\n({h/tot:.0%})",
                 ha="center", va="center", fontsize=9,
                 color="white", fontweight="bold")
@@ -285,30 +278,34 @@ if "users_raw" in raw_dfs and "user_games_raw" in raw_dfs:
                 color="white", fontweight="bold")
     ax.set_xticks(range(len(groups)))
     ax.set_xticklabels(groups, fontsize=10)
-    style_ax(ax, title="Users With / Without Games by Account Type",
+    style_ax(ax, title="Game Data Availability by Account Type",
              ylabel="Number of Users")
     ax.legend(fontsize=9)
     save(fig, "1e_users_no_games.png")
 
+    # Restructured side-by-side summary table
     table_rows_1e = [
-        ["All users crawled",        f"{total:,}",      "100%"],
-        ["  with at least one game", f"{with_games:,}", f"{with_games/total:.1%}"],
-        ["  with no games at all",   f"{no_games:,}",   f"{no_games/total:.1%}"],
-        ["", "", ""],
+        ["All crawled",
+         f"{total:,}",
+         f"{with_games:,}",
+         f"{no_games:,}",
+         f"{no_games/total:.1%}"],
+        ["Public",
+         f"{int(breakdown.loc['Public', 'Total']):,}",
+         f"{int(breakdown.loc['Public', 'Game data available']):,}",
+         f"{int(breakdown.loc['Public', 'Game data unavailable']):,}",
+         f"{breakdown.loc['Public', 'Unavail. %']:.1f}%"],
+        ["Private",
+         f"{int(breakdown.loc['Private', 'Total']):,}",
+         f"{0:,}",
+         f"{int(breakdown.loc['Private', 'Game data unavailable']):,}",
+         "100.0%"],
     ]
-    for status in breakdown.index:
-        row = breakdown.loc[status]
-        table_rows_1e += [
-            [f"{status} — total", f"{int(row['Total']):,}", ""],
-            [f"  has games",      f"{int(row['Has games']):,}",
-             f"{row['Has games']/row['Total']:.1%}"],
-            [f"  no games",       f"{int(row['No games']):,}",
-             f"{row['No games %']:.1f}%"],
-            ["", "", ""],
-        ]
-    fig, ax = plt.subplots(figsize=(7, 4.2))
-    make_table(ax, table_rows_1e, ["Group", "Count", "Share"],
-               "Users Without Any Games — Summary")
+    fig, ax = plt.subplots(figsize=(10, 2.8))
+    make_table(ax, table_rows_1e,
+               ["Group", "Total", "Game data\navailable",
+                "Game data\nunavailable", "% unavailable"],
+               "Users Without Game Data — Summary")
     save(fig, "1e_users_no_games_table.png")
 
 
@@ -458,23 +455,40 @@ print("[3d] Genre breakdown …")
 genre_col = next((c for c in ["genres", "genre", "tags"]
                   if c in games.columns), None)
 if genre_col:
-    games["genre_group"] = games[genre_col].apply(map_genre)
-    genre_counts = (games.merge(owners_per_game.reset_index(), on="appid", how="left")
-                    .groupby("genre_group")["owner_count"].sum()
-                    .sort_values(ascending=False))
-    genre_counts = genre_counts[genre_counts.index != "Unknown"]
-    colors = (PALETTE * 3)[:len(genre_counts)]
+    # Count unique games per genre group.
+    # Multi-genre games (e.g. "Action;Adventure") are counted in each group.
+    # A game is counted at most once per group even if multiple tags map to it.
+    counts = {grp: 0 for grp in GENRE_GROUPS.keys()}
+    for genres_str in games[genre_col]:
+        if pd.isna(genres_str):
+            continue
+        seen_groups = set()
+        for tag in map(str.strip, genres_str.split(";")):
+            group = genre_to_group.get(tag)
+            if group and group not in seen_groups:
+                counts[group] += 1
+                seen_groups.add(group)
 
+    counts_df = (pd.DataFrame(list(counts.items()),
+                              columns=["genre_group", "game_count"])
+                 .sort_values("game_count", ascending=False))
+    counts_df = counts_df[counts_df["game_count"] > 0]
+
+    print("  Games per genre group:")
+    print(counts_df.to_string(index=False))
+
+    colors = (PALETTE * 3)[:len(counts_df)]
     fig, ax = plt.subplots(figsize=(9, 5))
-    ax.bar(genre_counts.index, genre_counts.values,
+    ax.bar(counts_df["genre_group"], counts_df["game_count"],
            color=colors, width=0.6, zorder=3)
-    for i, (lbl, v) in enumerate(genre_counts.items()):
-        ax.text(i, v + genre_counts.max() * 0.01,
-                f"{v:,}", ha="center", va="bottom", fontsize=7.5, rotation=45)
-    style_ax(ax, title="Genre Distribution (weighted by user ownership)",
-             ylabel="Total User Ownership Count")
+    for i, (_, row) in enumerate(counts_df.iterrows()):
+        ax.text(i, row["game_count"] + counts_df["game_count"].max() * 0.01,
+                f"{int(row['game_count']):,}", ha="center", va="bottom",
+                fontsize=7.5, rotation=45)
+    style_ax(ax, title="Genre Distribution (unique games per genre group)",
+             ylabel="Number of Games")
     plt.xticks(rotation=30, ha="right", fontsize=9)
-    ax.set_ylim(0, genre_counts.max() * 1.22)
+    ax.set_ylim(0, counts_df["game_count"].max() * 1.22)
     save(fig, "3d_genre_distribution.png")
 else:
     print("  No genre column found in games.csv — skipping.")
@@ -534,7 +548,7 @@ deg_series = pd.concat([
     friends["friend_steamid"]
 ]).value_counts()
 
-n_nodes    = deg_series.nunique()
+n_nodes    = len(deg_series)
 n_edges    = len(friends)
 density    = (2 * n_edges) / (n_nodes * (n_nodes - 1))
 deg_mean   = deg_series.mean()
@@ -650,25 +664,9 @@ axes[1].set_axisbelow(True)
 fig.tight_layout()
 save(fig, "5c_degree_cdf.png")
 
-# ── 5d. Hub analysis ─────────────────────────────────────────────
-print("[5d] Hub analysis …")
-top20 = deg_series.nlargest(20).reset_index()
-top20.columns = ["steamid", "degree"]
-top20["label"] = top20["steamid"].astype(str).str[-6:]
-
-fig, ax = plt.subplots(figsize=(8, 5))
-ax.barh(top20["label"][::-1], top20["degree"][::-1],
-        color=ACCENT, zorder=3)
-for i, v in enumerate(top20["degree"][::-1]):
-    ax.text(v + deg_max * 0.005, i, f"{v:,}", va="center", fontsize=8)
-style_ax(ax, title="Top 20 Highest-Degree Users (Hubs)",
-         xlabel="Degree (number of friends)",
-         ylabel="User ID (last 6 digits)", grid_axis="x")
-ax.set_xlim(0, top20["degree"].max() * 1.15)
-save(fig, "5d_hub_analysis.png")
-
-# ── 5e. Clustering coefficient vs degree ─────────────────────────
-print("[5e] Clustering vs degree …")
+# ── 5d. Clustering coefficient vs degree ─────────────────────────
+# (5d hub analysis removed — not useful for the report)
+print("[5d] Clustering vs degree …")
 cc_df = cc_values.reset_index()
 cc_df.columns = ["steamid", "cc"]
 deg_reset = deg_series.reset_index()
@@ -694,29 +692,28 @@ style_ax(ax, title="Clustering Coefficient vs Degree",
 ax.grid(color="#e5e5e5", linewidth=0.6, which="both")
 ax.set_axisbelow(True)
 ax.legend(fontsize=9)
-save(fig, "5e_clustering_vs_degree.png")
+save(fig, "5d_clustering_vs_degree.png")
 
-# ── 5f. Bipartite summary table ───────────────────────────────────
-print("[5f] Bipartite summary table …")
+# ── 5e. Bipartite summary table (restructured side-by-side) ───────
+print("[5e] Bipartite summary table …")
 gpu = user_games.groupby("steamid")["appid"].count()
 opg = user_games.groupby("appid")["steamid"].count()
 
-rows_5f = []
-for label, s in [("Games owned per user", gpu), ("Owners per game", opg)]:
-    rows_5f += [
-        [label, "Min",    f"{s.min():,}"],
-        [label, "Median", f"{s.median():.0f}"],
-        [label, "Mean",   f"{s.mean():.1f}"],
-        [label, "95th %", f"{s.quantile(0.95):.0f}"],
-        [label, "Max",    f"{s.max():,}"],
-    ]
-fig, ax = plt.subplots(figsize=(7, 4.2))
-make_table(ax, rows_5f, ["Variable", "Statistic", "Value"],
+rows_5e = [
+    ["Min",    f"{gpu.min():,}",             f"{opg.min():,}"],
+    ["Median", f"{gpu.median():.0f}",        f"{opg.median():.0f}"],
+    ["Mean",   f"{gpu.mean():.1f}",          f"{opg.mean():.1f}"],
+    ["95th %", f"{gpu.quantile(0.95):.0f}",  f"{opg.quantile(0.95):.0f}"],
+    ["Max",    f"{gpu.max():,}",             f"{opg.max():,}"],
+]
+fig, ax = plt.subplots(figsize=(7, 3.2))
+make_table(ax, rows_5e,
+           ["Statistic", "Games owned / user", "Owners / game"],
            "User–Game Bipartite Graph — Descriptive Statistics")
-save(fig, "5f_bipartite_summary_table.png")
+save(fig, "5e_bipartite_summary_table.png")
 
-# ── 5g. Bipartite distributions ───────────────────────────────────
-print("[5g] Bipartite distributions …")
+# ── 5f. Bipartite distributions ───────────────────────────────────
+print("[5f] Bipartite distributions …")
 fig, axes = plt.subplots(1, 2, figsize=(12, 4.5))
 axes[0].hist(gpu, bins=np.logspace(0, np.log10(gpu.max()), 60),
              color=ACCENT, edgecolor="white", linewidth=0.4, zorder=3)
@@ -729,10 +726,10 @@ axes[1].set_xscale("log")
 style_ax(axes[1], title="Owners per Game (Log Scale)",
          xlabel="Number of owners (log)", ylabel="Number of Games")
 fig.tight_layout()
-save(fig, "5g_bipartite_distributions.png")
+save(fig, "5f_bipartite_distributions.png")
 
-# ── 5h. Playtime vs degree ────────────────────────────────────────
-print("[5h] Playtime vs degree …")
+# ── 5g. Playtime vs degree ────────────────────────────────────────
+print("[5g] Playtime vs degree …")
 total_playtime = (user_games.groupby("steamid")["playtime_minutes"]
                   .sum() / 60).rename("total_hours")
 pt_deg = (total_playtime.reset_index()
@@ -759,7 +756,7 @@ style_ax(ax, title="Total Playtime vs Social Degree",
 ax.grid(color="#e5e5e5", linewidth=0.6, which="both")
 ax.set_axisbelow(True)
 ax.legend(fontsize=9)
-save(fig, "5h_playtime_vs_degree.png")
+save(fig, "5g_playtime_vs_degree.png")
 
 
 # ═══════════════════════════════════════════════════════════════════
