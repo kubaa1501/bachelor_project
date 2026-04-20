@@ -284,8 +284,8 @@ Outputs:
     
 #### ROC-AUC plot:
   
-<!-- WKLEJ TUTAJ obraz nn_bpr_no_net_roc.png -->
-  
+<img width="800" height="500" alt="nn_no_net_roc" src="https://github.com/user-attachments/assets/91f353fc-5ff6-4e60-8074-3db226e54761" />
+
 </details>
   
 </details>
@@ -570,8 +570,8 @@ Outputs:
     
 #### ROC-AUC plot:
   
-<!-- WKLEJ TUTAJ obraz nn_bpr_with_net_roc.png -->
-  
+<img width="800" height="500" alt="nn_with_net_roc" src="https://github.com/user-attachments/assets/ed9f16a5-9bd2-47b1-9abb-803b02ef84bf" />
+
 </details>
   
 </details>
