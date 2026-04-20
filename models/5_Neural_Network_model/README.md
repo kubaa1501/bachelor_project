@@ -53,8 +53,21 @@ Neural Network training
 - `train.csv`
 - `val.csv`
 - `test.csv`
-- `friends.csv`  (from data sraping) 
-
+- `friends.csv`  (from data sraping)
+  
+<details>
+<summary>Show friends.csv</summary>
+    
+| user_steamid      | friend_steamid    |
+|------------------|--------------------|
+| 76561198064675174 | 76561197972380369 |
+| 76561198064675174 | 76561198109425210 |
+| 76561198109425210 | 76561198064675174 |
+| 76561198109425210 | 76561198281198045 |
+| 76561198109425210 | 76561198362520139 |
+  
+</details>
+  
 -------------------------------------
 
 #### Target:
