@@ -22,12 +22,10 @@ The script builds a PyTorch-based recommendation pipeline that:
 
 Input:   
   
-### KUBA WEZ SPOJRZ NA TE INPUTY - NIEWIEM SKAD SĄ
-  
 - cached graph and tensor files from `cache_no_net`
 - validation parquet file
 - test parquet file  
-    
+**This input is created by codes in 5_Neural_network_prep**    
 *This is the no-network / baseline dataset* 
 
 -------------------------------------
@@ -320,7 +318,7 @@ Input:
 - cached graph and tensor files from `cache`
 - validation parquet file
 - test parquet file  
-    
+**This input is created by codes in 5_Neural_network_prep**      
 *This is the network-enriched dataset* 
 
 -------------------------------------
