@@ -331,8 +331,9 @@ Outputs:
     
 #### Learning curves:
   
-<!-- WKLEJ TUTAJ obraz learning_curve_roc_auc.png -->
-<!-- WKLEJ TUTAJ obraz learning_curve_ranking.png -->
+<img width="1600" height="1000" alt="learning_curve_roc_auc" src="https://github.com/user-attachments/assets/c4f35043-55cc-487b-916e-263321cad15f" />
+<img width="1600" height="1000" alt="learning_curve_ranking" src="https://github.com/user-attachments/assets/c552c1a6-a3bf-4f33-9565-9f195991d6f4" />
+
   
 </details>
   
@@ -736,9 +737,10 @@ Outputs:
 <summary>Show learning curves</summary>
     
 #### Learning curves:
+    
+<img width="1600" height="1000" alt="learning_curve_roc_auc" src="https://github.com/user-attachments/assets/0ed5866b-4d32-4905-aa18-2b2b9a92348c" />
+<img width="1600" height="1000" alt="learning_curve_ranking" src="https://github.com/user-attachments/assets/ed08b6fe-e9dd-4117-a5d5-64f7a8b5584b" />
   
-<!-- obraz learning_curve_roc_auc.png -->
-<!-- obraz learning_curve_ranking.png -->
   
 </details>
   
@@ -783,14 +785,14 @@ The **network model** extends this setup with additional network-related informa
 
 #### 2. Training strategy
 
-Unlike Logistic Regression, the Random Forest baseline and network versions use the **same overall training strategy**.
+Unlike the Logistic Regression network model, the Random Forest baseline and network versions use the **same overall training strategy**.  
+  
+In both scripts:  
+- the full training split is loaded into memory  
+- preprocessing and model fitting are done in one sklearn pipeline  
+- the model is trained directly using `fit()`  
 
-In both scripts:
-- the full training split is loaded into memory
-- preprocessing and model fitting are done in one sklearn pipeline
-- the model is trained directly using `fit()`
-
-So the difference here is **not chunking or warm start**, but mainly the richer feature space in the network version.
+So, unlike `lr_network.py`, these Random Forest implementations do **not** use chunked training, warm start, or a separate preprocessing stage fitted on a sample.  
 
 -------------------------------------
 
@@ -856,9 +858,7 @@ The two Random Forest scripts follow the same training and evaluation design.
 
 - **`rf_baseline.py`** is a Random Forest model trained on the baseline feature set
 - **`rf_network.py`** is a Random Forest model trained on the network-enriched feature set
-
-So compared with the Logistic Regression case, the main difference here is **feature richness**, not a different fitting procedure.
-
+  
 </details>
   
 <details>
@@ -897,10 +897,7 @@ The largest improvements are visible at the top of the ranking:
 - **NDCG@10** increases from **0.7248** to **0.9680**
 - **MRR** increases from **0.6968** to **0.9656**
   
-This suggests that the network-enriched feature set helps the model place relevant games much closer to the top of the recommendation list.  
-  
-The classification metric also improves:
-- **ROC-AUC** rises from **0.9492** to **0.9934**
+This suggests that the network-enriched feature set helps the model place relevant games much closer to the top of the recommendation list.    
   
 Overall, the **Network Random Forest model clearly outperforms the baseline version**, indicating that social/network-derived features and embedding-based signals provide much stronger information for the recommendation task than the baseline metadata features alone.
 
