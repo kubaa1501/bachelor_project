@@ -26,25 +26,33 @@ print(f"Running in mode: {MODE}")
 
 if MODE == "with_net":
     CACHE_DIR    = "/home/jaga/data/cache"
-    MODEL_PATH   = "/home/jaga/results/models/nn_bpr_with_net_best.pt"
-    METRICS_PATH = "/home/jaga/results/metrics/nn_bpr_with_net_metrics.json"
-    PLOT_PATH    = "/home/jaga/results/plots/nn_bpr_with_net_roc.png"
+    MODEL_PATH   = "/home/jaga/results/models/nn_with_net_best_seed{seed}.pt"
+    METRICS_PATH = "/home/jaga/results/metrics/nn_with_net_metrics.json"
+    PLOT_PATH    = "/home/jaga/results/plots/nn_with_net_learning_curve.png"
 else:
     CACHE_DIR    = "/home/jaga/data/cache_no_net"
-    MODEL_PATH   = "/home/jaga/results/models/nn_bpr_no_net_best.pt"
-    METRICS_PATH = "/home/jaga/results/metrics/nn_bpr_no_net_metrics.json"
-    PLOT_PATH    = "/home/jaga/results/plots/nn_bpr_no_net_roc.png"
+    MODEL_PATH   = "/home/jaga/results/models/nn_no_net_best_seed{seed}.pt"
+    METRICS_PATH = "/home/jaga/results/metrics/nn_no_net_metrics.json"
+    PLOT_PATH    = "/home/jaga/results/plots/nn_no_net_learning_curve.png"
 
 # ---------------------------
-# Reproducibility
+# Multi-seed setup
 # ---------------------------
-SEED = 42
-random.seed(SEED)
-np.random.seed(SEED)
-torch.manual_seed(SEED)
-torch.cuda.manual_seed_all(SEED)
-torch.backends.cudnn.deterministic = True
-torch.backends.cudnn.benchmark     = False
+SEEDS = [42, 0, 1]
+
+# ---------------------------
+# Best hyperparameters (fixed — search already done)
+# ---------------------------
+# nn_no_net:  hidden=256, layers=4, lr=5e-4
+# nn_with_net: hidden=256, layers=4, lr=5e-4
+HIDDEN_CHANNELS = 256
+NUM_LAYERS      = 4
+LR              = 5e-4
+
+# # Commented out — other configs tried during search
+# hidden_channels_list = [64, 128, 256]
+# num_layers_list      = [2, 3, 4]
+# learning_rates       = [1e-3, 5e-4]
 
 DEVICE   = "cuda" if torch.cuda.is_available() else "cpu"
 USER_COL = "steamid"
@@ -65,7 +73,7 @@ CAT_EMB_DIMS = {
 }
 
 # ---------------------------
-# Load cache
+# Load cache (once, outside seed loop)
 # ---------------------------
 print(f"\nLoading cache from {CACHE_DIR}...")
 t0 = time.time()
@@ -91,11 +99,9 @@ cat_vocab_sizes  = meta["cat_vocab_sizes"]
 user_in_dim      = meta["user_in_dim"]
 game_numeric_dim = meta["game_numeric_dim"]
 
-# Extract feature tensors
-user_features = data["user"].x   # (n_users, user_in_dim)
-game_features = data["game"].x   # (n_games, game_numeric_dim)
+user_features = data["user"].x
+game_features = data["game"].x
 
-# Extract categorical indices
 game_cat_idx = {}
 for col in cat_embed_cols:
     key = f"{col}_idx"
@@ -103,15 +109,27 @@ for col in cat_embed_cols:
         game_cat_idx[col] = getattr(data["game"], key)
 
 print(f"  user_in_dim={user_in_dim}, game_numeric_dim={game_numeric_dim}")
-print(f"  cat_vocab_sizes={cat_vocab_sizes}")
 print(f"  n_users={user_features.shape[0]}, n_games={game_features.shape[0]}")
-print(f"  grouped train edges: {grouped_ei.shape[1]}")
+
+if torch.cuda.is_available():
+    gpu_mem_gb = torch.cuda.get_device_properties(0).total_memory / 1e9
+    print(f"GPU: {torch.cuda.get_device_name(0)}, Memory: {gpu_mem_gb:.1f}GB")
+    batch_size = 2048
+else:
+    batch_size = 512
+print(f"Using batch_size={batch_size}")
+
+user_features = user_features.to(DEVICE)
+game_features = game_features.to(DEVICE)
+game_cat_idx  = {col: idx.to(DEVICE) for col, idx in game_cat_idx.items()}
+
+num_epochs      = 20
+N_GROUPS_SAMPLE = 200_000
 
 # ---------------------------
 # Dataset
 # ---------------------------
 class InteractionDataset(Dataset):
-    """Returns groups of (1 pos + N_NEG neg) as flat tensors."""
     def __init__(self, edge_index, edge_label, n_neg=N_NEG):
         self.edge_index = edge_index
         self.edge_label = edge_label
@@ -123,8 +141,8 @@ class InteractionDataset(Dataset):
         return self.n_groups
 
     def __getitem__(self, idx):
-        start = idx * self.group_size
-        end   = start + self.group_size
+        start    = idx * self.group_size
+        end      = start + self.group_size
         user_idx = self.edge_index[0, start:end]
         game_idx = self.edge_index[1, start:end]
         labels   = self.edge_label[start:end]
@@ -132,7 +150,7 @@ class InteractionDataset(Dataset):
 
 
 def collate_fn(batch):
-    user_idx = torch.stack([b[0] for b in batch])  # (batch, group_size)
+    user_idx = torch.stack([b[0] for b in batch])
     game_idx = torch.stack([b[1] for b in batch])
     labels   = torch.stack([b[2] for b in batch])
     return user_idx, game_idx, labels
@@ -170,14 +188,11 @@ class GameFeatureEncoder(nn.Module):
 
 
 class MLPBPR(nn.Module):
-    """Simple MLP: concat(user_emb, game_emb) -> score."""
     def __init__(self, user_in_dim, game_numeric_dim,
                  cat_vocab_sizes, cat_embed_cols, max_lens, cat_emb_dims,
                  hidden_channels, num_layers, dropout=0.3):
         super().__init__()
-
         self.user_proj = nn.Linear(user_in_dim, hidden_channels)
-
         self.game_encoder = GameFeatureEncoder(
             numeric_dim    = game_numeric_dim,
             vocab_sizes    = cat_vocab_sizes,
@@ -186,8 +201,6 @@ class MLPBPR(nn.Module):
             cat_emb_dims   = cat_emb_dims,
             hidden_dim     = hidden_channels,
         )
-
-        # MLP layers after concatenation
         layers = []
         in_dim = hidden_channels * 2
         for i in range(num_layers):
@@ -208,25 +221,13 @@ class MLPBPR(nn.Module):
 
     def forward(self, user_idx, game_idx,
                 user_features, game_features, game_cat_idx):
-        """
-        user_idx: (batch, group_size)
-        game_idx: (batch, group_size)
-        Returns scores: (batch * group_size,)
-        """
-        batch_size = user_idx.shape[0]
-        group_size = user_idx.shape[1]
-
-        # Flatten
-        u_flat = user_idx.reshape(-1)  # (batch * group_size,)
+        u_flat = user_idx.reshape(-1)
         g_flat = game_idx.reshape(-1)
-
         u_feat = user_features[u_flat]
         g_feat = game_features[g_flat]
         g_cats = {col: game_cat_idx[col][g_flat] for col in game_cat_idx}
-
-        u_emb = self.encode_user(u_feat)
-        g_emb = self.encode_game(g_feat, g_cats)
-
+        u_emb  = self.encode_user(u_feat)
+        g_emb  = self.encode_game(g_feat, g_cats)
         return self.score(u_emb, g_emb)
 
 
@@ -266,18 +267,16 @@ def evaluate_ranking_df(df, scores, ks=(1, 5, 10, 20)):
         if n_pos == 0:
             continue
         n_users_eval += 1
-
         for rank, y in enumerate(labels, start=1):
             if y == 1:
                 metrics["MRR"] += 1.0 / rank
                 break
-
         for k in ks:
             topk     = labels[:k]
             hits_k   = 1.0 if any(topk) else 0.0
             recall_k = sum(topk) / n_pos
-            dcg      = sum(1/math.log2(i+1) for i,y in enumerate(topk,1) if y==1)
-            idcg     = sum(1/math.log2(i+1) for i in range(1, min(n_pos,k)+1))
+            dcg      = sum(1/math.log2(i+1) for i, y in enumerate(topk, 1) if y == 1)
+            idcg     = sum(1/math.log2(i+1) for i in range(1, min(n_pos, k)+1))
             metrics[f"HitRate@{k}"] += hits_k
             metrics[f"Recall@{k}"]  += recall_k
             metrics[f"NDCG@{k}"]    += dcg/idcg if idcg > 0 else 0.0
@@ -323,54 +322,31 @@ def get_val_scores(model, val_df, user2idx, game2idx,
     return filtered_df, torch.cat(all_scores).numpy()
 
 
-# ---------------------------
-# Auto batch size
-# ---------------------------
-if torch.cuda.is_available():
-    gpu_mem_gb = torch.cuda.get_device_properties(0).total_memory / 1e9
-    print(f"GPU: {torch.cuda.get_device_name(0)}, Memory: {gpu_mem_gb:.1f}GB")
-    batch_size = 2048
-else:
-    batch_size = 512
-print(f"Using batch_size={batch_size}")
-
-# Move features to device
-user_features = user_features.to(DEVICE)
-game_features = game_features.to(DEVICE)
-game_cat_idx  = {col: idx.to(DEVICE) for col, idx in game_cat_idx.items()}
-
-# ---------------------------
-# Hyperparameters
-# ---------------------------
-hidden_channels_list = [64, 128, 256]
-num_layers_list      = [2, 3, 4]
-learning_rates       = [1e-3, 5e-4]
-num_epochs           = 20
-N_GROUPS_SAMPLE      = 200_000
-
-best_val_score   = -np.inf
-best_model_state = None
-best_config      = None
-best_train_roc   = None
-best_val_roc     = None
-
 def fmt_time(s):
     return time.strftime("%H:%M:%S", time.gmtime(s))
 
-configs        = list(itertools.product(
-    hidden_channels_list, num_layers_list, learning_rates
-))
-n_configs      = len(configs)
-t_search_start = time.time()
 
-print(f"\n{n_configs} hyperparameter combinations to try")
-print(f"{num_epochs} epochs each\n")
+# ---------------------------
+# Multi-seed training loop
+# ---------------------------
+all_seeds_train_roc = []   # (n_seeds, n_epochs)
+all_seeds_val_roc   = []
+all_seeds_val_ndcg  = []   # (n_seeds, n_epochs) — tracked per epoch for ranking curve
+all_seeds_val_recall= []
+all_seeds_val_metrics  = []
+all_seeds_test_metrics = []
 
-config_bar = tqdm(configs, desc="Hyperparam search", unit="config", position=0)
+for seed in SEEDS:
+    print(f"\n{'='*60}")
+    print(f"SEED {seed}  |  hidden={HIDDEN_CHANNELS}, layers={NUM_LAYERS}, lr={LR}")
+    print(f"{'='*60}")
 
-for config_idx, (hidden_channels, num_layers, lr) in enumerate(config_bar):
-    print(f"\n--- Config {config_idx+1}/{n_configs}: "
-          f"hidden={hidden_channels}, layers={num_layers}, lr={lr} ---")
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark     = False
 
     model = MLPBPR(
         user_in_dim      = user_in_dim,
@@ -379,23 +355,23 @@ for config_idx, (hidden_channels, num_layers, lr) in enumerate(config_bar):
         cat_embed_cols   = cat_embed_cols,
         max_lens         = max_lens,
         cat_emb_dims     = CAT_EMB_DIMS,
-        hidden_channels  = hidden_channels,
-        num_layers       = num_layers,
+        hidden_channels  = HIDDEN_CHANNELS,
+        num_layers       = NUM_LAYERS,
     ).to(DEVICE)
 
-    optimizer = Adam(model.parameters(), lr=lr, weight_decay=1e-5)
+    optimizer = Adam(model.parameters(), lr=LR, weight_decay=1e-5)
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
         optimizer, mode='max', factor=0.5, patience=3, verbose=False
     )
 
-    train_roc_list = []
-    val_roc_list   = []
-    epoch_times    = []
+    train_roc_list  = []
+    val_roc_list    = []
+    val_ndcg_list   = []
+    val_recall_list = []
+    best_val_roc_seed    = -np.inf
+    best_model_state     = None
 
-    epoch_bar = tqdm(range(num_epochs), desc="  Epochs",
-                     unit="epoch", position=1, leave=False)
-
-    for epoch in epoch_bar:
+    for epoch in range(num_epochs):
         t_epoch_start = time.time()
 
         # Subsample groups
@@ -403,64 +379,52 @@ for config_idx, (hidden_channels, num_layers, lr) in enumerate(config_bar):
         group_idx      = torch.randperm(n_total_groups)[:N_GROUPS_SAMPLE]
         edge_idx       = (group_idx.unsqueeze(1) * (N_NEG + 1) +
                           torch.arange(N_NEG + 1).unsqueeze(0)).flatten()
-        sampled_ei     = grouped_ei[:, edge_idx]
-        sampled_el     = grouped_el[edge_idx]
+        sampled_ei = grouped_ei[:, edge_idx]
+        sampled_el = grouped_el[edge_idx]
 
         dataset = InteractionDataset(sampled_ei, sampled_el)
         loader  = DataLoader(
             dataset,
-            batch_size = batch_size // (N_NEG + 1),
-            shuffle    = True,
-            num_workers= 4,
-            pin_memory = True,
-            collate_fn = collate_fn,
+            batch_size  = batch_size // (N_NEG + 1),
+            shuffle     = True,
+            num_workers = 4,
+            pin_memory  = True,
+            collate_fn  = collate_fn,
         )
 
-        # --- Train ---
+        # Train
         model.train()
         epoch_loss  = 0.0
         total_edges = 0
-
-        train_bar = tqdm(loader, desc=f"    Train ep{epoch:02d}",
-                         unit="batch", position=2, leave=False)
-        for user_idx_b, game_idx_b, labels_b in train_bar:
+        for user_idx_b, game_idx_b, labels_b in tqdm(loader, desc=f"  Train ep{epoch:02d}", leave=False):
             user_idx_b = user_idx_b.to(DEVICE)
             game_idx_b = game_idx_b.to(DEVICE)
-
             optimizer.zero_grad()
-            scores = model(
-                user_idx_b, game_idx_b,
-                user_features, game_features, game_cat_idx
-            )
-            loss = bpr_loss(scores)
+            scores = model(user_idx_b, game_idx_b, user_features, game_features, game_cat_idx)
+            loss   = bpr_loss(scores)
             loss.backward()
             optimizer.step()
-
             epoch_loss  += loss.item() * scores.size(0)
             total_edges += scores.size(0)
-            train_bar.set_postfix(loss=f"{loss.item():.4f}")
-
         epoch_loss /= max(total_edges, 1)
 
-        # --- Evaluate ROC ---
+        # Evaluate
         model.eval()
         with torch.no_grad():
-            # Train ROC — 5 batches
-            all_scores, all_labels = [], []
+            # Train ROC (5 batches)
+            all_s, all_l = [], []
             for i, (u, g, lbl) in enumerate(loader):
                 if i >= 5: break
                 u = u.to(DEVICE); g = g.to(DEVICE)
                 s = model(u, g, user_features, game_features, game_cat_idx)
-                all_scores.append(s.cpu())
-                all_labels.append(lbl.reshape(-1))
+                all_s.append(s.cpu()); all_l.append(lbl.reshape(-1))
             train_roc = roc_auc_score(
-                torch.cat(all_labels).numpy(),
-                torch.cat(all_scores).numpy()
-            ) if all_scores else np.nan
+                torch.cat(all_l).numpy(), torch.cat(all_s).numpy()
+            ) if all_s else np.nan
             train_roc_list.append(train_roc)
 
-            # Val ROC
-            _, val_scores = get_val_scores(
+            # Val ROC + ranking metrics
+            val_df_f, val_scores = get_val_scores(
                 model, val_filtered_df, user2idx, game2idx,
                 user_features, game_features, game_cat_idx
             )
@@ -468,114 +432,162 @@ for config_idx, (hidden_channels, num_layers, lr) in enumerate(config_bar):
             val_roc    = roc_auc_score(val_labels, val_scores)
             val_roc_list.append(val_roc)
 
+            val_rank = evaluate_ranking_df(val_df_f, val_scores)
+            val_ndcg_list.append(val_rank["NDCG@10"])
+            val_recall_list.append(val_rank["Recall@10"])
+
         scheduler.step(val_roc)
 
+        if val_roc > best_val_roc_seed:
+            best_val_roc_seed = val_roc
+            best_model_state  = {k: v.cpu() for k, v in model.state_dict().items()}
+
         t_epoch = time.time() - t_epoch_start
-        epoch_times.append(t_epoch)
-        avg_t   = sum(epoch_times) / len(epoch_times)
-        eta     = avg_t * (num_epochs - (epoch + 1))
+        print(f"  Ep {epoch:02d} | Loss {epoch_loss:.4f} | "
+              f"TrainROC {train_roc:.4f} | ValROC {val_roc:.4f} | "
+              f"NDCG@10 {val_rank['NDCG@10']:.4f} | {t_epoch:.0f}s")
 
-        epoch_bar.set_postfix(
-            loss=f"{epoch_loss:.4f}",
-            troc=f"{train_roc:.4f}",
-            vroc=f"{val_roc:.4f}",
-        )
-        print(
-            f"  Ep {epoch:02d} | Loss {epoch_loss:.4f} | "
-            f"TrainROC {train_roc:.4f} | ValROC {val_roc:.4f} | "
-            f"Epoch {t_epoch:.0f}s | ETA {fmt_time(eta)}"
-        )
+    # Save best model for this seed
+    seed_model_path = MODEL_PATH.format(seed=seed)
+    torch.save({
+        "state_dict": best_model_state,
+        "seed": seed,
+        "config": {"hidden_channels": HIDDEN_CHANNELS, "num_layers": NUM_LAYERS,
+                   "lr": LR, "loss": "bpr", "mode": MODE},
+    }, seed_model_path)
+    print(f"  Saved: {seed_model_path}")
 
-    avg_val_roc = np.nanmean(val_roc_list)
-    config_bar.set_postfix(best=f"{best_val_score:.4f}", this=f"{avg_val_roc:.4f}")
+    # Final evaluation with best model
+    best_model = MLPBPR(
+        user_in_dim=user_in_dim, game_numeric_dim=game_numeric_dim,
+        cat_vocab_sizes=cat_vocab_sizes, cat_embed_cols=cat_embed_cols,
+        max_lens=max_lens, cat_emb_dims=CAT_EMB_DIMS,
+        hidden_channels=HIDDEN_CHANNELS, num_layers=NUM_LAYERS,
+    ).to(DEVICE)
+    best_model.load_state_dict({k: v.to(DEVICE) for k, v in best_model_state.items()})
+    best_model.eval()
 
-    if avg_val_roc > best_val_score:
-        best_val_score   = avg_val_roc
-        best_model_state = {k: v.cpu() for k, v in model.state_dict().items()}
-        best_config      = {
-            "hidden_channels": hidden_channels,
-            "num_layers":      num_layers,
-            "lr":              lr,
-            "loss":            "bpr",
-            "mode":            MODE,
-        }
-        best_train_roc = train_roc_list
-        best_val_roc   = val_roc_list
-        print(f"  *** New best val ROC: {best_val_score:.4f} ***")
+    val_df_f,  val_scores  = get_val_scores(best_model, val_filtered_df, user2idx, game2idx,
+                                             user_features, game_features, game_cat_idx)
+    test_df_f, test_scores = get_val_scores(best_model, test_df, user2idx, game2idx,
+                                             user_features, game_features, game_cat_idx)
 
-total_time = time.time() - t_search_start
-print(f"\nSearch complete in {fmt_time(total_time)}")
-print(f"Best config: {best_config}")
-print(f"Best val ROC: {best_val_score:.4f}")
+    all_seeds_val_metrics.append(evaluate_ranking_df(val_df_f, val_scores))
+    all_seeds_test_metrics.append(evaluate_ranking_df(test_df_f, test_scores))
+    all_seeds_train_roc.append(train_roc_list)
+    all_seeds_val_roc.append(val_roc_list)
+    all_seeds_val_ndcg.append(val_ndcg_list)
+    all_seeds_val_recall.append(val_recall_list)
 
-# ---------------------------
-# Save best model
-# ---------------------------
-torch.save({
-    "state_dict":       best_model_state,
-    "best_val_roc":     float(best_val_score),
-    "user_in_dim":      user_in_dim,
-    "game_numeric_dim": game_numeric_dim,
-    "cat_vocab_sizes":  cat_vocab_sizes,
-    "cat_embed_cols":   cat_embed_cols,
-    "max_lens":         max_lens,
-    "cat_emb_dims":     CAT_EMB_DIMS,
-    "config":           best_config,
-}, MODEL_PATH)
-print(f"Saved to: {MODEL_PATH}")
 
 # ---------------------------
-# Plot
+# Aggregate metrics: mean ± std
 # ---------------------------
-epochs_range = range(1, len(best_train_roc) + 1)
-plt.figure(figsize=(8, 5))
-plt.plot(epochs_range, best_train_roc, marker='o', label="Train ROC-AUC")
-plt.plot(epochs_range, best_val_roc,   marker='o', label="Val ROC-AUC")
-plt.xlabel("Epoch"); plt.ylabel("ROC-AUC")
-plt.title(f"NN BPR — {MODE}")
-plt.grid(True, alpha=0.3); plt.legend(); plt.tight_layout()
-plt.savefig(PLOT_PATH)
+def aggregate_metrics(list_of_dicts):
+    keys = [k for k in list_of_dicts[0] if k != "n_users_evaluated"]
+    result = {}
+    for k in keys:
+        vals = [d[k] for d in list_of_dicts]
+        result[k] = {"mean": float(np.mean(vals)), "std": float(np.std(vals))}
+    result["n_users_evaluated"] = list_of_dicts[0]["n_users_evaluated"]
+    return result
+
+val_metrics_agg  = aggregate_metrics(all_seeds_val_metrics)
+test_metrics_agg = aggregate_metrics(all_seeds_test_metrics)
+
+print("\n--- Val metrics (mean ± std) ---")
+for k, v in val_metrics_agg.items():
+    if isinstance(v, dict):
+        print(f"  {k}: {v['mean']:.4f} ± {v['std']:.4f}")
+
+print("\n--- Test metrics (mean ± std) ---")
+for k, v in test_metrics_agg.items():
+    if isinstance(v, dict):
+        print(f"  {k}: {v['mean']:.4f} ± {v['std']:.4f}")
+
+
+# ---------------------------
+# Plots
+# ---------------------------
+# Arrays: (n_seeds, n_epochs)
+train_roc_arr  = np.array(all_seeds_train_roc)   # (3, 20)
+val_roc_arr    = np.array(all_seeds_val_roc)
+val_ndcg_arr   = np.array(all_seeds_val_ndcg)
+val_recall_arr = np.array(all_seeds_val_recall)
+
+epochs = np.arange(1, num_epochs + 1)
+
+mean_train_roc  = train_roc_arr.mean(axis=0)
+std_train_roc   = train_roc_arr.std(axis=0)
+mean_val_roc    = val_roc_arr.mean(axis=0)
+std_val_roc     = val_roc_arr.std(axis=0)
+mean_val_ndcg   = val_ndcg_arr.mean(axis=0)
+std_val_ndcg    = val_ndcg_arr.std(axis=0)
+mean_val_recall = val_recall_arr.mean(axis=0)
+std_val_recall  = val_recall_arr.std(axis=0)
+
+model_name = f"MLP ({'with' if MODE == 'with_net' else 'no'} network features)"
+
+fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(8, 8))
+fig.suptitle(f"Learning Curve — {model_name}", fontsize=13)
+
+# Top: ROC-AUC
+ax1.plot(epochs, mean_train_roc, marker='o', label="Train ROC-AUC")
+ax1.fill_between(epochs, mean_train_roc - std_train_roc,
+                          mean_train_roc + std_train_roc, alpha=0.2)
+ax1.plot(epochs, mean_val_roc, marker='o', label="Val ROC-AUC")
+ax1.fill_between(epochs, mean_val_roc - std_val_roc,
+                          mean_val_roc + std_val_roc, alpha=0.2)
+ax1.set_xlabel("Epoch")
+ax1.set_ylabel("ROC-AUC")
+ax1.legend()
+ax1.grid(True, alpha=0.3)
+
+# Bottom: Ranking metrics
+ax2.plot(epochs, mean_val_ndcg, marker='o', label="Val NDCG@10")
+ax2.fill_between(epochs, mean_val_ndcg - std_val_ndcg,
+                          mean_val_ndcg + std_val_ndcg, alpha=0.2)
+ax2.plot(epochs, mean_val_recall, marker='o', label="Val Recall@10")
+ax2.fill_between(epochs, mean_val_recall - std_val_recall,
+                          mean_val_recall + std_val_recall, alpha=0.2)
+ax2.set_xlabel("Epoch")
+ax2.set_ylabel("Score")
+ax2.legend()
+ax2.grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.savefig(PLOT_PATH, dpi=150)
 plt.close()
+print(f"\nPlot saved to: {PLOT_PATH}")
+
 
 # ---------------------------
-# Final evaluation
+# Save all metrics
 # ---------------------------
-best_model = MLPBPR(
-    user_in_dim      = user_in_dim,
-    game_numeric_dim = game_numeric_dim,
-    cat_vocab_sizes  = cat_vocab_sizes,
-    cat_embed_cols   = cat_embed_cols,
-    max_lens         = max_lens,
-    cat_emb_dims     = CAT_EMB_DIMS,
-    hidden_channels  = best_config["hidden_channels"],
-    num_layers       = best_config["num_layers"],
-).to(DEVICE)
-best_model.load_state_dict({k: v.to(DEVICE) for k, v in best_model_state.items()})
-best_model.eval()
-
-print("\nEvaluating on val and test sets...")
-val_df_f, val_scores   = get_val_scores(
-    best_model, val_filtered_df, user2idx, game2idx,
-    user_features, game_features, game_cat_idx
-)
-test_df_f, test_scores = get_val_scores(
-    best_model, test_df, user2idx, game2idx,
-    user_features, game_features, game_cat_idx
-)
-
-val_metrics  = evaluate_ranking_df(val_df_f,  val_scores)
-test_metrics = evaluate_ranking_df(test_df_f, test_scores)
-print("Val metrics: ",  val_metrics)
-print("Test metrics:", test_metrics)
-
 metrics_dict = {
-    "best_config":    best_config,
-    "best_val_roc":   float(best_val_score),
-    "best_train_roc": [float(x) for x in best_train_roc],
-    "best_val_roc_history": [float(x) for x in best_val_roc],
-    "val_metrics":    val_metrics,
-    "test_metrics":   test_metrics,
+    "config": {
+        "hidden_channels": HIDDEN_CHANNELS,
+        "num_layers":      NUM_LAYERS,
+        "lr":              LR,
+        "loss":            "bpr",
+        "mode":            MODE,
+        "seeds":           SEEDS,
+    },
+    "val_metrics":        val_metrics_agg,
+    "test_metrics":       test_metrics_agg,
+    "per_seed_val":       [
+        {k: float(v) if not isinstance(v, dict) else v
+         for k, v in m.items()} for m in all_seeds_val_metrics
+    ],
+    "per_seed_test":      [
+        {k: float(v) if not isinstance(v, dict) else v
+         for k, v in m.items()} for m in all_seeds_test_metrics
+    ],
+    "train_roc_history":  train_roc_arr.tolist(),
+    "val_roc_history":    val_roc_arr.tolist(),
+    "val_ndcg_history":   val_ndcg_arr.tolist(),
+    "val_recall_history": val_recall_arr.tolist(),
 }
 with open(METRICS_PATH, "w") as f:
     json.dump(metrics_dict, f, indent=2)
-print(f"Saved metrics to {METRICS_PATH}")
+print(f"Metrics saved to: {METRICS_PATH}")
