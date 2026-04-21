@@ -439,7 +439,7 @@ These runs were used mainly to:
 </details>
 
 <details> 
-<summary>Show results for Neural - network model</summary> 
+<summary>Show results for Neural Network - network model</summary> 
 
 ### Neural Network  — network model:
   
