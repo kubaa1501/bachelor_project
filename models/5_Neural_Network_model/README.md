@@ -3,61 +3,54 @@
 
 ### Data preparation for Neural Network models
 
-Neural Network models (MLP + BPR, Graph-based models) do not operate directly on raw CSV files.  
-Instead, they use a **precomputed graph cache**, built in several sequential steps.
+Neural Network models do not train directly on raw CSV files.  
+Before training, the data is transformed into a cached graph-based representation and grouped tensors.
 
-This pipeline transforms raw interaction data into a format optimized for:
-- tensor-based training  
-- GPU processing  
-- ranking loss (BPR / sampled softmax)  
+This preprocessing pipeline prepares all files needed later by:
+- `train_NN.py`
+- `train_NN_multiseed.py`
 
 -------------------------------------
-
-### Overview of the pipeline
-
-The preprocessing consists of three steps:
-
-1. `01_build_graph_cache_baseline.py` / `01_build_graph_cache_network.py`    
-2. `02_add_cat_encodings.py`    
-3. `03_build_grouped_tensors.py`    
   
+### Overview
+
+The preprocessing consists of three scripts:
+
+1. `01_build_graph_cache_baseline.py` / `01_build_graph_cache_network.py`
+2. `02_add_cat_encodings.py`
+3. `03_build_grouped_tensors.py`
+
 Pipeline:
-CSV files  
+
+`train.csv`, `val.csv`, `test.csv`, `friends.csv`  
 ↓  
-Graph cache (nodes + edges)  
+graph cache  
 ↓  
-Categorical embedding tensors  
+categorical index tensors  
 ↓  
-Grouped interaction tensors  
+grouped training tensors  
 ↓  
-Neural Network training  
+Neural Network training
 
 -------------------------------------
 
 ## STEP 1: Graph cache construction
 
-### SCRIPT: `01_build_graph_cache_baseline.py`
+### SCRIPTS:
+- `01_build_graph_cache_baseline.py`
+- `01_build_graph_cache_network.py`
 
-*(Baseline version — no network features)*
+These scripts create the main cached graph representation used later by the neural models.
 
--------------------------------------
-
-### SCRIPT: `01_build_graph_cache_network.py`
-
-*(Network version — includes friend_count and embeddings)*
-
--------------------------------------
-
-#### Input:
-
+### Input:
 - `train.csv`
 - `val.csv`
 - `test.csv`
-- `friends.csv`  (from data sraping)
-  
+- `friends.csv`
+
 <details>
-<summary>Show friends.csv</summary>
-    
+<summary>Show friends.csv example</summary>
+
 | user_steamid      | friend_steamid    |
 |------------------|--------------------|
 | 76561198064675174 | 76561197972380369 |
@@ -65,432 +58,323 @@ Neural Network training
 | 76561198109425210 | 76561198064675174 |
 | 76561198109425210 | 76561198281198045 |
 | 76561198109425210 | 76561198362520139 |
-  
+
 </details>
-  
--------------------------------------
 
-#### Target:
+### Target:
+- `owned`
 
-- `owned`  
-*Binary interaction label (1 = user owns game)*
-
--------------------------------------
-
-#### What the script does:
-
-- creates mappings:
+### What these scripts do:
+- create mappings:
   - `user2idx`
   - `game2idx`
-- builds a **heterogeneous graph** (`torch_geometric.data.HeteroData`)
+- build a heterogeneous graph (`torch_geometric.data.HeteroData`)
+- save graph-based tensors and validation/test data used later during training and evaluation
 
-Graph structure:
+### Graph structure:
 - nodes:
   - users
   - games
 - edges:
-  - `user → game` (interactions)
-  - `game → user` (reverse edges)
-  - `user → user` (friend connections)
+  - user → game
+  - game → user
+  - user → user
 
--------------------------------------
-
-#### Features used
+### Features included
 
 User features:
-- numeric features (playtime, counts, etc.)
-- categorical: `country`
+- numeric user features
+- categorical `country`
 
 Game features:
-- numeric features  
+- numeric game features
 - categorical:
   - `genres`
   - `developer`
   - `publisher`
   - `platforms`
 
-**Network version adds:**
+### Additional network version features:
 - `friend_count`
 - `game_emb_0 ... game_emb_31`
 
--------------------------------------
-
-#### Preprocessing
-
-Numeric:
-- median imputation  
-- standard scaling  
-
-Categorical:
-- missing → `"MISSING"`
-- `OneHotEncoder`
-
--------------------------------------
-
-#### Outputs:
-
-- `graph.pt` — full graph object
-- `user2idx.pt`
-- `game2idx.pt`
+### Outputs:
+- **`graph.pt`**
+- **`user2idx.pt`**
+- **`game2idx.pt`**
 - `train_edge_label_index.pt`
 - `train_edge_label.pt`
 - `val_edge_label_index.pt`
 - `val_edge_label.pt`
 - `val_filtered_df.parquet`
 - `test_df.parquet`
-
+    
 -------------------------------------
 
-## STEP 2: Categorical embedding encoding
+## STEP 2: Categorical encoding for game metadata
 
-### SCRIPT: `02_add_cat_encodings.py`
+### SCRIPT:
+- `02_add_cat_encodings.py`
 
--------------------------------------
+This script extends the cache with categorical index tensors for game metadata.
 
-#### Input:
-
+### Input:
 - `train.csv`
-- existing cache:
-  - `graph.pt`
-  - `game2idx.pt`
+- **`graph.pt`**
+- **`game2idx.pt`**
 
--------------------------------------
-
-#### What the script does:
-
-- builds vocabularies for categorical game features:
+### What this script does:
+- builds vocabularies for:
   - `genres`
   - `developer`
   - `publisher`
   - `platforms`
+- converts these fields into integer index tensors
+- pads multi-value fields
+- attaches them to `graph.pt`
 
-- encodes them into **integer index tensors**
-- converts multi-value fields into padded sequences
-- attaches them to graph:
-data["game"].genres_idx  
-data["game"].developer_idx  
-...
-
--------------------------------------
-
-#### Important:
-
-- this step **does NOT rebuild the graph**
-- it only **extends the existing cache**
-
--------------------------------------
-
-#### Outputs:
-
-- `game_genres_idx.pt`
-- `game_developer_idx.pt`
-- `game_publisher_idx.pt`
-- `game_platforms_idx.pt`
+### Outputs:
 - updated `graph.pt`
+- `cat_vocabs.json`
+- `meta.json`
+- categorical index tensors for game features
+
+-------------------------------------
+
+
+## STEP 3: Grouped interaction tensors
+
+### SCRIPT:
+- `03_build_grouped_tensors.py`
+
+This script prepares grouped training examples for ranking-based neural training.
+
+### Input:
+- `train.csv`
+- `user2idx.pt`
+- `game2idx.pt`
+
+### What this script does:
+- converts user/game ids into index-based tensors
+- groups training examples into:
+  - 1 positive interaction
+  - 10 negative interactions
+
+Example label group:
+
+`[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]`
+
+### Outputs:
+- `grouped_train_edge_label_index.pt`
+- `grouped_train_edge_label.pt`
+
+These files are saved to both cache variants:
+- baseline cache
+- network cache
+
+-------------------------------------
+
+## Cache variants
+
+Two dataset versions are created:
+
+### Baseline (`no_net`)
+This cache does not include additional network-derived features.
+
+### Network (`with_net`)
+This cache additionally includes:
+- `friend_count`
+- `game_emb_0 ... game_emb_31`
+
+-------------------------------------
+
+## What the training scripts actually use as input
+
+The neural training scripts use the outputs of the preprocessing pipeline, not raw CSV files.
+
+### `train_NN.py` and `train_NN_multiseed.py` use:
+- `graph.pt`
+- `user2idx.pt`
+- `game2idx.pt`
+- `grouped_train_edge_label_index.pt`
+- `grouped_train_edge_label.pt`
+- `val_filtered_df.parquet`
+- `test_df.parquet`
+- `cat_vocabs.json`
+- `meta.json`
+
+So in practice, the model input is:
+
+- graph cache from `01_build_graph_cache_*.py`
+- categorical encoding outputs from `02_add_cat_encodings.py`
+- grouped training tensors from `03_build_grouped_tensors.py`
+
+-------------------------------------
+
+## Summary
+
+Unlike classical ML models:
+
+| Approach | Input |
+|--------|------|
+| Logistic Regression / RF / XGB | CSV files |
+| Neural Networks | cached graph + grouped tensors |
+
+The preprocessing pipeline is needed only once, and its outputs are then reused by the neural training scripts.
+
+</details>
+
+  
+<details>
+<summary>Neural Network model — hyperparameter search</summary>
+
+### Neural Network model — hyperparameter search
+
+`train_NN.py no_net`  
+`train_NN.py with_net`
+
+This script performs the original Neural Network training procedure and hyperparameter search.
+
+Its role is to:
+- train the model on one seed
+- compare hyperparameter configurations
+- select the best final setup
+
+-------------------------------------
+
+## Input
+
+This script does **not** use raw CSV files directly.
+
+It uses the outputs created earlier by:
+- `01_build_graph_cache_baseline.py` / `01_build_graph_cache_network.py`
+- `02_add_cat_encodings.py`
+- `03_build_grouped_tensors.py`
+
+### Input files:
+- `graph.pt`
+- `user2idx.pt`
+- `game2idx.pt`
+- `grouped_train_edge_label_index.pt`
+- `grouped_train_edge_label.pt`
+- `val_filtered_df.parquet`
+- `test_df.parquet`
 - `cat_vocabs.json`
 - `meta.json`
 
 -------------------------------------
 
-## STEP 3: Grouped interaction tensors
+## What the script does
 
-### SCRIPT: `03_build_grouped_tensors.py`
-
--------------------------------------
-
-#### Input:
-
-- `train.csv`
-- `user2idx.pt`
-- `game2idx.pt`
-
--------------------------------------
-
-#### What the script does:
-
-- converts interactions into indexed tensors
-- builds grouped training samples for ranking loss
-
-Each training example:  
-1 positive + 10 negative samples  
-Label structure:    
-[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]    
-  
--------------------------------------
-  
-#### Why this is needed:
-  
-Neural models use **BPR loss**, which compares:
-- positive interaction  
-- vs sampled negative interactions  
-  
--------------------------------------
-  
-#### Outputs:
-  
-- `grouped_train_edge_label_index.pt`
-- `grouped_train_edge_label.pt`
-  
-*Saved to both:*
-- baseline cache
-- network cache
-  
--------------------------------------
-  
-## Dataset variants
-
-Two cache versions are created:
-  
-### Baseline (`no_net`)
-- no `friend_count`
-- no `game_emb_*`
-- simpler feature space
-  
-### Network (`with_net`)  
-- includes:  
-  - `friend_count`
-  - `game_emb_0 ... game_emb_31`
-- richer representation
-  
--------------------------------------
-  
-## Summary
-  
-Unlike classical ML models:  
-  
-| Approach | Input |
-|--------|------|
-| Logistic Regression / RF / XGB | CSV |
-| Neural Networks | Graph cache |
-  
-Neural models require:
-- indexed nodes    
-- tensor features  
-- graph structure  
-- grouped ranking samples  
-  
-This pipeline builds all of that **once**, enabling efficient training later.  
-  
-</details>
-  
-  
-<details> 
-<summary>Neural Network BPR baseline model</summary>
-  
-### MODEL: Neural Network BPR baseline model  
-    
-`nn_bpr.py no_net`
-      
-It trains, validates, and evaluates a neural recommendation model using **Bayesian Personalized Ranking (BPR) loss** on the **no-network dataset**.  
-  
-The script builds a PyTorch-based recommendation pipeline that:
+The script:
 - loads cached user and game feature tensors
-- encodes user features with a linear projection
-- encodes game features using numeric inputs and categorical embeddings
-- scores user-game pairs with an MLP
-- trains the model using **pairwise BPR loss**
-- performs hyperparameter search over hidden size, number of layers, and learning rate
-- selects the best configuration using validation ROC-AUC
-- evaluates the final model on validation and test sets as a ranking model  
-*Additionally, it saves the ROC-AUC training curve for the best configuration.*
-
---------------------------------------
-
-Input:   
-  
-- cached graph and tensor files from `cache_no_net`
-- validation parquet file
-- test parquet file  
-**This input is created by codes in 5_Neural_network_prep**    
-*This is the no-network / baseline dataset* 
+- builds a neural recommendation model
+- trains the model for 20 epochs
+- evaluates validation ROC-AUC during training
+- compares several hyperparameter combinations
+- selects the best configuration
+- saves the best model and its results
 
 -------------------------------------
 
-The target column is:  
-- `owned`  
-*The model predicts a ranking score for a given (`steamid`, `appid`) pair and is trained to rank positive interactions above sampled negative interactions.*
-  
--------------------------------------
-    
-#### Features used
-    
-The model uses:
-- user numeric feature vectors
-- game numeric feature vectors
-- categorical game metadata represented as embedding indices
+## Model structure
 
-Categorical embedded columns:
-- `genres`
-- `developer`
-- `publisher`
-- `platforms`
+The model contains:
+- user encoder
+- game encoder
+- MLP scoring head
 
-Identifier columns:
-- `steamid`
-- `appid`
+### User encoder
+User numeric features are projected using:
+- linear layer
+- ReLU
 
-*These identifiers are mapped to internal user and game indices through cached dictionaries and are used for lookup, not as direct input features.*
+### Game encoder
+Game representation is built from:
+- numeric game features
+- categorical embeddings for:
+  - `genres`
+  - `developer`
+  - `publisher`
+  - `platforms`
 
--------------------------------------
-
-#### Data representation
-  
-The training data is loaded from a precomputed cache containing:
-- graph tensors
-- user and game index mappings
-- grouped training edges
-- validation dataframe
-- test dataframe
-- categorical vocabularies
-- feature metadata
-
-Training examples are organized into groups of:
-- **1 positive interaction**
-- **10 negative interactions**
-
-This means each training group has size:
-- `N_NEG + 1 = 11`
-
-*The model is therefore trained in a pairwise ranking setup rather than as a standard binary classifier.*
+### Final scorer
+The user and game representations are concatenated and passed through an MLP to produce one final score.
 
 -------------------------------------
 
-#### Model architecture
-  
-The model consists of three main parts.
+## Hyperparameter search space
 
-##### 1. User encoder
-User feature vectors are projected through:
-- a linear layer
-- ReLU activation
-
-##### 2. Game encoder
-Game features are encoded using:
-- numeric game features projected with a linear layer
-- categorical metadata embedded using trainable embedding layers
-- masked average pooling over categorical token embeddings
-- a final projection layer with ReLU
-
-Embedding dimensions:
-- `genres` → 16
-- `developer` → 64
-- `publisher` → 64
-- `platforms` → 4
-
-##### 3. MLP scorer
-The user embedding and game embedding are concatenated and passed through a multilayer perceptron.
-
-The hyperparameter search covers:
+The script searches over:
 - hidden channels: `64`, `128`, `256`
-- number of MLP layers: `2`, `3`, `4`
+- number of layers: `2`, `3`, `4`
 - learning rate: `1e-3`, `5e-4`
 
-The final output is:
-- a single relevance score for each user-game pair
+### Best configuration selected
+
+For both dataset variants, the best final configuration was:
+
+- `hidden_channels = 256`
+- `num_layers = 4`
+- `learning_rate = 0.0005`
 
 -------------------------------------
 
-#### Training objective
-  
-The training loss is: **BPR loss**
-  
-For each training group:
-- the first item is treated as the positive example
-- the remaining items are treated as negative examples
-- the model is optimized so that the positive score is higher than the negative scores
+## Training setup
 
-This is implemented as:
-- pairwise score differences
-- sigmoid ranking objective
-- mean negative log-likelihood over pairs
-
-*This makes the model directly optimize relative ranking quality instead of pointwise classification loss.*
-
--------------------------------------
-
-#### Training procedure
-  
-The model is trained using:
+- loss: ranking-based neural loss
 - optimizer: `Adam`
 - weight decay: `1e-5`
-- learning rate scheduler: `ReduceLROnPlateau`
-
-Additional training setup:
+- scheduler: `ReduceLROnPlateau`
 - epochs: `20`
-- sampled training groups per epoch: `200000`
+- sampled groups per epoch: `200000`
 - seed: `42`
-
-At each epoch:
-- a subset of grouped train examples is sampled
-- the model is trained with mini-batches
-- approximate train ROC-AUC is computed on a few training batches
-- validation ROC-AUC is computed on the validation dataframe
 
 The best configuration is selected using:
 - **average validation ROC-AUC across epochs**
 
-*This is an important difference from the sklearn ranking models, where model selection was based on validation NDCG@10.*
+-------------------------------------
+
+## Outputs
+
+### For `no_net`
+- `nn_bpr_no_net_best.pt`
+- `nn_bpr_no_net_metrics.json`
+- `nn_bpr_no_net_roc.png`
+
+### For `with_net`
+- `nn_bpr_with_net_best.pt`
+- `nn_bpr_with_net_metrics.json`
+- `nn_bpr_with_net_roc.png`
 
 -------------------------------------
 
-#### Ranking evaluation
-  
-After training, the best model is evaluated on the validation and test sets.
+## Single-seed plots
 
-For each user (`steamid`):
-- candidate games are sorted by predicted score
-- ranking metrics are computed on the ordered owned labels
+<img width="800" height="500" alt="nn_no_net_roc" src="https://github.com/user-attachments/assets/91f353fc-5ff6-4e60-8074-3db226e54761" />
+<img width="800" height="500" alt="nn_with_net_roc" src="https://github.com/user-attachments/assets/ed9f16a5-9bd2-47b1-9abb-803b02ef84bf" />
 
-The script computes:
-- HitRate@1
-- Recall@1
-- NDCG@1
-- HitRate@5
-- Recall@5
-- NDCG@5
-- HitRate@10
-- Recall@10
-- NDCG@10
-- HitRate@20
-- Recall@20
-- NDCG@20
-- MRR
+The plots produced by `train_NN.py` come from a **single training run** (`seed = 42`).
 
-Metrics are computed per user and then **averaged across all evaluated users**.  
-*(Users with no positive items are skipped during ranking evaluation.)*
+They are useful for:
+- showing the training dynamics
+- showing how the model improves over epochs
+- illustrating the selected configuration
+
+They do **not** show variance across seeds.
 
 -------------------------------------
 
-#### Additional classification metric
-  
-Besides ranking metrics, the script also tracks:
-- ROC-AUC
+## Single-seed results
 
-ROC-AUC is used:
-- during training
-- during hyperparameter search
-- for selecting the best model configuration
-
-The script stores:
-- best validation ROC-AUC
-- train ROC-AUC history
-- validation ROC-AUC history
-
--------------------------------------
-
-Outputs:
-- `nn_bpr_no_net_best.pt` — saved best model checkpoint
-- `nn_bpr_no_net_metrics.json` — metrics and best configuration
-- `nn_bpr_no_net_roc.png` — train/validation ROC-AUC curve for the best model
-
--------------------------------------
-
-### Results:
+These runs were used mainly to:
+- perform hyperparameter search
+- identify the best final configuration
 
 <details> 
-<summary>Show results for Neural Network BPR baseline model</summary> 
+<summary>Show results for Neural Network - baseline model</summary> 
 
-### Neural Network BPR baseline model:
+### Neural Network baseline model:
   
 - "mode": "no_net"
 - "seed": 42
@@ -550,233 +434,14 @@ Outputs:
 | Recall@20 | 0.8785 |
 | NDCG@20 | 0.4567 |
 | MRR | 0.3402 |
-
+  
+</details>
 </details>
 
 <details> 
-<summary>Show ROC-AUC plot</summary>
-    
-#### ROC-AUC plot:
-  
-<img width="800" height="500" alt="nn_no_net_roc" src="https://github.com/user-attachments/assets/91f353fc-5ff6-4e60-8074-3db226e54761" />
+<summary>Show results for Neural - network model</summary> 
 
-</details>
-  
-</details>
-
--------------------------------------
-  
-</details>
-
-<details> 
-<summary>Neural Network BPR model network model</summary>
-  
-### MODEL: Neural Network BPR model network model  
-    
-`nn_bpr.py with_net`
-      
-It trains, validates, and evaluates a neural recommendation model using **Bayesian Personalized Ranking (BPR) loss** on the **network-enriched dataset**.  
-  
-The script builds a PyTorch-based recommendation pipeline that:
-- loads cached user and game feature tensors
-- encodes user features with a linear projection
-- encodes game features using numeric inputs and categorical embeddings
-- scores user-game pairs with an MLP
-- trains the model using **pairwise BPR loss**
-- performs hyperparameter search over hidden size, number of layers, and learning rate
-- selects the best configuration using validation ROC-AUC
-- evaluates the final model on validation and test sets as a ranking model  
-*Additionally, it saves the ROC-AUC training curve for the best configuration.*
-
---------------------------------------
-
-Input:   
-- cached graph and tensor files from `cache`
-- validation parquet file
-- test parquet file  
-**This input is created by codes in 5_Neural_network_prep**      
-*This is the network-enriched dataset* 
-
--------------------------------------
-
-The target column is:  
-- `owned`  
-*The model predicts a ranking score for a given (`steamid`, `appid`) pair and is trained to rank positive interactions above sampled negative interactions.*
-
--------------------------------------
-  
-#### Features used
-  
-The model uses:
-- user numeric feature vectors
-- game numeric feature vectors
-- categorical game metadata represented as embedding indices
-
-Compared with the `no_net` version, the cached feature tensors additionally include network-enriched information.
-
-Categorical embedded columns:
-- `genres`
-- `developer`
-- `publisher`
-- `platforms`
-
-Identifier columns:
-- `steamid`
-- `appid`
-
-*These identifiers are mapped to internal user and game indices through cached dictionaries and are used for lookup, not as direct input features.*
-
--------------------------------------
-
-#### Data representation
-  
-The training data is loaded from a precomputed cache containing:
-- graph tensors
-- user and game index mappings
-- grouped training edges
-- validation dataframe
-- test dataframe
-- categorical vocabularies
-- feature metadata
-
-Training examples are organized into groups of:
-- **1 positive interaction**
-- **10 negative interactions**
-
-This means each training group has size:
-- `N_NEG + 1 = 11`
-
-*The model is therefore trained in a pairwise ranking setup rather than as a standard binary classifier.*
-
--------------------------------------
-
-#### Model architecture
-  
-The model consists of three main parts.
-
-##### 1. User encoder
-User feature vectors are projected through:
-- a linear layer
-- ReLU activation
-
-##### 2. Game encoder
-Game features are encoded using:
-- numeric game features projected with a linear layer
-- categorical metadata embedded using trainable embedding layers
-- masked average pooling over categorical token embeddings
-- a final projection layer with ReLU
-
-Embedding dimensions:
-- `genres` → 16
-- `developer` → 64
-- `publisher` → 64
-- `platforms` → 4
-
-##### 3. MLP scorer
-The user embedding and game embedding are concatenated and passed through a multilayer perceptron.
-
-The hyperparameter search covers:
-- hidden channels: `64`, `128`, `256`
-- number of MLP layers: `2`, `3`, `4`
-- learning rate: `1e-3`, `5e-4`
-
-The final output is:
-- a single relevance score for each user-game pair
-
--------------------------------------
-
-#### Training objective
-  
-The training loss is: **BPR loss**
-  
-For each training group:
-- the first item is treated as the positive example
-- the remaining items are treated as negative examples
-- the model is optimized so that the positive score is higher than the negative scores
-
-This is implemented as:
-- pairwise score differences
-- sigmoid ranking objective
-- mean negative log-likelihood over pairs
-
--------------------------------------
-
-#### Training procedure
-  
-The model is trained using:
-- optimizer: `Adam`
-- weight decay: `1e-5`
-- learning rate scheduler: `ReduceLROnPlateau`
-
-Additional training setup:
-- epochs: `20`
-- sampled training groups per epoch: `200000`
-- seed: `42`
-
-At each epoch:
-- a subset of grouped train examples is sampled
-- the model is trained with mini-batches
-- approximate train ROC-AUC is computed on a few training batches
-- validation ROC-AUC is computed on the validation dataframe
-
-The best configuration is selected using:
-- **average validation ROC-AUC across epochs**
-
--------------------------------------
-
-#### Ranking evaluation
-  
-After training, the best model is evaluated on the validation and test sets.
-
-For each user (`steamid`):
-- candidate games are sorted by predicted score
-- ranking metrics are computed on the ordered owned labels
-
-The script computes:
-- HitRate@1
-- Recall@1
-- NDCG@1
-- HitRate@5
-- Recall@5
-- NDCG@5
-- HitRate@10
-- Recall@10
-- NDCG@10
-- HitRate@20
-- Recall@20
-- NDCG@20
-- MRR
-
-Metrics are computed per user and then **averaged across all evaluated users**.  
-*(Users with no positive items are skipped during ranking evaluation.)*
-
--------------------------------------
-
-#### Additional classification metric
-  
-Besides ranking metrics, the script also tracks:
-- ROC-AUC
-
-ROC-AUC is used:
-- during training
-- during hyperparameter search
-- for selecting the best model configuration
-
--------------------------------------
-
-Outputs:
-- `nn_bpr_with_net_best.pt` — saved best model checkpoint
-- `nn_bpr_with_net_metrics.json` — metrics and best configuration
-- `nn_bpr_with_net_roc.png` — train/validation ROC-AUC curve for the best model
-
--------------------------------------
-
-### Results:
-
-<details> 
-<summary>Show results for Neural Network BPR — with_net</summary> 
-
-### Neural Network BPR — with_net:
+### Neural Network  — network model:
   
 - "mode": "with_net"
 - "seed": 42
@@ -839,160 +504,359 @@ Outputs:
 
 </details>
 
-<details> 
-<summary>Show ROC-AUC plot</summary>
-    
-#### ROC-AUC plot:
-  
-<img width="800" height="500" alt="nn_with_net_roc" src="https://github.com/user-attachments/assets/ed9f16a5-9bd2-47b1-9abb-803b02ef84bf" />
+Final robust evaluation is reported separately in the multi-seed section below.
 
 </details>
-  
 </details>
-  
+
+<details>
+<summary>Neural Network model — multi-seed final evaluation</summary>
+
+### Neural Network model — multi-seed final evaluation
+
+`train_NN_multiseed.py no_net`  
+`train_NN_multiseed.py with_net`
+
+This script performs the **final evaluation** of the Neural Network model using multiple random seeds.
+
+It uses the same:
+- architecture
+- input cache
+- training setup
+- best hyperparameters selected earlier by `train_NN.py`
+
+The only difference is that the model is now trained multiple times to estimate:
+- mean performance
+- standard deviation
+
 -------------------------------------
-  
+
+## Why this script was added
+
+A single neural run may depend on:
+- random initialization
+- random negative sampling
+- stochastic batch order
+
+Because of this, one run can be slightly lucky or unlucky.
+
+The multi-seed version was added to make the final results:
+- more stable
+- more reliable
+- easier to compare fairly
+
+-------------------------------------
+
+## Relation to `train_NN.py`
+
+The workflow is:
+
+1. `train_NN.py`
+   - hyperparameter search
+   - single-seed training
+   - selection of the best configuration
+
+2. `train_NN_multiseed.py`
+   - final evaluation
+   - same best configuration
+   - multiple seeds
+   - aggregated metrics
+
+So the multi-seed script does **not** repeat the hyperparameter search.
+
+It only evaluates the already selected final model more robustly.
+
+-------------------------------------
+
+## Fixed hyperparameters used
+
+For both dataset variants, the multi-seed script uses:
+
+- `hidden_channels = 256`
+- `num_layers = 4`
+- `learning_rate = 0.0005`
+
+-------------------------------------
+
+## Multi-seed setup
+
+The final model is trained with:
+
+- `seeds = [42, 0, 1]`
+
+For each seed, the script:
+- trains the model independently
+- saves the best checkpoint for that seed
+- evaluates validation metrics
+- evaluates test metrics
+
+Then it aggregates the results across seeds using:
+- mean
+- standard deviation
+
+-------------------------------------
+
+## Outputs
+
+### For `no_net` baseline model:
+- `nn_no_net_metrics.json`
+- `nn_no_net_learning_curve.png`
+- per-seed model checkpoints
+
+### For `with_net` network model:
+- `nn_with_net_metrics.json`
+- `nn_with_net_learning_curve.png`
+- per-seed model checkpoints
+
+The metrics JSON files contain:
+- aggregated validation metrics
+- aggregated test metrics
+- per-seed validation results
+- per-seed test results
+- train/validation metric history across epochs
+
+-------------------------------------
+
+## Multi-seed plots
+
+The multi-seed plots show:
+- mean training / validation ROC-AUC
+- mean validation NDCG@10
+- mean validation Recall@10
+
+The shaded area represents:
+- **standard deviation across seeds**
+
+So these plots are more informative than the single-seed curves from `train_NN.py`.
+
 </details>
+
+
+<details>
+<summary>Final multi-seed results</summary>
+
+### Final multi-seed results
+
+The tables below report the final neural results from `train_NN_multiseed.py`.
+
+All values are reported as:
+
+- **mean ± std**
+
+across seeds:
+- `42`
+- `0`
+- `1`
+
+-------------------------------------
+
+## Neural Network — no_net
+
+### Validation results
+
+| Metric | Mean ± Std |
+|---|---:|
+| HitRate@1 | 0.1848 ± 0.0005 |
+| Recall@1 | 0.1848 ± 0.0005 |
+| NDCG@1 | 0.1848 ± 0.0005 |
+| HitRate@5 | 0.4871 ± 0.0017 |
+| Recall@5 | 0.4871 ± 0.0017 |
+| NDCG@5 | 0.3382 ± 0.0005 |
+| HitRate@10 | 0.6859 ± 0.0036 |
+| Recall@10 | 0.6859 ± 0.0036 |
+| NDCG@10 | 0.4023 ± 0.0011 |
+| HitRate@20 | 0.8767 ± 0.0010 |
+| Recall@20 | 0.8767 ± 0.0010 |
+| NDCG@20 | 0.4508 ± 0.0005 |
+| MRR | 0.3334 ± 0.0003 |
+
+### Test results
+
+| Metric | Mean ± Std |
+|---|---:|
+| HitRate@1 | 0.1935 ± 0.0013 |
+| Recall@1 | 0.1935 ± 0.0013 |
+| NDCG@1 | 0.1935 ± 0.0013 |
+| HitRate@5 | 0.4991 ± 0.0013 |
+| Recall@5 | 0.4991 ± 0.0013 |
+| NDCG@5 | 0.3488 ± 0.0013 |
+| HitRate@10 | 0.6948 ± 0.0022 |
+| Recall@10 | 0.6948 ± 0.0022 |
+| NDCG@10 | 0.4119 ± 0.0016 |
+| HitRate@20 | 0.8790 ± 0.0023 |
+| Recall@20 | 0.8790 ± 0.0023 |
+| NDCG@20 | 0.4587 ± 0.0016 |
+| MRR | 0.3425 ± 0.0013 |
+
+<details>
+<summary>Show multi-seed plot — baseline model:</summary>
+
+#### Multi-seed learning curve (`no_net`)
+
+<img width="1200" height="1200" alt="nn_no_net_learning_curve" src="https://github.com/user-attachments/assets/d2ab8bc4-272e-4304-b109-34713293f3f6" />
+
+
+</details>
+
+-------------------------------------
+
+## Neural Network — with_net
+
+### Validation results
+
+| Metric | Mean ± Std |
+|---|---:|
+| HitRate@1 | 0.1826 ± 0.0020 |
+| Recall@1 | 0.1826 ± 0.0020 |
+| NDCG@1 | 0.1826 ± 0.0020 |
+| HitRate@5 | 0.4904 ± 0.0051 |
+| Recall@5 | 0.4904 ± 0.0051 |
+| NDCG@5 | 0.3385 ± 0.0033 |
+| HitRate@10 | 0.6886 ± 0.0034 |
+| Recall@10 | 0.6886 ± 0.0034 |
+| NDCG@10 | 0.4026 ± 0.0026 |
+| HitRate@20 | 0.8801 ± 0.0018 |
+| Recall@20 | 0.8801 ± 0.0018 |
+| NDCG@20 | 0.4512 ± 0.0023 |
+| MRR | 0.3327 ± 0.0024 |
+
+### Test results
+
+| Metric | Mean ± Std |
+|---|---:|
+| HitRate@1 | 0.1917 ± 0.0020 |
+| Recall@1 | 0.1917 ± 0.0020 |
+| NDCG@1 | 0.1917 ± 0.0020 |
+| HitRate@5 | 0.4999 ± 0.0033 |
+| Recall@5 | 0.4999 ± 0.0033 |
+| NDCG@5 | 0.3483 ± 0.0018 |
+| HitRate@10 | 0.6976 ± 0.0042 |
+| Recall@10 | 0.6976 ± 0.0042 |
+| NDCG@10 | 0.4122 ± 0.0021 |
+| HitRate@20 | 0.8811 ± 0.0014 |
+| Recall@20 | 0.8811 ± 0.0014 |
+| NDCG@20 | 0.4588 ± 0.0015 |
+| MRR | 0.3419 ± 0.0017 |
+
+<details>
+<summary>Show multi-seed plot — network model</summary>
+
+#### Multi-seed learning curve (`with_net`)
+
+<img width="1200" height="1200" alt="nn_with_net_learning_curve" src="https://github.com/user-attachments/assets/5d07b598-b193-44d7-b837-1a5ba99ed179" />
+
+</details>
+
+</details>
+
 
 <details>
 <summary>Comparison of approach</summary>
 
 ### Comparison of approach
 
-Both runs use the same **Neural Network BPR model** and the same general training pipeline.  
-In both cases:
+The neural experiments are now split into two stages:
 
-- the target column is `owned`
-- training is based on grouped interactions: **1 positive + 10 negatives**
-- the loss function is **BPR**
-- user and game representations are learned through neural encoders
-- final ranking scores are produced by an MLP
-- model selection is based on **validation ROC-AUC**
-- final evaluation includes ranking metrics
+### Stage 1: `train_NN.py`
+This stage is used for:
+- hyperparameter search
+- single-seed training
+- selecting the best final configuration
 
-However, the two runs differ in the **underlying cached feature space**.
-
--------------------------------------
-
-#### 1. Dataset and feature space
-
-The **no_net** version uses cached features without additional network-derived information.
-
-The **with_net** version uses network-enriched cached features, which include additional relational information in the user/game representation space.
-
-*This means the neural architecture is the same, but the underlying input representation is richer in the `with_net` run.*
+### Stage 2: `train_NN_multiseed.py`
+This stage is used for:
+- final evaluation
+- repeated training on multiple seeds
+- reporting mean ± std
 
 -------------------------------------
 
-#### 2. Model architecture
+## Same elements in both variants
 
-Both versions use exactly the same model design:
-- user linear encoder
-- game numeric projection
-- categorical embedding layers
-- masked average pooling for multi-value categorical fields
-- MLP scoring head
-
-The searched hyperparameters are also identical:
-- hidden channels: `64`, `128`, `256`
-- layers: `2`, `3`, `4`
-- learning rate: `1e-3`, `5e-4`
-
-In both runs, the best configuration was:
-- hidden_channels = 256
-- num_layers = 4
-- learning_rate = 0.0005
+Both **Baseline model** `no_net` and **Network model** `with_net` use:
+- the same model structure
+- the same training logic
+- the same grouped interactions
+- the same number of epochs
+- the same selected hyperparameters
 
 -------------------------------------
 
-#### 3. Training objective
+## Difference between **Baseline model** `no_net` and **Network model** `with_net`
 
-Both runs use:
-- pairwise **Bayesian Personalized Ranking loss**
-- grouped training examples with one positive item and multiple negatives
-- mini-batch training with `Adam`
-- validation monitoring with ROC-AUC
+The difference is in the input representation.
 
-This differs from the sklearn models in the repository, which are mostly trained as pointwise classifiers and later evaluated as ranking models.
+### **Baseline model** `no_net`
+Uses the baseline cache without extra network-derived information.
 
--------------------------------------
+### **Network model** `with_net`
+Uses the enriched cache with additional network-based features.
 
-#### 4. Training setup
-
-Both runs use the same training procedure:
-- 20 epochs
-- 200000 sampled groups per epoch
-- ReduceLROnPlateau scheduler
-- GPU training when available
-- cached feature tensors loaded from disk
-
-Unlike the large Logistic Regression network model, these neural runs do **not** use chunked CSV-based training.  
-Instead, they rely on precomputed cached tensors and sampled grouped interactions.
+So the architecture is the same, but the feature space is richer in the `with_net` variant.
 
 -------------------------------------
 
-#### 5. Model selection
+## Final evaluation protocol
 
-A notable difference compared with LR / RF / XGB in the repository is that this model is selected using:
+The final reported neural results come from the multi-seed script, not from the single-seed search script.
 
-- **average validation ROC-AUC across epochs**
-
-rather than:
-- validation NDCG@10
-
-So the neural BPR setup is optimized using a classification-oriented validation signal, while final reporting still includes ranking metrics.
-
--------------------------------------
-
-#### Summary
-
-The two neural BPR runs use the same architecture, same loss, and same hyperparameter search procedure.
-
-- **`nn_bpr.py no_net`** uses the no-network cached feature representation
-- **`nn_bpr.py with_net`** uses the network-enriched cached feature representation
-
-The main difference is therefore the **input representation**, not the training algorithm itself.
+This means the final comparison is based on:
+- the same final hyperparameters
+- the same evaluation procedure
+- multiple seeds
+- averaged results with standard deviation
 
 </details>
-  
+
+
 <details>
-<summary>Comparison of results</summary>  
-  
-### Comparison of results
-  
-The table below compares the final **test results** of the two Neural Network BPR runs.
-  
-| Metric | NN BPR baseline | NN BPR network |
+<summary>Comparison of final multi-seed results</summary>
+
+### Comparison of final multi-seed results
+
+The table below compares the final **test** results of the two neural variants.
+
+| Metric | NN baseline model (`no_net`) | NN network model (`with_net`) |
 |---|---:|---:|
-| Best validation ROC-AUC | 0.9100 | 0.9128 |
-| Evaluated users | 28211 | 28211 |
-| HitRate@1 | 0.1913 | 0.1952 |
-| Recall@1 | 0.1913 | 0.1952 |
-| NDCG@1 | 0.1913 | 0.1952 |
-| HitRate@5 | 0.4952 | 0.4990 |
-| Recall@5 | 0.4952 | 0.4990 |
-| NDCG@5 | 0.3459 | 0.3498 |
-| HitRate@10 | 0.6909 | 0.6974 |
-| Recall@10 | 0.6909 | 0.6974 |
-| NDCG@10 | 0.4090 | 0.4139 |
-| HitRate@20 | 0.8785 | 0.8821 |
-| Recall@20 | 0.8785 | 0.8821 |
-| NDCG@20 | 0.4567 | 0.4608 |
-| MRR | 0.3402 | 0.3443 |
+| HitRate@1 | 0.1935 ± 0.0013 | 0.1917 ± 0.0020 |
+| Recall@1 | 0.1935 ± 0.0013 | 0.1917 ± 0.0020 |
+| NDCG@1 | 0.1935 ± 0.0013 | 0.1917 ± 0.0020 |
+| HitRate@5 | 0.4991 ± 0.0013 | 0.4999 ± 0.0033 |
+| Recall@5 | 0.4991 ± 0.0013 | 0.4999 ± 0.0033 |
+| NDCG@5 | 0.3488 ± 0.0013 | 0.3483 ± 0.0018 |
+| HitRate@10 | 0.6948 ± 0.0022 | 0.6976 ± 0.0042 |
+| Recall@10 | 0.6948 ± 0.0022 | 0.6976 ± 0.0042 |
+| NDCG@10 | 0.4119 ± 0.0016 | 0.4122 ± 0.0021 |
+| HitRate@20 | 0.8790 ± 0.0023 | 0.8811 ± 0.0014 |
+| Recall@20 | 0.8790 ± 0.0023 | 0.8811 ± 0.0014 |
+| NDCG@20 | 0.4587 ± 0.0016 | 0.4588 ± 0.0015 |
+| MRR | 0.3425 ± 0.0013 | 0.3419 ± 0.0017 |
 
 -------------------------------------
-  
-#### Key observations
-  
-Compared with the baseline run, the network version achieves slightly stronger results across all reported ranking metrics.
 
-The improvements are consistent but relatively modest:
-- **HitRate@1** increases from **0.1913** to **0.1952**
-- **NDCG@10** increases from **0.4090** to **0.4139**
-- **MRR** increases from **0.3402** to **0.3443**
+## Key observations
 
-This suggests that the network-enriched cached representation provides additional useful information, but the gain is much smaller than in the classical LR / RF / XGB comparisons.
+The multi-seed results show that both neural variants achieve very similar performance.
 
-Overall, the **network Neural Network BPR model outperforms the baseline version**, but the margin is limited.
+Compared with the baseline version, the network variant is only slightly better on some ranking metrics:
+- `HitRate@10`
+- `Recall@10`
+- `NDCG@10`
+- `HitRate@20`
+- `Recall@20`
+- `NDCG@20`
+
+However, the improvements are very small.
+
+At the same time:
+- the baseline version is slightly better at `HitRate@1`, `Recall@1`, `NDCG@1`
+- the baseline version is also slightly better in `MRR`
+
+So unlike the earlier single-seed comparison, the final multi-seed comparison shows that the difference between `no_net` and `with_net` is very limited.
+
+The standard deviations are also low in both variants, which suggests that the neural training procedure is relatively stable across seeds.
+
+</details>
+
 
 </details>
