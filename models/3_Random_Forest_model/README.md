@@ -1,47 +1,66 @@
 <details> 
-<summary>Random Forest Baseline model</summary>
-  
-### MODEL: Random Forest Baseline model   
-    
-`rf_baseline.py`
-      
-It trains, validates, and evaluates a Random Forest baseline for the game recommendation task.  
-  
-The script builds a full sklearn pipeline that:  
-- preprocesses numeric features  
-- preprocesses categorical features  
-- converts sparse features to dense format  
-- trains a Random Forest classifier  
-- selects the best hyperparameter setting on validation data  
-- evaluates the best model on the test set as a ranking model  
-*Additionally, it creates learning curve experiments for the best configuration.*
+<summary>Random Forest model — hyperparameter search</summary>
 
---------------------------------------
+### Random Forest model — hyperparameter search
 
-Input:   
+`train_rf_baseline.py`  
+`train_rf_network.py`
+
+These scripts perform the original Random Forest training procedure and hyperparameter search.
+
+Their role is to:
+- train the model on one seed
+- compare hyperparameter configurations
+- select the best final setup
+
+-------------------------------------
+
+## Input
 - `train.csv`
 - `val.csv`
-- `test.csv`  
-    
-*This is the baseline dataset* 
+- `test.csv`
+
+*use baseline dataset for `train_rf_baseline.py` and network dataset for `train_rf_network.py`*
+  
+-------------------------------------
+
+## What the scripts do
+
+The scripts:
+- load the full training, validation, and test splits
+- build a full sklearn pipeline
+- preprocess numeric and categorical features
+- convert sparse transformed features to dense format
+- train a Random Forest classifier
+- compare several hyperparameter combinations
+- select the best configuration using validation ranking quality
+- evaluate the best model on the test split
+- create learning curve experiments for the selected configuration
 
 -------------------------------------
 
-The target column is:  
-- `owned`  
-*The model predicts the probability that a given (`steamid`, `appid`) pair corresponds to a **positive interaction**.*
+## Features used
 
--------------------------------------
-  
-#### Features used
-  
-The script uses two groups of input features.  
+Both scripts use:
+- numeric features
+- categorical features
+- identifier columns:
+  - `steamid`
+  - `appid`
 
-<details> 
+The identifier columns are loaded for evaluation and saving predictions, but they are **not** used as model features.
+
+### Baseline model
+The baseline version uses:
+- standard user-level and game-level numeric features
+- grouped user playtime features
+- 5 categorical metadata columns
+
+<details>
 <summary>Show feature list</summary>
-  
+
 #### Numeric features:
-  
+
 - `total_games_owned`
 - `total_playtime_minutes`
 - `median_playtime_minutes`
@@ -49,6 +68,8 @@ The script uses two groups of input features.
 - `user_count`
 - `game_total_playtime_minutes`
 - `release_date`
+
+Grouped user playtime features:
 - `user_playtime_group_Action`
 - `user_playtime_group_Adventure`
 - `user_playtime_group_RPG`
@@ -62,35 +83,41 @@ The script uses two groups of input features.
 - `user_playtime_group_Adult`
 - `user_playtime_group_Non-gameplay_Tools`
 - `user_playtime_group_Other`
-  
+
 #### Categorical features:
-  
+
 - `country`
 - `genres`
 - `developer`
 - `publisher`
 - `platforms`
-    
-Identifier columns:    
+
+#### Identifier columns (not used as features):
+
 - `steamid`
 - `appid`
 
-*These **identifier columns** are loaded for evaluation and saving predictions, but they are not used as model features.* 
-  
 </details>
-  
+
+### Network model
+The network version uses the same structure, but extends the numeric feature space with:
+- `friend_count`
+- `game_emb_0 ... game_emb_31`
+
+So the Network model uses a richer input representation than the Baseline model. 
+
 -------------------------------------
 
-#### Preprocessing
-  
-The script builds a `sklearn` Pipeline with a `ColumnTransformer`.
-  
-Numeric preprocessing:  
+## Preprocessing
+
+The scripts build a `sklearn` Pipeline with a `ColumnTransformer`.
+
+### Numeric preprocessing
 - missing values are filled using **median imputation**
-  
-Categorical preprocessing:  
+
+### Categorical preprocessing
 - missing values are replaced with **"MISSING"**
-- features are encoded using constrained `OneHotEncoder`
+- categorical features are encoded using constrained `OneHotEncoder`
 
 Configuration:
 - `handle_unknown="infrequent_if_exist"`
@@ -99,181 +126,136 @@ Configuration:
 
 After preprocessing, the transformed matrix is converted from sparse to dense format using `FunctionTransformer`, because `RandomForestClassifier` in sklearn expects dense input.
 
-*Unlike Logistic Regression, Random Forest does not require feature scaling, so no `StandardScaler` is used for numeric columns.*
-
+Unlike Logistic Regression, Random Forest does **not** require feature scaling, so no `StandardScaler` is used. 
+  
 -------------------------------------
 
-#### Model
-  
+## Model
+
 The classifier is: **RandomForestClassifier**
-  
+
 Configuration:
 - `bootstrap=True`
 - `class_weight="balanced_subsample"`
 - `random_state=42`
 - `n_jobs=8`
-  
-A small hyperparameter grid is tested:
+
+The hyperparameter search tests two configurations:
+
 - `n_estimators=80`, `max_depth=20`, `min_samples_split=20`, `min_samples_leaf=10`, `max_features="sqrt"`
 - `n_estimators=120`, `max_depth=30`, `min_samples_split=20`, `min_samples_leaf=10`, `max_features="sqrt"`
-  
-Each configuration is trained on the training split and evaluated on the validation split.  
-  
-The best model is selected using: **Validation NDCG@10**
 
-*So even though the underlying model is a classifier, model selection is based on ranking quality, not only classification quality.*
+The best model is selected using:
+- **validation NDCG@10**
 
+So even though the underlying model is a classifier, model selection is based on ranking quality. 
+  
 -------------------------------------
   
-#### Ranking evaluation
-  
-Predicted probabilities are used as ranking scores.  
-For each user (`steamid`):  
+## Learning curve analysis
 
-candidate games are sorted by predicted score in descending order  
-ranking metrics are computed on the ordered owned labels
-
-The script computes:  
-- HitRate@1
-- Recall@1
-- NDCG@1
-- HitRate@5
-- Recall@5
-- NDCG@5
-- HitRate@10
-- Recall@10
-- NDCG@10
-- HitRate@20
-- Recall@20
-- NDCG@20
-- MRR
-    
-Metrics are computed per user and then **averaged across all evaluated users**.    
-*(Users with no positive items are skipped during ranking evaluation.)*  
-
--------------------------------------
-
-#### Additional classification metric
-  
-Besides ranking metrics, the script also computes:  
-- ROC-AUC
-  
-ROC-AUC is calculated on:  
-- validation data during model selection
-- test data for the final selected model
-  
-*This gives an additional view of binary classification quality.*
-
--------------------------------------
-
-#### Learning curve analysis
-  
-After selecting the best validation configuration, the script trains the model on increasing fractions of the training set:
+After selecting the best validation configuration, the scripts train the model on increasing fractions of the training set:
 - 10%
 - 30%
 - 60%
 - 100%
-  
-For each fraction, it measures:
+
+For each fraction, they measure:
 - training ROC-AUC
 - validation ROC-AUC
 - validation ranking metrics
 - training time
+
+The scripts save:
+- `learning_curve.csv`
+- `learning_curve_roc_auc.png`
+- `learning_curve_ranking.png` 
   
-To keep computation manageable, learning curves can be limited to a subset of training rows:
-- `learning_curve_max_rows = 300000`
-  
-It then saves:
+-------------------------------------
+
+## Outputs
+
+### For Baseline model
+- `val_trials.csv`
+- `test_scores.csv.gz`
+- `test_per_user_metrics.csv`
+- `best_model.joblib`
+- `results.json`
 - `learning_curve.csv`
 - `learning_curve_roc_auc.png`
 - `learning_curve_ranking.png`
 
-*This helps analyze whether the model benefits from more training data and whether it shows signs of underfitting or overfitting.*
-
--------------------------------------
-
-Outputs:  
-- `val_trials.csv` — validation results for all tested hyperparameter settings
-- `test_scores.csv.gz` — predicted scores for test user-game pairs
-- `test_per_user_metrics.csv` — ranking metrics per user on test data
-- `best_model.joblib` — the fitted sklearn pipeline
-- `results.json` — final summary of the experiment
-- `learning_curve.csv` — learning curve metrics
+### For Network model
+- `val_trials.csv`
+- `test_scores.csv.gz`
+- `test_per_user_metrics.csv`
+- `best_model.joblib`
+- `results.json`
+- `learning_curve.csv`
 - `learning_curve_roc_auc.png`
 - `learning_curve_ranking.png`
+
+*you can see results.json for all in `results folder`*
   
 -------------------------------------
 
-### Results:
+## Single-seed plots
+
+### Baseline model
+  
+<img width="1600" height="1000" alt="learning_curve_roc_auc" src="https://github.com/user-attachments/assets/c4f35043-55cc-487b-916e-263321cad15f" />
+<img width="1600" height="1000" alt="learning_curve_ranking" src="https://github.com/user-attachments/assets/c552c1a6-a3bf-4f33-9565-9f195991d6f4" />
+  
+### Network model
+  
+<img width="1600" height="1000" alt="learning_curve_roc_auc" src="https://github.com/user-attachments/assets/0ed5866b-4d32-4905-aa18-2b2b9a92348c" />
+<img width="1600" height="1000" alt="learning_curve_ranking" src="https://github.com/user-attachments/assets/ed08b6fe-e9dd-4117-a5d5-64f7a8b5584b" />
+  
+These plots come from a **single training run** (`seed = 42`).
+  
+They are useful for:
+- showing how the model behaves as training data grows
+- illustrating the selected configuration
+- documenting the original hyperparameter-search experiment
+  
+They do **not** show variance across seeds.
+  
+-------------------------------------
+
+## Single-seed results
+
+These runs were used mainly to:
+- perform hyperparameter search
+- identify the best final configuration
 
 <details> 
-<summary>Show results for Random Forest Baseline model</summary> 
+<summary>Show results for Random Forest - baseline model</summary>
 
-### Random Forest Baseline:  
-  
-- "model_type": "rf"
-- "dataset_type": "baseline"
-- "seed": 42
-- "train_rows": 43494594
-- "val_rows": 2849311
-- "test_rows": 2849311
-- "rf_njobs": 8
-- "ohe_max_categories": 100
-- "ohe_min_frequency": 50
-- "learning_curve_max_rows": 300000
-  
+### Random Forest - baseline model
+
+- `"model_type": "rf"`
+- `"dataset_type": "baseline"`
+- `"seed": 42`
+- `"train_rows": 43494594`
+- `"val_rows": 2849311`
+- `"test_rows": 2849311`
+- `"rf_njobs": 8`
+- `"ohe_max_categories": 100`
+- `"ohe_min_frequency": 50`
+- `"learning_curve_max_rows": 300000`
+
 **Best validation parameters:**
-- n_estimators = 120
-- max_depth = 30
-- min_samples_split = 20
-- min_samples_leaf = 10
-- max_features = sqrt
-  
-**Features used:**
-- 20 numeric features  
-- 5 categorical features
-    
+- `n_estimators = 120`
+- `max_depth = 30`
+- `min_samples_split = 20`
+- `min_samples_leaf = 10`
+- `max_features = sqrt`
+
 <details> 
-<summary>Show feature list</summary>
-  
-#### Numeric features:
-  
-- `total_games_owned`
-- `total_playtime_minutes`
-- `median_playtime_minutes`
-- `unique_genres_played`
-- `user_count`
-- `game_total_playtime_minutes`
-- `release_date`
-- `user_playtime_group_Action`
-- `user_playtime_group_Adventure`
-- `user_playtime_group_RPG`
-- `user_playtime_group_Casual`
-- `user_playtime_group_Indie`
-- `user_playtime_group_Racing`
-- `user_playtime_group_Simulation`
-- `user_playtime_group_Strategy`
-- `user_playtime_group_Sports`
-- `user_playtime_group_Violent`
-- `user_playtime_group_Adult`
-- `user_playtime_group_Non-gameplay_Tools`
-- `user_playtime_group_Other`
-  
-#### Categorical features:
-  
-- `country`
-- `genres`
-- `developer`
-- `publisher`
-- `platforms`
-       
-</details> 
-  
-<details> 
-<summary>Show validation results for best model</summary>
-    
+<summary>Show validation results</summary>
+
 #### Validation results:
-  
+
 | Metric | Value |
 |---|---:|
 | Trial | 2 |
@@ -299,13 +281,13 @@ Outputs:
 | NDCG@20 | 0.7391 |
 | MRR | 0.6946 |
 
-</details> 
-  
+</details>
+
 <details> 
 <summary>Show test results</summary>
-    
+
 #### Test results:
-  
+
 | Metric | Value |
 |---|---:|
 | ROC-AUC | 0.9492 |
@@ -323,364 +305,39 @@ Outputs:
 | Recall@20 | 0.8992 |
 | NDCG@20 | 0.7406 |
 | MRR | 0.6968 |
-  
+
+</details>
+
 </details>
 
 <details> 
-<summary>Show learning curves</summary>
-    
-#### Learning curves:
-  
-<img width="1600" height="1000" alt="learning_curve_roc_auc" src="https://github.com/user-attachments/assets/c4f35043-55cc-487b-916e-263321cad15f" />
-<img width="1600" height="1000" alt="learning_curve_ranking" src="https://github.com/user-attachments/assets/c552c1a6-a3bf-4f33-9565-9f195991d6f4" />
+<summary>Show results for Random Forest - network model</summary>
 
-  
-</details>
-  
-</details>
+### Random Forest - network model
 
--------------------------------------
-  
-</details>
+- `"model_type": "rf"`
+- `"dataset_type": "network"`
+- `"seed": 42`
+- `"train_rows": 43494594`
+- `"val_rows": 2849311`
+- `"test_rows": 2849311`
+- `"rf_njobs": 8`
+- `"ohe_max_categories": 100`
+- `"ohe_min_frequency": 50`
+- `"learning_curve_max_rows": 300000`
 
-<details> 
-<summary>Random Forest Network model</summary>
-  
-### MODEL: Random Forest Network model   
-    
-`rf_network.py`
-      
-It trains, validates, and evaluates a Random Forest model for the game recommendation task using the **network-enriched dataset**.  
-  
-The script builds a full sklearn pipeline that:  
-- preprocesses numeric features  
-- preprocesses categorical features  
-- converts sparse features to dense format  
-- trains a Random Forest classifier  
-- selects the best hyperparameter setting on validation data  
-- evaluates the best model on the test set as a ranking model  
-*Additionally, it creates learning curve experiments for the best configuration.*
-
---------------------------------------
-
-Input:   
-- `train.csv`
-- `val.csv`
-- `test.csv`  
-    
-*This is the network dataset* 
-
--------------------------------------
-
-The target column is:  
-- `owned`  
-*The model predicts the probability that a given (`steamid`, `appid`) pair corresponds to a **positive interaction**.*
-
--------------------------------------
-  
-#### Features used
-  
-The script uses two groups of input features.  
-
-<details> 
-<summary>Show feature list</summary>
-  
-#### Numeric features:
-  
-- `total_games_owned`
-- `total_playtime_minutes`
-- `median_playtime_minutes`
-- `unique_genres_played`
-- `user_count`
-- `game_total_playtime_minutes`
-- `release_date`
-- `friend_count`
-- `game_emb_0`
-- `game_emb_1`
-- `game_emb_2`
-- `game_emb_3`
-- `game_emb_4`
-- `game_emb_5`
-- `game_emb_6`
-- `game_emb_7`
-- `game_emb_8`
-- `game_emb_9`
-- `game_emb_10`
-- `game_emb_11`
-- `game_emb_12`
-- `game_emb_13`
-- `game_emb_14`
-- `game_emb_15`
-- `game_emb_16`
-- `game_emb_17`
-- `game_emb_18`
-- `game_emb_19`
-- `game_emb_20`
-- `game_emb_21`
-- `game_emb_22`
-- `game_emb_23`
-- `game_emb_24`
-- `game_emb_25`
-- `game_emb_26`
-- `game_emb_27`
-- `game_emb_28`
-- `game_emb_29`
-- `game_emb_30`
-- `game_emb_31`
-- `user_playtime_group_Action`
-- `user_playtime_group_Adventure`
-- `user_playtime_group_RPG`
-- `user_playtime_group_Casual`
-- `user_playtime_group_Indie`
-- `user_playtime_group_Racing`
-- `user_playtime_group_Simulation`
-- `user_playtime_group_Strategy`
-- `user_playtime_group_Sports`
-- `user_playtime_group_Violent`
-- `user_playtime_group_Adult`
-- `user_playtime_group_Non-gameplay_Tools`
-- `user_playtime_group_Other`
-  
-#### Categorical features:
-  
-- `country`
-- `genres`
-- `developer`
-- `publisher`
-- `platforms`
-    
-Identifier columns:    
-- `steamid`
-- `appid`
-
-*These **identifier columns** are loaded for evaluation and saving predictions, but they are not used as model features.* 
-  
-</details>
-  
--------------------------------------
-
-#### Preprocessing
-  
-The script builds a `sklearn` Pipeline with a `ColumnTransformer`.
-  
-Numeric preprocessing:  
-- missing values are filled using **median imputation**
-  
-Categorical preprocessing:  
-- missing values are replaced with **"MISSING"**
-- features are encoded using constrained `OneHotEncoder`
-
-Configuration:
-- `handle_unknown="infrequent_if_exist"`
-- `max_categories=100`
-- `min_frequency=50`
-
-After preprocessing, the transformed matrix is converted from sparse to dense format using `FunctionTransformer`, because `RandomForestClassifier` in sklearn expects dense input.
-
-*Unlike Logistic Regression, Random Forest does not require feature scaling, so no `StandardScaler` is used for numeric columns.*
-
--------------------------------------
-
-#### Model
-  
-The classifier is: **RandomForestClassifier**
-  
-Configuration:
-- `bootstrap=True`
-- `class_weight="balanced_subsample"`
-- `random_state=42`
-- `n_jobs=8`
-  
-A hyperparameter grid is tested:
-- `n_estimators=80`, `max_depth=20`, `min_samples_split=20`, `min_samples_leaf=10`, `max_features="sqrt"`
-- `n_estimators=120`, `max_depth=30`, `min_samples_split=20`, `min_samples_leaf=10`, `max_features="sqrt"`
-  
-Each configuration is trained on the training split and evaluated on the validation split.  
-  
-The best model is selected using: **Validation NDCG@10**
-
--------------------------------------
-  
-#### Ranking evaluation
-  
-Predicted probabilities are used as ranking scores.  
-For each user (`steamid`):  
-
-candidate games are sorted by predicted score in descending order  
-ranking metrics are computed on the ordered owned labels
-
-The script computes:  
-- HitRate@1
-- Recall@1
-- NDCG@1
-- HitRate@5
-- Recall@5
-- NDCG@5
-- HitRate@10
-- Recall@10
-- NDCG@10
-- HitRate@20
-- Recall@20
-- NDCG@20
-- MRR
-    
-Metrics are computed per user and then **averaged across all evaluated users**.    
-*(Users with no positive items are skipped during ranking evaluation.)*  
-
--------------------------------------
-
-#### Additional classification metric
-  
-Besides ranking metrics, the script also computes:  
-- ROC-AUC
-  
-ROC-AUC is calculated on:  
-- validation data during model selection
-- test data for the final selected model
-
--------------------------------------
-
-#### Learning curve analysis
-  
-After selecting the best validation configuration, the script trains the model on increasing fractions of the training set:
-- 10%
-- 30%
-- 60%
-- 100%
-  
-For each fraction, it measures:
-- training ROC-AUC
-- validation ROC-AUC
-- validation ranking metrics
-- training time
-  
-To keep computation manageable, learning curves can be limited to a subset of training rows:
-- `learning_curve_max_rows = 300000`
-  
-It then saves:
-- `learning_curve.csv`
-- `learning_curve_roc_auc.png`
-- `learning_curve_ranking.png`
-
-*This helps analyze whether the model benefits from more training data and whether it shows signs of underfitting or overfitting.*
-
--------------------------------------
-
-Outputs:  
-- `val_trials.csv` — validation results for all tested hyperparameter settings
-- `test_scores.csv.gz` — predicted scores for test user-game pairs
-- `test_per_user_metrics.csv` — ranking metrics per user on test data
-- `best_model.joblib` — the fitted sklearn pipeline
-- `results.json` — final summary of the experiment
-- `learning_curve.csv` — learning curve metrics
-- `learning_curve_roc_auc.png`
-- `learning_curve_ranking.png`
-  
--------------------------------------
-
-### Results:
-
-<details> 
-<summary>Show results for Random Forest Network model</summary> 
-
-### Random Forest Network:  
-  
-- "model_type": "rf"
-- "dataset_type": "network"
-- "seed": 42
-- "train_rows": 43494594
-- "val_rows": 2849311
-- "test_rows": 2849311
-- "rf_njobs": 8
-- "ohe_max_categories": 100
-- "ohe_min_frequency": 50
-- "learning_curve_max_rows": 300000
-  
 **Best validation parameters:**
-- n_estimators = 120
-- max_depth = 30
-- min_samples_split = 20
-- min_samples_leaf = 10
-- max_features = sqrt
-  
-**Features used:**
-- 53 numeric features  
-- 5 categorical features
-    
+- `n_estimators = 120`
+- `max_depth = 30`
+- `min_samples_split = 20`
+- `min_samples_leaf = 10`
+- `max_features = sqrt`
+
 <details> 
-<summary>Show feature list</summary>
-  
-#### Numeric features:
-  
-- `total_games_owned`
-- `total_playtime_minutes`
-- `median_playtime_minutes`
-- `unique_genres_played`
-- `user_count`
-- `game_total_playtime_minutes`
-- `release_date`
-- `friend_count`
-- `game_emb_0`
-- `game_emb_1`
-- `game_emb_2`
-- `game_emb_3`
-- `game_emb_4`
-- `game_emb_5`
-- `game_emb_6`
-- `game_emb_7`
-- `game_emb_8`
-- `game_emb_9`
-- `game_emb_10`
-- `game_emb_11`
-- `game_emb_12`
-- `game_emb_13`
-- `game_emb_14`
-- `game_emb_15`
-- `game_emb_16`
-- `game_emb_17`
-- `game_emb_18`
-- `game_emb_19`
-- `game_emb_20`
-- `game_emb_21`
-- `game_emb_22`
-- `game_emb_23`
-- `game_emb_24`
-- `game_emb_25`
-- `game_emb_26`
-- `game_emb_27`
-- `game_emb_28`
-- `game_emb_29`
-- `game_emb_30`
-- `game_emb_31`
-- `user_playtime_group_Action`
-- `user_playtime_group_Adventure`
-- `user_playtime_group_RPG`
-- `user_playtime_group_Casual`
-- `user_playtime_group_Indie`
-- `user_playtime_group_Racing`
-- `user_playtime_group_Simulation`
-- `user_playtime_group_Strategy`
-- `user_playtime_group_Sports`
-- `user_playtime_group_Violent`
-- `user_playtime_group_Adult`
-- `user_playtime_group_Non-gameplay_Tools`
-- `user_playtime_group_Other`
-  
-#### Categorical features:
-  
-- `country`
-- `genres`
-- `developer`
-- `publisher`
-- `platforms`
-       
-</details> 
-  
-<details> 
-<summary>Show validation results for best model</summary>
-    
+<summary>Show validation results</summary>
+
 #### Validation results:
-  
+
 | Metric | Value |
 |---|---:|
 | Trial | 2 |
@@ -706,13 +363,13 @@ Outputs:
 | NDCG@20 | 0.9706 |
 | MRR | 0.9663 |
 
-</details> 
-  
+</details>
+
 <details> 
 <summary>Show test results</summary>
-    
+
 #### Test results:
-  
+
 | Metric | Value |
 |---|---:|
 | ROC-AUC | 0.9934 |
@@ -730,175 +387,396 @@ Outputs:
 | Recall@20 | 0.9864 |
 | NDCG@20 | 0.9700 |
 | MRR | 0.9656 |
+
+</details>
+
+*Final evaluation is reported separately in the multi-seed section below.*
+
+</details>
+
+</details>
+
+
+<details>
+<summary>Random Forest model — multi-seed final evaluation</summary>
+
+### Random Forest model — multi-seed final evaluation
+
+`train_rf_baseline_multiseed.py`  
+`train_rf_network_multiseed.py`
+
+These scripts perform the **final evaluation** of the Random Forest model using multiple random seeds.
+
+They use the same:
+- preprocessing pipeline
+- feature definitions
+- training data
+- best hyperparameters selected earlier by the single-seed search scripts
+
+The only difference is that the final model is now trained multiple times to estimate:
+- mean performance
+- standard deviation
+
+-------------------------------------
+
+## Why these scripts were added
+
+A single tree-based run may still depend on:
+- bootstrap sampling
+- randomness inside tree construction
+- the selected random seed
+
+Because of this, one run can look slightly better or slightly worse than another.
+
+The multi-seed version was added to make the final results:
+- more stable
+- more reliable
+- easier to compare fairly
+
+-------------------------------------
+
+## Relation to `train_rf_baseline.py` and `train_rf_network.py`
+
+The workflow is:
+
+1. `train_rf_baseline.py` / `train_rf_network.py`
+   - hyperparameter search
+   - single-seed training
+   - selection of the best configuration
+
+2. `train_rf_baseline_multiseed.py` / `train_rf_network_multiseed.py`
+   - final evaluation
+   - same best configuration
+   - multiple seeds
+   - aggregated metrics
+
+So the multi-seed scripts do **not** repeat the hyperparameter search.
+
+*They only evaluate the already selected final model more robustly.*
+
+-------------------------------------
+
+## Fixed hyperparameters used
+
+For both dataset variants, the multi-seed scripts use:
+
+- `n_estimators = 120`
+- `max_depth = 30`
+- `min_samples_split = 20`
+- `min_samples_leaf = 10`
+- `max_features = sqrt`
+
+-------------------------------------
+
+## Multi-seed setup
+
+The final model is trained with:
+
+- `seeds = [42, 0, 1]`
+
+For each seed, the scripts:
+- train the model independently
+- save the fitted sklearn pipeline for that seed
+- evaluate validation metrics
+- evaluate test metrics
+- save test predictions and per-user ranking metrics
+
+Then they aggregate the results across seeds using:
+- mean
+- standard deviation
+  
+-------------------------------------
+
+## Multi-seed learning curves
+
+The multi-seed scripts also build learning curves for the final configuration across seeds.
+
+They use the same fractions as the single-seed version:
+- 10%
+- 30%
+- 60%
+- 100%
+
+For each fraction and each seed, they measure:
+- training ROC-AUC
+- validation ROC-AUC
+- validation NDCG@10
+- validation Recall@10
+
+They save:
+- `learning_curve_per_seed.csv`
+- `learning_curve_aggregated.csv`
+- `learning_curve_roc_auc_multiseed.png`
+- `learning_curve_ranking_multiseed.png`
+
+The plotted curves show:
+- mean value across seeds
+- shaded area for standard deviation across seeds 
+
+-------------------------------------
+
+## Outputs
+
+### For Baseline model
+- `best_model_seed42.joblib`
+- `best_model_seed0.joblib`
+- `best_model_seed1.joblib`
+- `test_scores_seed42.csv.gz`
+- `test_scores_seed0.csv.gz`
+- `test_scores_seed1.csv.gz`
+- `test_per_user_metrics_seed42.csv`
+- `test_per_user_metrics_seed0.csv`
+- `test_per_user_metrics_seed1.csv`
+- `learning_curve_per_seed.csv`
+- `learning_curve_aggregated.csv`
+- `learning_curve_roc_auc_multiseed.png`
+- `learning_curve_ranking_multiseed.png`
+- `results.json`
+
+### For Network model
+- `best_model_seed42.joblib`
+- `best_model_seed0.joblib`
+- `best_model_seed1.joblib`
+- `test_scores_seed42.csv.gz`
+- `test_scores_seed0.csv.gz`
+- `test_scores_seed1.csv.gz`
+- `test_per_user_metrics_seed42.csv`
+- `test_per_user_metrics_seed0.csv`
+- `test_per_user_metrics_seed1.csv`
+- `learning_curve_per_seed.csv`
+- `learning_curve_aggregated.csv`
+- `learning_curve_roc_auc_multiseed.png`
+- `learning_curve_ranking_multiseed.png`
+- `results.json`
+
+*you can see results.json for all in `results folder`*
   
 </details>
 
-<details> 
-<summary>Show learning curves</summary>
-    
-#### Learning curves:
-    
-<img width="1600" height="1000" alt="learning_curve_roc_auc" src="https://github.com/user-attachments/assets/0ed5866b-4d32-4905-aa18-2b2b9a92348c" />
-<img width="1600" height="1000" alt="learning_curve_ranking" src="https://github.com/user-attachments/assets/ed08b6fe-e9dd-4117-a5d5-64f7a8b5584b" />
-  
-  
-</details>
-  
-</details>
-  
+
+<details>
+<summary>Final multi-seed results</summary>
+
+### Final multi-seed results
+
+The tables below report the final Random Forest results from the multi-seed scripts.
+
+All values are reported as:
+
+- **mean ± std**
+
+across seeds:
+- `42`
+- `0`
+- `1`
+
 -------------------------------------
+
+## Random Forest — baseline model
+
+### Validation results
+
+| Metric | Mean ± Std |
+|---|---:|
+| ROC-AUC | 0.9492 ± 0.0002 |
+| HitRate@1 | 0.6204 ± 0.0042 |
+| Recall@1 | 0.6204 ± 0.0042 |
+| NDCG@1 | 0.6204 ± 0.0042 |
+| HitRate@5 | 0.7775 ± 0.0018 |
+| Recall@5 | 0.7775 ± 0.0018 |
+| NDCG@5 | 0.7056 ± 0.0016 |
+| HitRate@10 | 0.8347 ± 0.0017 |
+| Recall@10 | 0.8347 ± 0.0017 |
+| NDCG@10 | 0.7240 ± 0.0015 |
+| HitRate@20 | 0.8991 ± 0.0008 |
+| Recall@20 | 0.8991 ± 0.0008 |
+| NDCG@20 | 0.7403 ± 0.0015 |
+| MRR | 0.6966 ± 0.0023 |
+
+### Test results
+
+| Metric | Mean ± Std |
+|---|---:|
+| ROC-AUC | 0.9490 ± 0.0001 |
+| HitRate@1 | 0.6241 ± 0.0047 |
+| Recall@1 | 0.6241 ± 0.0047 |
+| NDCG@1 | 0.6241 ± 0.0047 |
+| HitRate@5 | 0.7783 ± 0.0012 |
+| Recall@5 | 0.7783 ± 0.0012 |
+| NDCG@5 | 0.7076 ± 0.0019 |
+| HitRate@10 | 0.8345 ± 0.0017 |
+| Recall@10 | 0.8345 ± 0.0017 |
+| NDCG@10 | 0.7258 ± 0.0019 |
+| HitRate@20 | 0.8981 ± 0.0008 |
+| Recall@20 | 0.8981 ± 0.0008 |
+| NDCG@20 | 0.7418 ± 0.0018 |
+| MRR | 0.6989 ± 0.0026 |
+
+<details>
+<summary>Show multi-seed plot — baseline model</summary>
+
+#### Multi-seed learning curves — baseline model
+  
+<img width="1600" height="1000" alt="learning_curve_roc_auc_multiseed" src="https://github.com/user-attachments/assets/95d7e509-310d-4430-85c2-4cf7db8e6408" />
+<img width="1600" height="1000" alt="learning_curve_ranking_multiseed" src="https://github.com/user-attachments/assets/8c90f2cd-2a10-49ca-9ac7-391ce4dac932" />
   
 </details>
+
+-------------------------------------
+
+## Random Forest — network model
+
+### Validation results
+
+| Metric | Mean ± Std |
+|---|---:|
+| ROC-AUC | 0.9934 ± 0.0002 |
+| HitRate@1 | 0.9587 ± 0.0010 |
+| Recall@1 | 0.9587 ± 0.0010 |
+| NDCG@1 | 0.9587 ± 0.0010 |
+| HitRate@5 | 0.9723 ± 0.0007 |
+| Recall@5 | 0.9723 ± 0.0007 |
+| NDCG@5 | 0.9659 ± 0.0008 |
+| HitRate@10 | 0.9788 ± 0.0006 |
+| Recall@10 | 0.9788 ± 0.0006 |
+| NDCG@10 | 0.9681 ± 0.0007 |
+| HitRate@20 | 0.9869 ± 0.0003 |
+| Recall@20 | 0.9869 ± 0.0003 |
+| NDCG@20 | 0.9701 ± 0.0007 |
+| MRR | 0.9656 ± 0.0008 |
+
+### Test results
+
+| Metric | Mean ± Std |
+|---|---:|
+| ROC-AUC | 0.9931 ± 0.0002 |
+| HitRate@1 | 0.9577 ± 0.0008 |
+| Recall@1 | 0.9577 ± 0.0008 |
+| NDCG@1 | 0.9577 ± 0.0008 |
+| HitRate@5 | 0.9719 ± 0.0008 |
+| Recall@5 | 0.9719 ± 0.0008 |
+| NDCG@5 | 0.9653 ± 0.0008 |
+| HitRate@10 | 0.9781 ± 0.0006 |
+| Recall@10 | 0.9781 ± 0.0006 |
+| NDCG@10 | 0.9673 ± 0.0007 |
+| HitRate@20 | 0.9857 ± 0.0006 |
+| Recall@20 | 0.9857 ± 0.0006 |
+| NDCG@20 | 0.9692 ± 0.0007 |
+| MRR | 0.9649 ± 0.0007 |
+
+<details>
+<summary>Show multi-seed plot — network model</summary>
+
+#### Multi-seed learning curves — network model
+  
+<img width="1600" height="1000" alt="learning_curve_roc_auc_multiseed" src="https://github.com/user-attachments/assets/b0c02a6f-7c94-4c2e-a908-ebd37f0b17f2" />
+<img width="1600" height="1000" alt="learning_curve_ranking_multiseed" src="https://github.com/user-attachments/assets/a686d80e-693b-4675-802e-cfade1632d4c" />
+  
+</details>
+
+</details>
+
 
 <details>
 <summary>Comparison of approach</summary>
 
 ### Comparison of approach
 
-Both scripts implement a **Random Forest model** for the same recommendation task and use the same general evaluation framework.  
-In both cases:
+The Random Forest experiments are now split into two stages.
 
-- the target column is `owned`
-- ranking is based on predicted probabilities
-- model selection is done using **validation NDCG@10**
-- final evaluation includes ranking metrics and ROC-AUC
+### Stage 1: `train_rf_baseline.py` / `train_rf_network.py`
+This stage is used for:
+- hyperparameter search
+- single-seed training
+- selecting the best final configuration
 
-However, the two implementations differ in their **feature space**, while the general training procedure remains the same.
+### Stage 2: `train_rf_baseline_multiseed.py` / `train_rf_network_multiseed.py`
+This stage is used for:
+- final evaluation
+- repeated training on multiple seeds
+- reporting mean ± std
 
 -------------------------------------
 
-#### 1. Dataset and feature space
+## Same elements in both variants
 
-The **baseline model** uses a smaller and simpler feature set:
-- standard user-level features
-- game-level popularity and metadata features
-- grouped user playtime features
-- 5 categorical metadata columns
+Both Baseline and Network Random Forest models use:
+- the same model family
+- the same preprocessing logic
+- the same evaluation procedure
+- the same ranking metrics
+- the same final selected hyperparameters
 
-The **network model** extends this setup with additional network-related information:
+-------------------------------------
+
+## Main difference between Baseline and Network
+
+The difference is in the input representation.
+
+### Baseline model
+Uses the baseline tabular feature set.
+
+### Network model
+Uses the extended feature set with:
 - `friend_count`
-- `game_emb_0` to `game_emb_31`
+- `game_emb_0 ... game_emb_31`
 
-*This makes the network version much richer in representation and gives the model access to additional relational information.*
-
--------------------------------------
-
-#### 2. Training strategy
-
-Unlike the Logistic Regression network model, the Random Forest baseline and network versions use the **same overall training strategy**.  
-  
-In both scripts:  
-- the full training split is loaded into memory  
-- preprocessing and model fitting are done in one sklearn pipeline  
-- the model is trained directly using `fit()`  
-
-So, unlike `lr_network.py`, these Random Forest implementations do **not** use chunked training, warm start, or a separate preprocessing stage fitted on a sample.  
+So the training procedure is the same, but the Network model has access to richer information.
 
 -------------------------------------
 
-#### 3. Preprocessing differences
+## Final evaluation protocol
 
-Both versions use:
-- median imputation for numeric features
-- missing-value filling + constrained one-hot encoding for categorical features
-- sparse-to-dense conversion before model fitting
+The final reported Random Forest results come from the multi-seed scripts, not from the single-seed search scripts.
 
-Categorical encoding is configured identically in both scripts:
-- `handle_unknown="infrequent_if_exist"`
-- `max_categories=100`
-- `min_frequency=50`
+This means the final comparison is based on:
+- the same final hyperparameters
+- the same evaluation procedure
+- multiple seeds
+- averaged results with standard deviation
 
-This helps control feature explosion caused by rare categories.
-
-Also, neither version uses `StandardScaler`, because Random Forest is a tree-based model and does not require feature scaling.
-
--------------------------------------
-
-#### 4. Dense conversion step
-
-Both models apply a dense-conversion step after preprocessing:
-- sparse matrices produced by one-hot encoding are converted to dense arrays
-
-This is necessary because `RandomForestClassifier` in sklearn expects dense input.
-
--------------------------------------
-
-#### 5. Learning curve setup
-
-Both scripts generate learning curves for:
-- 10%
-- 30%
-- 60%
-- 100%
-
-Both versions also optionally limit the number of rows used for learning curve analysis:
-- `learning_curve_max_rows = 300000`
-
-This keeps runtime manageable while still showing how performance scales with training set size.
-
--------------------------------------
-
-#### 6. Saved artifacts
-
-Both scripts save:
-- validation trial summaries
-- test predictions
-- per-user metrics
-- trained model pipeline
-- `results.json`
-- learning curve files
-
-The saved outputs are structurally the same for both baseline and network Random Forest experiments.
-
--------------------------------------
-
-#### Summary
-
-The two Random Forest scripts follow the same training and evaluation design.
-
-- **`rf_baseline.py`** is a Random Forest model trained on the baseline feature set
-- **`rf_network.py`** is a Random Forest model trained on the network-enriched feature set
-  
 </details>
-  
-<details>
-<summary>Comparison of results</summary>  
-  
-### Comparison of results
-  
-The table below compares the final **test results** of the two Random Forest models.
-  
-| Metric | Baseline RF | Network RF |
-|---|---:|---:|
-| ROC-AUC | 0.9492 | 0.9934 |
-| Evaluated users | 28211 | 28211 |
-| HitRate@1 | 0.6197 | 0.9583 |
-| Recall@1 | 0.6197 | 0.9583 |
-| NDCG@1 | 0.6197 | 0.9583 |
-| HitRate@5 | 0.7799 | 0.9730 |
-| Recall@5 | 0.7799 | 0.9730 |
-| NDCG@5 | 0.7064 | 0.9662 |
-| HitRate@10 | 0.8368 | 0.9787 |
-| Recall@10 | 0.8368 | 0.9787 |
-| NDCG@10 | 0.7248 | 0.9680 |
-| HitRate@20 | 0.8992 | 0.9864 |
-| Recall@20 | 0.8992 | 0.9864 |
-| NDCG@20 | 0.7406 | 0.9700 |
-| MRR | 0.6968 | 0.9656 |
-  
--------------------------------------
-  
-#### Key observations
-  
-Compared with the Baseline Random Forest model, the Network version achieves substantially stronger results across all ranking metrics.
 
-The largest improvements are visible at the top of the ranking:
-- **HitRate@1** increases from **0.6197** to **0.9583**
-- **NDCG@10** increases from **0.7248** to **0.9680**
-- **MRR** increases from **0.6968** to **0.9656**
-  
-This suggests that the network-enriched feature set helps the model place relevant games much closer to the top of the recommendation list.    
-  
-Overall, the **Network Random Forest model clearly outperforms the baseline version**, indicating that social/network-derived features and embedding-based signals provide much stronger information for the recommendation task than the baseline metadata features alone.
+
+<details>
+<summary>Comparison of final multi-seed results</summary>
+
+### Comparison of final multi-seed results
+
+The table below compares the final **test** results of the two Random Forest variants.
+
+| Metric | RF baseline model | RF network model |
+|---|---:|---:|
+| ROC-AUC | 0.9490 ± 0.0001 | 0.9931 ± 0.0002 |
+| HitRate@1 | 0.6241 ± 0.0047 | 0.9577 ± 0.0008 |
+| Recall@1 | 0.6241 ± 0.0047 | 0.9577 ± 0.0008 |
+| NDCG@1 | 0.6241 ± 0.0047 | 0.9577 ± 0.0008 |
+| HitRate@5 | 0.7783 ± 0.0012 | 0.9719 ± 0.0008 |
+| Recall@5 | 0.7783 ± 0.0012 | 0.9719 ± 0.0008 |
+| NDCG@5 | 0.7076 ± 0.0019 | 0.9653 ± 0.0008 |
+| HitRate@10 | 0.8345 ± 0.0017 | 0.9781 ± 0.0006 |
+| Recall@10 | 0.8345 ± 0.0017 | 0.9781 ± 0.0006 |
+| NDCG@10 | 0.7258 ± 0.0019 | 0.9673 ± 0.0007 |
+| HitRate@20 | 0.8981 ± 0.0008 | 0.9857 ± 0.0006 |
+| Recall@20 | 0.8981 ± 0.0008 | 0.9857 ± 0.0006 |
+| NDCG@20 | 0.7418 ± 0.0018 | 0.9692 ± 0.0007 |
+| MRR | 0.6989 ± 0.0026 | 0.9649 ± 0.0007 |
+
+-------------------------------------
+
+## Key observations
+
+The final multi-seed results show a very large difference between the two Random Forest variants.
+
+Compared with the baseline model, the network model is substantially stronger across all reported metrics.
+
+The largest gains are visible near the top of the ranking:
+- `HitRate@1` increases from `0.6241` to `0.9577`
+- `NDCG@10` increases from `0.7258` to `0.9673`
+- `MRR` increases from `0.6989` to `0.9649`
+
+So unlike the neural experiments, where the difference between baseline and network was small, the Random Forest experiments show that the network-enriched feature set provides a **very strong improvement**.
+
+The standard deviations are also low in both variants, which suggests that the Random Forest training procedure is stable across seeds.
 
 </details>
