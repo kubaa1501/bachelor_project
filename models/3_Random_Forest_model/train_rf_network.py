@@ -311,7 +311,7 @@ def make_learning_curve(best_params, train_df, val_df, out_dir: Path):
     lc_df = pd.DataFrame(rows)
     lc_df.to_csv(out_dir / "learning_curve.csv", index=False)
 
-    # plot train/validation ROC-AUC as a function of training set size
+    # plot train/validation ROC-AUC 
     plt.figure(figsize=(8, 5))
     plt.plot(lc_df["n_rows"], lc_df["train_roc_auc"], marker="o", label="Train ROC-AUC")
     plt.plot(lc_df["n_rows"], lc_df["val_roc_auc"], marker="o", label="Val ROC-AUC")
@@ -324,7 +324,7 @@ def make_learning_curve(best_params, train_df, val_df, out_dir: Path):
     plt.savefig(out_dir / "learning_curve_roc_auc.png", dpi=200)
     plt.close()
 
-    # plot validation ranking metrics as a function of training set size
+    # plot validation ranking metrics
     plt.figure(figsize=(8, 5))
     plt.plot(lc_df["n_rows"], lc_df["NDCG@10"], marker="o", label="Val NDCG@10")
     plt.plot(lc_df["n_rows"], lc_df["Recall@10"], marker="o", label="Val Recall@10")
