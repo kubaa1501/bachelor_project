@@ -1,46 +1,65 @@
-<details> 
-<summary>XGBoost Baseline model</summary>
-  
-### MODEL: XGBoost Baseline model   
-    
-`xgb_baseline.py`
-      
-It trains, validates, and evaluates an XGBoost baseline for the game recommendation task.  
-  
-The script builds a full sklearn pipeline that:  
-- preprocesses numeric features  
-- preprocesses categorical features  
-- trains an XGBoost classifier  
-- selects the best hyperparameter setting on validation data  
-- evaluates the best model on the test set as a ranking model  
-*Additionally, it creates learning curve experiments for the best configuration.*
+<details>
+<summary>XGBoost model — hyperparameter search</summary>
 
---------------------------------------
+### XGBoost model — hyperparameter search
 
-Input:   
+`train_xgb_baseline.py`
+`train_xgb_network.py`
+
+These scripts perform the original XGBoost training procedure and hyperparameter search.
+
+Their role is to:
+- train the model on one seed
+- compare hyperparameter configurations
+- select the best final setup
+
+-------------------------------------
+
+## Input
 - `train.csv`
 - `val.csv`
-- `test.csv`  
-    
-*This is the baseline dataset* 
+- `test.csv`
+
+*use baseline dataset for `train_xgb_baseline.py` and network dataset for `train_xgb_network.py`*
 
 -------------------------------------
 
-The target column is:  
-- `owned`  
-*The model predicts the probability that a given (`steamid`, `appid`) pair corresponds to a **positive interaction**.*
+## What the scripts do
+
+The scripts:
+- load the full training, validation, and test splits
+- build a full sklearn pipeline
+- preprocess numeric and categorical features
+- train an XGBoost classifier
+- compare several hyperparameter combinations
+- select the best configuration using validation ranking quality
+- evaluate the best model on the test split
+- create learning curve experiments for the selected configuration
 
 -------------------------------------
-  
-#### Features used
-  
-The script uses two groups of input features.  
 
-<details> 
+## Features used
+
+Both scripts use:
+- numeric features
+- categorical features
+- identifier columns:
+- `steamid`
+- `appid`
+
+The identifier columns are loaded for evaluation and saving predictions, but they are **not** used as model features.
+
+### Baseline model
+The baseline version uses:
+- standard user-level and game-level numeric features
+- grouped user playtime features
+- 5 categorical metadata columns
+
+<details>
 <summary>Show feature list</summary>
-  
+
 #### Numeric features:
-  
+
 - `total_games_owned`
 - `total_playtime_minutes`
 - `median_playtime_minutes`
@@ -48,6 +67,8 @@ The script uses two groups of input features.
 - `user_count`
 - `game_total_playtime_minutes`
 - `release_date`
+
+Grouped user playtime features:
 - `user_playtime_group_Action`
 - `user_playtime_group_Adventure`
 - `user_playtime_group_RPG`
@@ -61,231 +82,274 @@ The script uses two groups of input features.
 - `user_playtime_group_Adult`
 - `user_playtime_group_Non-gameplay_Tools`
 - `user_playtime_group_Other`
-  
+
 #### Categorical features:
-  
+
 - `country`
 - `genres`
 - `developer`
 - `publisher`
 - `platforms`
-    
-Identifier columns:    
+
+#### Identifier columns (not used as features):
+
 - `steamid`
 - `appid`
 
-*These **identifier columns** are loaded for evaluation and saving predictions, but they are not used as model features.* 
-  
 </details>
-  
+
+### Network model
+The network version uses the same structure, but extends the numeric feature space with:
+- `friend_count`
+- `game_emb_0 ... game_emb_31`
+
+So the Network model uses a richer input representation than the Baseline model.
+
+<details>
+<summary>Show full feature list for network model</summary>
+
+#### Numeric features:
+
+- `total_games_owned`
+- `total_playtime_minutes`
+- `median_playtime_minutes`
+- `unique_genres_played`
+- `user_count`
+- `game_total_playtime_minutes`
+- `release_date`
+- `friend_count`
+- `game_emb_0`
+- `game_emb_1`
+- `game_emb_2`
+- `game_emb_3`
+- `game_emb_4`
+- `game_emb_5`
+- `game_emb_6`
+- `game_emb_7`
+- `game_emb_8`
+- `game_emb_9`
+- `game_emb_10`
+- `game_emb_11`
+- `game_emb_12`
+- `game_emb_13`
+- `game_emb_14`
+- `game_emb_15`
+- `game_emb_16`
+- `game_emb_17`
+- `game_emb_18`
+- `game_emb_19`
+- `game_emb_20`
+- `game_emb_21`
+- `game_emb_22`
+- `game_emb_23`
+- `game_emb_24`
+- `game_emb_25`
+- `game_emb_26`
+- `game_emb_27`
+- `game_emb_28`
+- `game_emb_29`
+- `game_emb_30`
+- `game_emb_31`
+- `user_playtime_group_Action`
+- `user_playtime_group_Adventure`
+- `user_playtime_group_RPG`
+- `user_playtime_group_Casual`
+- `user_playtime_group_Indie`
+- `user_playtime_group_Racing`
+- `user_playtime_group_Simulation`
+- `user_playtime_group_Strategy`
+- `user_playtime_group_Sports`
+- `user_playtime_group_Violent`
+- `user_playtime_group_Adult`
+- `user_playtime_group_Non-gameplay_Tools`
+- `user_playtime_group_Other`
+
+#### Categorical features:
+
+- `country`
+- `genres`
+- `developer`
+- `publisher`
+- `platforms`
+
+#### Identifier columns (not used as features):
+
+- `steamid`
+- `appid`
+
+</details>
+
 -------------------------------------
 
-#### Preprocessing
-  
-The script builds a `sklearn` Pipeline with a `ColumnTransformer`.
-  
-Numeric preprocessing:  
+## Preprocessing
+
+The scripts build a `sklearn` Pipeline with a `ColumnTransformer`.
+
+### Numeric preprocessing
 - missing values are filled using **median imputation**
-  
-Categorical preprocessing:  
+
+### Categorical preprocessing
 - missing values are replaced with **"MISSING"**
-- features are encoded using constrained `OneHotEncoder`
+- categorical features are encoded using constrained `OneHotEncoder`
 
 Configuration:
 - `handle_unknown="infrequent_if_exist"`
 - `max_categories=100`
 - `min_frequency=50`
 
-*Unlike Logistic Regression, XGBoost does not require feature scaling, so no `StandardScaler` is used for numeric columns.*
+Unlike Logistic Regression, XGBoost does **not** require feature scaling, so no `StandardScaler` is used.
 
 -------------------------------------
 
-#### Model
-  
+## Model
+
 The classifier is: **XGBClassifier**
-  
+
 Configuration:
 - `objective="binary:logistic"`
 - `eval_metric="logloss"`
 - `tree_method="hist"`
 - `random_state=42`
 - `n_jobs=8`
-  
-This hyperparameter grid is tested:
+
+The hyperparameter search tests five configurations:
+
 - `n_estimators=200`, `max_depth=4`, `learning_rate=0.05`, `min_child_weight=3`, `subsample=0.8`, `colsample_bytree=0.8`, `reg_lambda=1.0`, `reg_alpha=0.0`
 - `n_estimators=300`, `max_depth=4`, `learning_rate=0.05`, `min_child_weight=3`, `subsample=0.8`, `colsample_bytree=0.8`, `reg_lambda=1.0`, `reg_alpha=0.0`
 - `n_estimators=300`, `max_depth=6`, `learning_rate=0.05`, `min_child_weight=5`, `subsample=0.8`, `colsample_bytree=0.8`, `reg_lambda=1.0`, `reg_alpha=0.1`
 - `n_estimators=300`, `max_depth=6`, `learning_rate=0.10`, `min_child_weight=5`, `subsample=0.8`, `colsample_bytree=0.8`, `reg_lambda=2.0`, `reg_alpha=0.1`
 - `n_estimators=400`, `max_depth=6`, `learning_rate=0.05`, `min_child_weight=5`, `subsample=1.0`, `colsample_bytree=1.0`, `reg_lambda=2.0`, `reg_alpha=0.1`
-  
-Each configuration is trained on the training split and evaluated on the validation split.  
-  
-The best model is selected using: **Validation NDCG@10**
 
-*So even though the underlying model is a classifier, model selection is based on ranking quality, not only classification quality.*
+The best model is selected using:
+- **validation NDCG@10**
 
--------------------------------------
-  
-#### Ranking evaluation
-  
-Predicted probabilities are used as ranking scores.  
-For each user (`steamid`):  
-
-candidate games are sorted by predicted score in descending order  
-ranking metrics are computed on the ordered owned labels
-
-The script computes:  
-- HitRate@1
-- Recall@1
-- NDCG@1
-- HitRate@5
-- Recall@5
-- NDCG@5
-- HitRate@10
-- Recall@10
-- NDCG@10
-- HitRate@20
-- Recall@20
-- NDCG@20
-- MRR
-    
-Metrics are computed per user and then **averaged across all evaluated users**.    
-*(Users with no positive items are skipped during ranking evaluation.)*  
+So even though the underlying model is a classifier, model selection is based on ranking quality.
 
 -------------------------------------
 
-#### Additional classification metric
-  
-Besides ranking metrics, the script also computes:  
-- ROC-AUC
-  
-ROC-AUC is calculated on:  
-- validation data during model selection
-- test data for the final selected model
-  
-*This gives an additional view of binary classification quality.*
+## Learning curve analysis
 
--------------------------------------
-
-#### Learning curve analysis
-  
-After selecting the best validation configuration, the script trains the model on increasing fractions of the training set:
+After selecting the best validation configuration, the scripts train the model on increasing fractions of the training set:
 - 5%
 - 10%
 - 20%
 - 40%
 - 70%
 - 100%
-  
-For each fraction, it measures:
+
+For each fraction, they measure:
 - training ROC-AUC
 - validation ROC-AUC
 - validation ranking metrics
 - training time
-  
-To keep computation manageable, learning curves can be limited to a subset of training rows:
+
+To keep computation manageable, learning curves can be limited to:
 - `learning_curve_max_rows = 1000000`
-  
-It then saves:
+
+The scripts save:
 - `learning_curve.csv`
 - `learning_curve_roc_auc.png`
 - `learning_curve_ranking.png`
 
-*This helps analyze whether the model benefits from more training data and whether it shows signs of underfitting or overfitting.*
-
 -------------------------------------
 
-Outputs:  
-- `val_trials.csv` — validation results for all tested hyperparameter settings
-- `test_scores.csv.gz` — predicted scores for test user-game pairs
-- `test_per_user_metrics.csv` — ranking metrics per user on test data
-- `best_model.joblib` — the fitted sklearn pipeline
-- `results.json` — final summary of the experiment
-- `learning_curve.csv` — learning curve metrics
+## Outputs
+
+### For Baseline model
+- `val_trials.csv`
+- `test_scores.csv.gz`
+- `test_per_user_metrics.csv`
+- `best_model.joblib`
+- `results.json`
+- `learning_curve.csv`
 - `learning_curve_roc_auc.png`
 - `learning_curve_ranking.png`
-  
+
+### For Network model
+- `val_trials.csv`
+- `test_scores.csv.gz`
+- `test_per_user_metrics.csv`
+- `best_model.joblib`
+- `results.json`
+- `learning_curve.csv`
+- `learning_curve_roc_auc.png`
+- `learning_curve_ranking.png`
+
+*you can see results.json for all in `results folder`*
+
 -------------------------------------
 
-### Results:
+<details>
+<summary>Show single-seed plots</summary>
 
-<details> 
-<summary>Show results for XGBoost Baseline model</summary> 
+## Single-seed plots
 
-### XGBoost Baseline:  
+### Baseline model
+
+ <img width="1600" height="1000" alt="learning_curve_roc_auc" src="https://github.com/user-attachments/assets/685722e9-9465-4b4a-a1c4-4f613f3eb96f" />
+<img width="1600" height="1000" alt="learning_curve_ranking" src="https://github.com/user-attachments/assets/7caa2cb5-b445-4082-ae98-8dfdee8ab851" />
   
-- "model_type": "xgb"
-- "dataset_type": "baseline"
-- "seed": 42
-- "train_rows": 43494594
-- "val_rows": 2849311
-- "test_rows": 2849311
-- "xgb_njobs": 8
-- "ohe_max_categories": 100
-- "ohe_min_frequency": 50
-- "learning_curve_max_rows": 1000000
+### Network model
+
+<img width="1600" height="1000" alt="learning_curve_roc_auc" src="https://github.com/user-attachments/assets/dbe8d489-8bb5-4698-a905-cfdf652cfd01" />
+<img width="1600" height="1000" alt="learning_curve_ranking" src="https://github.com/user-attachments/assets/e0816822-1e3a-4840-b29f-b92401db8038" />
   
+These plots come from a **single training run** (`seed = 42`).
+
+They are useful for:
+- showing how the model behaves as training data grows
+- illustrating the selected configuration
+- documenting the original hyperparameter-search experiment
+
+They do **not** show variance across seeds.
+
+</details>
+
+-------------------------------------
+
+## Single-seed results
+
+These runs were used mainly to:
+- perform hyperparameter search
+- identify the best final configuration
+
+<details>
+<summary>Show results for XGBoost - baseline model</summary>
+
+### XGBoost - baseline model
+
+- `"model_type": "xgb"`
+- `"dataset_type": "baseline"`
+- `"seed": 42`
+- `"train_rows": 43494594`
+- `"val_rows": 2849311`
+- `"test_rows": 2849311`
+- `"xgb_njobs": 8`
+- `"ohe_max_categories": 100`
+- `"ohe_min_frequency": 50`
+- `"learning_curve_max_rows": 1000000`
+
 **Best validation parameters:**
-- n_estimators = 300
-- max_depth = 6
-- learning_rate = 0.1
-- min_child_weight = 5
-- subsample = 0.8
-- colsample_bytree = 0.8
-- reg_lambda = 2.0
-- reg_alpha = 0.1
-  
-**Features used:**
-- 20 numeric features  
-- 5 categorical features
-    
-<details> 
-<summary>Show feature list</summary>
-  
-#### Numeric features:
-  
-- `total_games_owned`
-- `total_playtime_minutes`
-- `median_playtime_minutes`
-- `unique_genres_played`
-- `user_count`
-- `game_total_playtime_minutes`
-- `release_date`
-- `user_playtime_group_Action`
-- `user_playtime_group_Adventure`
-- `user_playtime_group_RPG`
-- `user_playtime_group_Casual`
-- `user_playtime_group_Indie`
-- `user_playtime_group_Racing`
-- `user_playtime_group_Simulation`
-- `user_playtime_group_Strategy`
-- `user_playtime_group_Sports`
-- `user_playtime_group_Violent`
-- `user_playtime_group_Adult`
-- `user_playtime_group_Non-gameplay_Tools`
-- `user_playtime_group_Other`
-  
-#### Categorical features:
-  
-- `country`
-- `genres`
-- `developer`
-- `publisher`
-- `platforms`
-       
-</details> 
-  
-<details> 
-<summary>Show validation results for best model</summary>
-    
+- `n_estimators = 300`
+- `max_depth = 6`
+- `learning_rate = 0.1`
+- `min_child_weight = 5`
+- `subsample = 0.8`
+- `colsample_bytree = 0.8`
+- `reg_lambda = 2.0`
+- `reg_alpha = 0.1`
+
+<details>
+<summary>Show validation results</summary>
+
 #### Validation results:
-  
+
 | Metric | Value |
 |---|---:|
 | Trial | 4 |
 | n_estimators | 300 |
 | max_depth | 6 |
-| learning_rate | 0.10 |
+| learning_rate | 0.1 |
 | min_child_weight | 5 |
 | subsample | 0.8 |
 | colsample_bytree | 0.8 |
@@ -308,13 +372,13 @@ Outputs:
 | NDCG@20 | 0.8440 |
 | MRR | 0.8177 |
 
-</details> 
-  
-<details> 
+</details>
+
+<details>
 <summary>Show test results</summary>
-    
+
 #### Test results:
-  
+
 | Metric | Value |
 |---|---:|
 | ROC-AUC | 0.9681 |
@@ -332,376 +396,48 @@ Outputs:
 | Recall@20 | 0.9381 |
 | NDCG@20 | 0.8447 |
 | MRR | 0.8190 |
-  
+
 </details>
 
-<details> 
-<summary>Show learning curves</summary>
-    
-#### Learning curves:
-
- <img width="1600" height="1000" alt="learning_curve_roc_auc" src="https://github.com/user-attachments/assets/685722e9-9465-4b4a-a1c4-4f613f3eb96f" />
-<img width="1600" height="1000" alt="learning_curve_ranking" src="https://github.com/user-attachments/assets/7caa2cb5-b445-4082-ae98-8dfdee8ab851" />
-
-  
-</details>
-  
 </details>
 
--------------------------------------
-  
-</details>
+<details>
+<summary>Show results for XGBoost - network model</summary>
 
-<details> 
-<summary>XGBoost Network model</summary>
-  
-### MODEL: XGBoost Network model   
-    
-`xgb_network.py`
-      
-It trains, validates, and evaluates an XGBoost model for the game recommendation task using the **network-enriched dataset**.  
-  
-The script builds a full sklearn pipeline that:  
-- preprocesses numeric features  
-- preprocesses categorical features  
-- trains an XGBoost classifier  
-- selects the best hyperparameter setting on validation data  
-- evaluates the best model on the test set as a ranking model  
-*Additionally, it creates learning curve experiments for the best configuration.*
+### XGBoost - network model
 
---------------------------------------
+- `"model_type": "xgb"`
+- `"dataset_type": "network"`
+- `"seed": 42`
+- `"train_rows": 43494594`
+- `"val_rows": 2849311`
+- `"test_rows": 2849311`
+- `"xgb_njobs": 8`
+- `"ohe_max_categories": 100`
+- `"ohe_min_frequency": 50`
+- `"learning_curve_max_rows": 1000000`
 
-Input:   
-- `train.csv`
-- `val.csv`
-- `test.csv`  
-    
-*This is the network dataset* 
-
--------------------------------------
-
-The target column is:  
-- `owned`  
-*The model predicts the probability that a given (`steamid`, `appid`) pair corresponds to a **positive interaction**.*
-
--------------------------------------
-  
-#### Features used
-  
-The script uses two groups of input features.  
-
-<details> 
-<summary>Show feature list</summary>
-  
-#### Numeric features:
-  
-- `total_games_owned`
-- `total_playtime_minutes`
-- `median_playtime_minutes`
-- `unique_genres_played`
-- `user_count`
-- `game_total_playtime_minutes`
-- `release_date`
-- `friend_count`
-- `game_emb_0`
-- `game_emb_1`
-- `game_emb_2`
-- `game_emb_3`
-- `game_emb_4`
-- `game_emb_5`
-- `game_emb_6`
-- `game_emb_7`
-- `game_emb_8`
-- `game_emb_9`
-- `game_emb_10`
-- `game_emb_11`
-- `game_emb_12`
-- `game_emb_13`
-- `game_emb_14`
-- `game_emb_15`
-- `game_emb_16`
-- `game_emb_17`
-- `game_emb_18`
-- `game_emb_19`
-- `game_emb_20`
-- `game_emb_21`
-- `game_emb_22`
-- `game_emb_23`
-- `game_emb_24`
-- `game_emb_25`
-- `game_emb_26`
-- `game_emb_27`
-- `game_emb_28`
-- `game_emb_29`
-- `game_emb_30`
-- `game_emb_31`
-- `user_playtime_group_Action`
-- `user_playtime_group_Adventure`
-- `user_playtime_group_RPG`
-- `user_playtime_group_Casual`
-- `user_playtime_group_Indie`
-- `user_playtime_group_Racing`
-- `user_playtime_group_Simulation`
-- `user_playtime_group_Strategy`
-- `user_playtime_group_Sports`
-- `user_playtime_group_Violent`
-- `user_playtime_group_Adult`
-- `user_playtime_group_Non-gameplay_Tools`
-- `user_playtime_group_Other`
-  
-#### Categorical features:
-  
-- `country`
-- `genres`
-- `developer`
-- `publisher`
-- `platforms`
-    
-Identifier columns:    
-- `steamid`
-- `appid`
-
-*These **identifier columns** are loaded for evaluation and saving predictions, but they are not used as model features.* 
-  
-</details>
-  
--------------------------------------
-
-#### Preprocessing
-  
-The script builds a `sklearn` Pipeline with a `ColumnTransformer`.
-  
-Numeric preprocessing:  
-- missing values are filled using **median imputation**
-  
-Categorical preprocessing:  
-- missing values are replaced with **"MISSING"**
-- features are encoded using constrained `OneHotEncoder`
-
-Configuration:
-- `handle_unknown="infrequent_if_exist"`
-- `max_categories=100`
-- `min_frequency=50`
-
-*Unlike Logistic Regression, XGBoost does not require feature scaling, so no `StandardScaler` is used for numeric columns.*
-
--------------------------------------
-
-#### Model
-  
-The classifier is: **XGBClassifier**
-  
-Configuration:
-- `objective="binary:logistic"`
-- `eval_metric="logloss"`
-- `tree_method="hist"`
-- `random_state=42`
-- `n_jobs=8`
-  
-A hyperparameter grid is tested:
-- `n_estimators=200`, `max_depth=4`, `learning_rate=0.05`, `min_child_weight=3`, `subsample=0.8`, `colsample_bytree=0.8`, `reg_lambda=1.0`, `reg_alpha=0.0`
-- `n_estimators=300`, `max_depth=4`, `learning_rate=0.05`, `min_child_weight=3`, `subsample=0.8`, `colsample_bytree=0.8`, `reg_lambda=1.0`, `reg_alpha=0.0`
-- `n_estimators=300`, `max_depth=6`, `learning_rate=0.05`, `min_child_weight=5`, `subsample=0.8`, `colsample_bytree=0.8`, `reg_lambda=1.0`, `reg_alpha=0.1`
-- `n_estimators=300`, `max_depth=6`, `learning_rate=0.10`, `min_child_weight=5`, `subsample=0.8`, `colsample_bytree=0.8`, `reg_lambda=2.0`, `reg_alpha=0.1`
-- `n_estimators=400`, `max_depth=6`, `learning_rate=0.05`, `min_child_weight=5`, `subsample=1.0`, `colsample_bytree=1.0`, `reg_lambda=2.0`, `reg_alpha=0.1`
-  
-Each configuration is trained on the training split and evaluated on the validation split.  
-  
-The best model is selected using: **Validation NDCG@10**
-
--------------------------------------
-  
-#### Ranking evaluation
-  
-Predicted probabilities are used as ranking scores.  
-For each user (`steamid`):  
-
-candidate games are sorted by predicted score in descending order  
-ranking metrics are computed on the ordered owned labels
-
-The script computes:  
-- HitRate@1
-- Recall@1
-- NDCG@1
-- HitRate@5
-- Recall@5
-- NDCG@5
-- HitRate@10
-- Recall@10
-- NDCG@10
-- HitRate@20
-- Recall@20
-- NDCG@20
-- MRR
-    
-Metrics are computed per user and then **averaged across all evaluated users**.    
-*(Users with no positive items are skipped during ranking evaluation.)*  
-
--------------------------------------
-
-#### Additional classification metric
-  
-Besides ranking metrics, the script also computes:  
-- ROC-AUC
-  
-ROC-AUC is calculated on:  
-- validation data during model selection
-- test data for the final selected model
-
--------------------------------------
-
-#### Learning curve analysis
-  
-After selecting the best validation configuration, the script trains the model on increasing fractions of the training set:
-- 5%
-- 10%
-- 20%
-- 40%
-- 70%
-- 100%
-  
-For each fraction, it measures:
-- training ROC-AUC
-- validation ROC-AUC
-- validation ranking metrics
-- training time
-  
-To keep computation manageable, learning curves can be limited to a subset of training rows:
-- `learning_curve_max_rows = 1000000`
-  
-It then saves:
-- `learning_curve.csv`
-- `learning_curve_roc_auc.png`
-- `learning_curve_ranking.png`
-
-*This helps analyze whether the model benefits from more training data and whether it shows signs of underfitting or overfitting.*
-
--------------------------------------
-
-Outputs:  
-- `val_trials.csv` — validation results for all tested hyperparameter settings
-- `test_scores.csv.gz` — predicted scores for test user-game pairs
-- `test_per_user_metrics.csv` — ranking metrics per user on test data
-- `best_model.joblib` — the fitted sklearn pipeline
-- `results.json` — final summary of the experiment
-- `learning_curve.csv` — learning curve metrics
-- `learning_curve_roc_auc.png`
-- `learning_curve_ranking.png`
-  
--------------------------------------
-
-### Results:
-
-<details> 
-<summary>Show results for XGBoost Network model</summary> 
-
-### XGBoost Network:  
-  
-- "model_type": "xgb"
-- "dataset_type": "network"
-- "seed": 42
-- "train_rows": 43494594
-- "val_rows": 2849311
-- "test_rows": 2849311
-- "xgb_njobs": 8
-- "ohe_max_categories": 100
-- "ohe_min_frequency": 50
-- "learning_curve_max_rows": 1000000
-  
 **Best validation parameters:**
-- n_estimators = 300
-- max_depth = 6
-- learning_rate = 0.1
-- min_child_weight = 5
-- subsample = 0.8
-- colsample_bytree = 0.8
-- reg_lambda = 2.0
-- reg_alpha = 0.1
-  
-**Features used:**
-- 53 numeric features  
-- 5 categorical features
-    
-<details> 
-<summary>Show feature list</summary>
-  
-#### Numeric features:
-  
-- `total_games_owned`
-- `total_playtime_minutes`
-- `median_playtime_minutes`
-- `unique_genres_played`
-- `user_count`
-- `game_total_playtime_minutes`
-- `release_date`
-- `friend_count`
-- `game_emb_0`
-- `game_emb_1`
-- `game_emb_2`
-- `game_emb_3`
-- `game_emb_4`
-- `game_emb_5`
-- `game_emb_6`
-- `game_emb_7`
-- `game_emb_8`
-- `game_emb_9`
-- `game_emb_10`
-- `game_emb_11`
-- `game_emb_12`
-- `game_emb_13`
-- `game_emb_14`
-- `game_emb_15`
-- `game_emb_16`
-- `game_emb_17`
-- `game_emb_18`
-- `game_emb_19`
-- `game_emb_20`
-- `game_emb_21`
-- `game_emb_22`
-- `game_emb_23`
-- `game_emb_24`
-- `game_emb_25`
-- `game_emb_26`
-- `game_emb_27`
-- `game_emb_28`
-- `game_emb_29`
-- `game_emb_30`
-- `game_emb_31`
-- `user_playtime_group_Action`
-- `user_playtime_group_Adventure`
-- `user_playtime_group_RPG`
-- `user_playtime_group_Casual`
-- `user_playtime_group_Indie`
-- `user_playtime_group_Racing`
-- `user_playtime_group_Simulation`
-- `user_playtime_group_Strategy`
-- `user_playtime_group_Sports`
-- `user_playtime_group_Violent`
-- `user_playtime_group_Adult`
-- `user_playtime_group_Non-gameplay_Tools`
-- `user_playtime_group_Other`
-  
-#### Categorical features:
-  
-- `country`
-- `genres`
-- `developer`
-- `publisher`
-- `platforms`
-       
-</details> 
-  
-<details> 
-<summary>Show validation results for best model</summary>
-    
+- `n_estimators = 300`
+- `max_depth = 6`
+- `learning_rate = 0.1`
+- `min_child_weight = 5`
+- `subsample = 0.8`
+- `colsample_bytree = 0.8`
+- `reg_lambda = 2.0`
+- `reg_alpha = 0.1`
+
+<details>
+<summary>Show validation results</summary>
+
 #### Validation results:
-  
+
 | Metric | Value |
 |---|---:|
 | Trial | 4 |
 | n_estimators | 300 |
 | max_depth | 6 |
-| learning_rate | 0.10 |
+| learning_rate | 0.1 |
 | min_child_weight | 5 |
 | subsample | 0.8 |
 | colsample_bytree | 0.8 |
@@ -724,13 +460,13 @@ Outputs:
 | NDCG@20 | 0.9965 |
 | MRR | 0.9960 |
 
-</details> 
-  
-<details> 
+</details>
+
+<details>
 <summary>Show test results</summary>
-    
+
 #### Test results:
-  
+
 | Metric | Value |
 |---|---:|
 | ROC-AUC | 0.9992 |
@@ -748,104 +484,115 @@ Outputs:
 | Recall@20 | 0.9985 |
 | NDCG@20 | 0.9959 |
 | MRR | 0.9952 |
-  
+
 </details>
 
-<details> 
-<summary>Show learning curves</summary>
-    
-#### Learning curves:
+*Final evaluation is reported separately in the multi-seed section below.*
 
-<img width="1600" height="1000" alt="learning_curve_roc_auc" src="https://github.com/user-attachments/assets/dbe8d489-8bb5-4698-a905-cfdf652cfd01" />
-<img width="1600" height="1000" alt="learning_curve_ranking" src="https://github.com/user-attachments/assets/e0816822-1e3a-4840-b29f-b92401db8038" />
+</details>
 
-  
 </details>
-  
-</details>
-  
--------------------------------------
-  
-</details>
+
 
 <details>
-<summary>Comparison of approach</summary>
+<summary>XGBoost model — multi-seed final evaluation</summary>
 
-### Comparison of approach
+### XGBoost model — multi-seed final evaluation
 
-Both scripts implement an **XGBoost model** for the same recommendation task and use the same general evaluation framework.  
-In both cases:
+`train_xgb_baseline_multiseed.py`
+`train_xgb_network_multiseed.py`
 
-- the target column is `owned`
-- ranking is based on predicted probabilities
-- model selection is done using **validation NDCG@10**
-- final evaluation includes ranking metrics and ROC-AUC
+These scripts perform the **final evaluation** of the XGBoost model using multiple random seeds.
 
-However, the two implementations differ in their **feature space**, while the general training procedure remains the same.
+They use the same:
+- preprocessing pipeline
+- feature definitions
+- training data
+- best hyperparameters selected earlier by the single-seed search scripts
 
--------------------------------------
-
-#### 1. Dataset and feature space
-
-The **baseline model** uses a smaller and simpler feature set:
-- standard user-level features
-- game-level popularity and metadata features
-- grouped user playtime features
-- 5 categorical metadata columns
-
-The **network model** extends this setup with additional network-related information:
-- `friend_count`
-- `game_emb_0` to `game_emb_31`
-
-*This makes the network version much richer in representation and gives the model access to additional relational information.*
+The only difference is that the final model is now trained multiple times to estimate:
+- mean performance
+- standard deviation
 
 -------------------------------------
 
-#### 2. Training strategy
+## Why these scripts were added
 
-Unlike the Logistic Regression network model, the XGBoost baseline and network versions use the **same overall training strategy**.
+A single XGBoost run may depend on:
+- subsampling of training rows
+- subsampling of columns
+- randomness inside boosted tree construction
+- the selected random seed
 
-In both scripts:
-- the full training split is loaded into memory
-- preprocessing and model fitting are done in one sklearn pipeline
-- the model is trained directly using `fit()`
+Because of this, one run can look slightly better or slightly worse than another.
 
-So, unlike `lr_network.py`, these XGBoost implementations do **not** use chunked training, warm start, or a separate preprocessing stage fitted on a sample.
-
--------------------------------------
-
-#### 3. Preprocessing differences
-
-Both versions use:
-- median imputation for numeric features
-- missing-value filling + constrained one-hot encoding for categorical features
-
-Categorical encoding is configured identically in both scripts:
-- `handle_unknown="infrequent_if_exist"`
-- `max_categories=100`
-- `min_frequency=50`
-
-This helps control feature explosion caused by rare categories.
-
-Also, neither version uses `StandardScaler`, because XGBoost is a tree-based boosting model and does not require feature scaling.
+The multi-seed version was added to make the final results:
+- more stable
+- more reliable
+- easier to compare fairly
 
 -------------------------------------
 
-#### 4. Model configuration
+## Relation to `train_xgb_baseline.py` and `train_xgb_network.py`
 
-Both models use the same XGBoost training setup:
-- `objective="binary:logistic"`
-- `eval_metric="logloss"`
-- `tree_method="hist"`
-- `n_jobs=8`
+The workflow is:
 
-The same hyperparameter grid is evaluated in both baseline and network experiments.
+1. `train_xgb_baseline.py` / `train_xgb_network.py`
+- hyperparameter search
+- single-seed training
+- selection of the best configuration
+
+2. `train_xgb_baseline_multiseed.py` / `train_xgb_network_multiseed.py`
+- final evaluation
+- same best configuration
+- multiple seeds
+- aggregated metrics
+
+So the multi-seed scripts do **not** repeat the hyperparameter search.
+
+*They only evaluate the already selected final model more robustly.*
 
 -------------------------------------
 
-#### 5. Learning curve setup
+## Fixed hyperparameters used
 
-Both scripts generate learning curves for:
+For both dataset variants, the multi-seed scripts use:
+
+- `n_estimators = 300`
+- `max_depth = 6`
+- `learning_rate = 0.1`
+- `min_child_weight = 5`
+- `subsample = 0.8`
+- `colsample_bytree = 0.8`
+- `reg_lambda = 2.0`
+- `reg_alpha = 0.1`
+
+-------------------------------------
+
+## Multi-seed setup
+
+The final model is trained with:
+
+- `seeds = [42, 0, 1]`
+
+For each seed, the scripts:
+- train the model independently
+- save the fitted sklearn pipeline for that seed
+- evaluate validation metrics
+- evaluate test metrics
+- save test predictions and per-user ranking metrics
+
+Then they aggregate the results across seeds using:
+- mean
+- standard deviation
+
+-------------------------------------
+
+## Multi-seed learning curves
+
+The multi-seed scripts also build learning curves for the final configuration across seeds.
+
+They use the same fractions as the single-seed version:
 - 5%
 - 10%
 - 20%
@@ -853,74 +600,288 @@ Both scripts generate learning curves for:
 - 70%
 - 100%
 
-Both versions also optionally limit the number of rows used for learning curve analysis:
-- `learning_curve_max_rows = 1000000`
+For each fraction and each seed, they measure:
+- training ROC-AUC
+- validation ROC-AUC
+- validation NDCG@10
+- validation Recall@10
 
-This keeps runtime manageable while still showing how performance scales with training set size.
+They save:
+- `learning_curve_per_seed.csv`
+- `learning_curve.csv`
+- `learning_curve_roc_auc.png`
+- `learning_curve_ranking.png`
+
+The plotted curves show:
+- mean value across seeds
+- shaded area for standard deviation across seeds
 
 -------------------------------------
 
-#### 6. Saved artifacts
+## Outputs
 
-Both scripts save:
-- validation trial summaries
-- test predictions
-- per-user metrics
-- trained model pipeline
+### For Baseline model
+- `best_model_seed42.joblib`
+- `best_model_seed0.joblib`
+- `best_model_seed1.joblib`
+- `test_scores_seed42.csv.gz`
+- `test_scores_seed0.csv.gz`
+- `test_scores_seed1.csv.gz`
+- `test_per_user_metrics_seed42.csv`
+- `test_per_user_metrics_seed0.csv`
+- `test_per_user_metrics_seed1.csv`
+- `learning_curve_per_seed.csv`
+- `learning_curve.csv`
+- `learning_curve_roc_auc.png`
+- `learning_curve_ranking.png`
 - `results.json`
-- learning curve files
 
-The saved outputs are structurally the same for both baseline and network XGBoost experiments.
+### For Network model
+- `best_model_seed42.joblib`
+- `best_model_seed0.joblib`
+- `best_model_seed1.joblib`
+- `test_scores_seed42.csv.gz`
+- `test_scores_seed0.csv.gz`
+- `test_scores_seed1.csv.gz`
+- `test_per_user_metrics_seed42.csv`
+- `test_per_user_metrics_seed0.csv`
+- `test_per_user_metrics_seed1.csv`
+- `learning_curve_per_seed.csv`
+- `learning_curve.csv`
+- `learning_curve_roc_auc.png`
+- `learning_curve_ranking.png`
+- `results.json`
+
+*you can see results.json for all in `results folder`*
+
+</details>
+
+
+<details>
+<summary>Final multi-seed results</summary>
+
+### Final multi-seed results
+
+The tables below report the final XGBoost results from the multi-seed scripts.
+
+All values are reported as:
+
+- **mean ± std**
+
+across seeds:
+- `42`
+- `0`
+- `1`
 
 -------------------------------------
 
-#### Summary
+## XGBoost — baseline model
 
-The two XGBoost scripts follow the same training and evaluation design.
+### Validation results
 
-- **`xgb_baseline.py`** is an XGBoost model trained on the baseline feature set
-- **`xgb_network.py`** is an XGBoost model trained on the network-enriched feature set
+| Metric | Mean ± Std |
+|---|---:|
+| ROC-AUC | 0.9687 ± 0.0002 |
+| HitRate@1 | 0.7744 ± 0.0008 |
+| Recall@1 | 0.7744 ± 0.0008 |
+| NDCG@1 | 0.7744 ± 0.0008 |
+| HitRate@5 | 0.8625 ± 0.0023 |
+| Recall@5 | 0.8625 ± 0.0023 |
+| NDCG@5 | 0.8214 ± 0.0010 |
+| HitRate@10 | 0.9002 ± 0.0022 |
+| Recall@10 | 0.9002 ± 0.0022 |
+| NDCG@10 | 0.8336 ± 0.0005 |
+| HitRate@20 | 0.9399 ± 0.0015 |
+| Recall@20 | 0.9399 ± 0.0015 |
+| NDCG@20 | 0.8436 ± 0.0004 |
+| MRR | 0.8172 ± 0.0005 |
+
+### Test results
+
+| Metric | Mean ± Std |
+|---|---:|
+| ROC-AUC | 0.9682 ± 0.0002 |
+| HitRate@1 | 0.7768 ± 0.0004 |
+| Recall@1 | 0.7768 ± 0.0004 |
+| NDCG@1 | 0.7768 ± 0.0004 |
+| HitRate@5 | 0.8630 ± 0.0021 |
+| Recall@5 | 0.8630 ± 0.0021 |
+| NDCG@5 | 0.8228 ± 0.0011 |
+| HitRate@10 | 0.8992 ± 0.0016 |
+| Recall@10 | 0.8992 ± 0.0016 |
+| NDCG@10 | 0.8345 ± 0.0009 |
+| HitRate@20 | 0.9382 ± 0.0013 |
+| Recall@20 | 0.9382 ± 0.0013 |
+| NDCG@20 | 0.8444 ± 0.0008 |
+| MRR | 0.8187 ± 0.0006 |
+
+<details>
+<summary>Show multi-seed plot — baseline model</summary>
+
+#### Multi-seed learning curves — baseline model
+
+<img width="1600" height="1000" alt="learning_curve_roc_auc" src="https://github.com/user-attachments/assets/b047dafc-be91-4658-9435-16bd3c908f98" />
+<img width="1600" height="1000" alt="learning_curve_ranking" src="https://github.com/user-attachments/assets/ca962215-ac07-4da2-b13e-551b8f74022c" />
   
 </details>
-  
-<details>
-<summary>Comparison of results</summary>  
-  
-### Comparison of results
-  
-The table below compares the final **test results** of the two XGBoost models.
-  
-| Metric | Baseline XGB | Network XGB |
-|---|---:|---:|
-| ROC-AUC | 0.9681 | 0.9992 |
-| Evaluated users | 28211 | 28211 |
-| HitRate@1 | 0.7763 | 0.9940 |
-| Recall@1 | 0.7763 | 0.9940 |
-| NDCG@1 | 0.7763 | 0.9940 |
-| HitRate@5 | 0.8649 | 0.9965 |
-| Recall@5 | 0.8649 | 0.9965 |
-| NDCG@5 | 0.8237 | 0.9953 |
-| HitRate@10 | 0.8994 | 0.9977 |
-| Recall@10 | 0.8994 | 0.9977 |
-| NDCG@10 | 0.8348 | 0.9957 |
-| HitRate@20 | 0.9381 | 0.9985 |
-| Recall@20 | 0.9381 | 0.9985 |
-| NDCG@20 | 0.8447 | 0.9959 |
-| MRR | 0.8190 | 0.9952 |
-  
+
 -------------------------------------
-  
-#### Key observations
-  
-Compared with the Baseline XGBoost model, the Network version achieves substantially stronger results across all ranking metrics.
 
-The largest improvements are visible at the top of the ranking:
-- **HitRate@1** increases from **0.7763** to **0.9940**
-- **NDCG@10** increases from **0.8348** to **0.9957**
-- **MRR** increases from **0.8190** to **0.9952**
-  
-This suggests that the network-enriched feature set helps the model place relevant games much closer to the top of the recommendation list.    
-  
-Overall, the **Network XGBoost model clearly outperforms the baseline version**, indicating that social/network-derived features and embedding-based signals provide much stronger information for the recommendation task than the baseline metadata features alone.
+## XGBoost — network model
 
-</details> 
+### Validation results
+
+| Metric | Mean ± Std |
+|---|---:|
+| ROC-AUC | 0.9993 ± 0.0000 |
+| HitRate@1 | 0.9949 ± 0.0001 |
+| Recall@1 | 0.9949 ± 0.0001 |
+| NDCG@1 | 0.9949 ± 0.0001 |
+| HitRate@5 | 0.9970 ± 0.0001 |
+| Recall@5 | 0.9970 ± 0.0001 |
+| NDCG@5 | 0.9960 ± 0.0001 |
+| HitRate@10 | 0.9977 ± 0.0001 |
+| Recall@10 | 0.9977 ± 0.0001 |
+| NDCG@10 | 0.9962 ± 0.0001 |
+| HitRate@20 | 0.9984 ± 0.0001 |
+| Recall@20 | 0.9984 ± 0.0001 |
+| NDCG@20 | 0.9964 ± 0.0000 |
+| MRR | 0.9959 ± 0.0001 |
+
+### Test results
+
+| Metric | Mean ± Std |
+|---|---:|
+| ROC-AUC | 0.9992 ± 0.0000 |
+| HitRate@1 | 0.9942 ± 0.0002 |
+| Recall@1 | 0.9942 ± 0.0002 |
+| NDCG@1 | 0.9942 ± 0.0002 |
+| HitRate@5 | 0.9965 ± 0.0001 |
+| Recall@5 | 0.9965 ± 0.0001 |
+| NDCG@5 | 0.9954 ± 0.0001 |
+| HitRate@10 | 0.9976 ± 0.0001 |
+| Recall@10 | 0.9976 ± 0.0001 |
+| NDCG@10 | 0.9958 ± 0.0000 |
+| HitRate@20 | 0.9984 ± 0.0001 |
+| Recall@20 | 0.9984 ± 0.0001 |
+| NDCG@20 | 0.9960 ± 0.0000 |
+| MRR | 0.9953 ± 0.0001 |
+
+<details>
+<summary>Show multi-seed plot — network model</summary>
+
+#### Multi-seed learning curves — network model
+
+<img width="1600" height="1000" alt="learning_curve_roc_auc" src="https://github.com/user-attachments/assets/8f4ec3ee-0938-4bbf-a56b-7f4d05c30ebc" />
+<img width="1600" height="1000" alt="learning_curve_ranking" src="https://github.com/user-attachments/assets/b702b1f7-491d-45a6-9c26-df5a2a0019b0" />
+  
+</details>
+
+</details>
+
+
+<details>
+<summary>Comparison of approach</summary>
+
+### Comparison of approach
+
+The XGBoost experiments are now split into two stages.
+
+### Stage 1: `train_xgb_baseline.py` / `train_xgb_network.py`
+This stage is used for:
+- hyperparameter search
+- single-seed training
+- selecting the best final configuration
+
+### Stage 2: `train_xgb_baseline_multiseed.py` / `train_xgb_network_multiseed.py`
+This stage is used for:
+- final evaluation
+- repeated training on multiple seeds
+- reporting mean ± std
+
+-------------------------------------
+
+## Same elements in both variants
+
+Both Baseline and Network XGBoost models use:
+- the same model family
+- the same preprocessing logic
+- the same evaluation procedure
+- the same ranking metrics
+- the same final selected hyperparameters
+
+-------------------------------------
+
+## Main difference between Baseline and Network
+
+The difference is in the input representation.
+
+### Baseline model
+Uses the baseline tabular feature set.
+
+### Network model
+Uses the extended feature set with:
+- `friend_count`
+- `game_emb_0 ... game_emb_31`
+
+So the training procedure is the same, but the Network model has access to richer information.
+
+-------------------------------------
+
+## Final evaluation protocol
+
+The final reported XGBoost results come from the multi-seed scripts, not from the single-seed search scripts.
+
+This means the final comparison is based on:
+- the same final hyperparameters
+- the same evaluation procedure
+- multiple seeds
+- averaged results with standard deviation
+
+</details>
+
+
+<details>
+<summary>Comparison of final multi-seed results</summary>
+
+### Comparison of final multi-seed results
+
+The table below compares the final **test** results of the two XGBoost variants.
+
+| Metric | XGB baseline model | XGB network model |
+|---|---:|---:|
+| ROC-AUC | 0.9682 ± 0.0002 | 0.9992 ± 0.0000 |
+| HitRate@1 | 0.7768 ± 0.0004 | 0.9942 ± 0.0002 |
+| Recall@1 | 0.7768 ± 0.0004 | 0.9942 ± 0.0002 |
+| NDCG@1 | 0.7768 ± 0.0004 | 0.9942 ± 0.0002 |
+| HitRate@5 | 0.8630 ± 0.0021 | 0.9965 ± 0.0001 |
+| Recall@5 | 0.8630 ± 0.0021 | 0.9965 ± 0.0001 |
+| NDCG@5 | 0.8228 ± 0.0011 | 0.9954 ± 0.0001 |
+| HitRate@10 | 0.8992 ± 0.0016 | 0.9976 ± 0.0001 |
+| Recall@10 | 0.8992 ± 0.0016 | 0.9976 ± 0.0001 |
+| NDCG@10 | 0.8345 ± 0.0009 | 0.9958 ± 0.0000 |
+| HitRate@20 | 0.9382 ± 0.0013 | 0.9984 ± 0.0001 |
+| Recall@20 | 0.9382 ± 0.0013 | 0.9984 ± 0.0001 |
+| NDCG@20 | 0.8444 ± 0.0008 | 0.9960 ± 0.0000 |
+| MRR | 0.8187 ± 0.0006 | 0.9953 ± 0.0001 |
+
+-------------------------------------
+
+## Key observations
+
+The final multi-seed results show a very large difference between the two XGBoost variants.
+
+Compared with the baseline model, the network model is substantially stronger across all reported metrics.
+
+The largest gains are visible near the top of the ranking:
+- `HitRate@1` increases from `0.7768` to `0.9942`
+- `NDCG@10` increases from `0.8345` to `0.9958`
+- `MRR` increases from `0.8187` to `0.9953`
+
+This suggests that the network-enriched feature set helps XGBoost place relevant games almost immediately at the top of the recommendation list.
+
+The standard deviations are also very low in both variants, especially in the network model, which suggests that the XGBoost training procedure is stable across seeds.
+
+Overall, the Network XGBoost model clearly outperforms the baseline version, indicating that social/network-derived features and embedding-based signals provide much stronger information for the recommendation task than the baseline metadata features alone.
+
+</details>
