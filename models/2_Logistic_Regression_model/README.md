@@ -356,7 +356,9 @@ It saves:
 *you can see results.json for all in `results folder`*
 
 -------------------------------------
-
+<details>
+<summary>Show single-seed plots </summary>
+    
 ## Single-seed plots
 
 ### Baseline model
@@ -379,6 +381,8 @@ They are useful for:
   
 They do not show variance across seeds.  
 
+</details>
+  
 -------------------------------------
 
 ## Single-seed results
@@ -655,4 +659,272 @@ The plotted curves show:
 
 ### Outputs:
 
+#### For Baseline model:  
+- `best_model_seed42.joblib`
+- `best_model_seed0.joblib`
+- `best_model_seed1.joblib`
+- `test_scores_seed42.csv.gz`
+- `test_scores_seed0.csv.gz`
+- `test_scores_seed1.csv.gz`
+- `test_per_user_metrics_seed42.csv`
+- `test_per_user_metrics_seed0.csv`
+- `test_per_user_metrics_seed1.csv`
+- `learning_curve_per_seed.csv`
+- `learning_curve_aggregated.csv`
+- `learning_curve_roc_auc_multiseed.png`
+- `learning_curve_ranking_multiseed.png`
+- `results.json`
+  
+#### For Network model:  
+- `best_model_seed42.joblib`
+- `best_model_seed0.joblib`
+- `best_model_seed1.joblib`
+- `fit_log_seed_42.csv`
+- `fit_log_seed_0.csv`
+- `fit_log_seed_1.csv`
+- `test_scores_seed42.csv.gz`
+- `test_scores_seed0.csv.gz`
+- `test_scores_seed1.csv.gz`
+- `test_per_user_metrics_seed42.csv`
+- `test_per_user_metrics_seed0.csv`
+- `test_per_user_metrics_seed1.csv`
+- `preprocessor.joblib`
+- `learning_curve_per_seed.csv`
+- `learning_curve_aggregated.csv`
+- `learning_curve_roc_auc_multiseed.png`
+- `learning_curve_ranking_multiseed.png`
+- `results.json`
 
+*you can see `results.json` for all in results folder*  
+
+</details>
+  
+<details>
+<summary>Final multi-seed results</summary>
+    
+### Final multi-seed results
+
+The tables below report the final Logistic Regression results from the multi-seed scripts.  
+  
+All values are reported as:  
+- **mean ± std**
+  
+across seeds:  
+- 42
+- 0
+- 1
+
+--------------------------------------------
+
+### Logistic Regression — baseline model
+
+#### Validation Results:
+  
+| Metric     |      Mean ± Std |
+| ---------- | --------------: |
+| ROC-AUC    | 0.9036 ± 0.0000 |
+| HitRate@1  | 0.1616 ± 0.0000 |
+| Recall@1   | 0.1616 ± 0.0000 |
+| NDCG@1     | 0.1616 ± 0.0000 |
+| HitRate@5  | 0.5689 ± 0.0000 |
+| Recall@5   | 0.5689 ± 0.0000 |
+| NDCG@5     | 0.3669 ± 0.0000 |
+| HitRate@10 | 0.7480 ± 0.0000 |
+| Recall@10  | 0.7480 ± 0.0000 |
+| NDCG@10    | 0.4257 ± 0.0000 |
+| HitRate@20 | 0.8434 ± 0.0000 |
+| Recall@20  | 0.8434 ± 0.0000 |
+| NDCG@20    | 0.4499 ± 0.0000 |
+| MRR        | 0.3366 ± 0.0000 |
+
+#### Test Results:
+
+| Metric     |      Mean ± Std |
+| ---------- | --------------: |
+| ROC-AUC    | 0.9035 ± 0.0000 |
+| HitRate@1  | 0.1610 ± 0.0000 |
+| Recall@1   | 0.1610 ± 0.0000 |
+| NDCG@1     | 0.1610 ± 0.0000 |
+| HitRate@5  | 0.5761 ± 0.0000 |
+| Recall@5   | 0.5761 ± 0.0000 |
+| NDCG@5     | 0.3708 ± 0.0000 |
+| HitRate@10 | 0.7485 ± 0.0000 |
+| Recall@10  | 0.7485 ± 0.0000 |
+| NDCG@10    | 0.4275 ± 0.0000 |
+| HitRate@20 | 0.8400 ± 0.0000 |
+| Recall@20  | 0.8400 ± 0.0000 |
+| NDCG@20    | 0.4508 ± 0.0000 |
+| MRR        | 0.3384 ± 0.0000 |
+
+--------------------------------------------
+<details>
+<summary>Show multi-seed plot — baseline model</summary>
+
+### Multi-seed learning curves — baseline model
+
+<img width="1600" height="1000" alt="learning_curve_roc_auc_multiseed" src="https://github.com/user-attachments/assets/a97ec180-2cd0-4fa9-a021-1664af52f00c" />
+<img width="1600" height="1000" alt="learning_curve_ranking_multiseed" src="https://github.com/user-attachments/assets/f9b858e1-416f-458f-9e66-695a41241f23" />
+  
+</details>
+  
+------------------------------------------
+  
+### Logistic Regression — network model
+  
+##### Validation Results:
+
+| Metric     |      Mean ± Std |
+| ---------- | --------------: |
+| ROC-AUC    | 0.9805 ± 0.0001 |
+| HitRate@1  | 0.7749 ± 0.0008 |
+| Recall@1   | 0.7749 ± 0.0008 |
+| NDCG@1     | 0.7749 ± 0.0008 |
+| HitRate@5  | 0.9168 ± 0.0006 |
+| Recall@5   | 0.9168 ± 0.0006 |
+| NDCG@5     | 0.8554 ± 0.0002 |
+| HitRate@10 | 0.9452 ± 0.0009 |
+| Recall@10  | 0.9452 ± 0.0009 |
+| NDCG@10    | 0.8647 ± 0.0002 |
+| HitRate@20 | 0.9679 ± 0.0004 |
+| Recall@20  | 0.9679 ± 0.0004 |
+| NDCG@20    | 0.8704 ± 0.0002 |
+| MRR        | 0.8409 ± 0.0004 |
+
+#### Test Results:
+
+| Metric     |      Mean ± Std |
+| ---------- | --------------: |
+| ROC-AUC    | 0.9805 ± 0.0001 |
+| HitRate@1  | 0.7784 ± 0.0013 |
+| Recall@1   | 0.7784 ± 0.0013 |
+| NDCG@1     | 0.7784 ± 0.0013 |
+| HitRate@5  | 0.9184 ± 0.0004 |
+| Recall@5   | 0.9184 ± 0.0004 |
+| NDCG@5     | 0.8581 ± 0.0005 |
+| HitRate@10 | 0.9445 ± 0.0008 |
+| Recall@10  | 0.9445 ± 0.0008 |
+| NDCG@10    | 0.8666 ± 0.0003 |
+| HitRate@20 | 0.9681 ± 0.0006 |
+| Recall@20  | 0.9681 ± 0.0006 |
+| NDCG@20    | 0.8726 ± 0.0003 |
+| MRR        | 0.8437 ± 0.0006 |
+
+<details>
+<summary>Show multi-seed plot — network model</summary>
+
+### Multi-seed learning curves — network model  
+
+<img width="1600" height="1000" alt="learning_curve_roc_auc_multiseed" src="https://github.com/user-attachments/assets/d6e75819-1a97-41db-938f-5763ef56cdd8" />
+<img width="1600" height="1000" alt="learning_curve_ranking_multiseed" src="https://github.com/user-attachments/assets/eb7e2f76-466b-413a-8b9c-d9c66eef706f" />
+  
+</details>
+</details>
+<details>
+<summary>Comparison of approach</summary>
+
+### Comparison of approach
+
+The Logistic Regression experiments are now split into two stages.  
+  
+**Stage 1**: `train_lr_baseline.py` / `train_lr_network.py`  
+ 
+This stage is used for:
+- hyperparameter search
+- single-seed training
+- selecting the best final configuration
+  
+Stage 2: `train_lr_baseline_multiseed.py` / `train_lr_network_multiseed.py`
+  
+This stage is used for:  
+- final evaluation
+- repeated training on multiple seeds
+- reporting mean ± std
+
+---------------------------------------
+
+### Same elements in both variants
+Both Baseline and Network Logistic Regression models use:  
+- the same model family
+- the same ranking metrics
+- the same general evaluation procedure
+- the same final selected hyperparameters
+
+---------------------------------------
+
+### Main difference between Baseline and Network
+
+The difference is in:  
+- input feature space
+- preprocessing details
+- training strategy
+- Baseline model
+  
+Uses the baseline tabular feature set and standard in-memory sklearn training.  
+  
+#### Network model:
+Uses the extended feature set with:  
+- friend_count
+- game_emb_0 ... game_emb_31
+  
+It also uses:  
+- stricter categorical encoding controls
+- sample-based preprocessor fitting
+- chunked warm-start training across the full split
+  
+So the Network model is not only richer in features, but also much heavier computationally.  
+
+---------------------------------------
+
+### Final evaluation protocol
+
+The final reported Logistic Regression results come from the multi-seed scripts, not from the single-seed search scripts.    
+This means the final comparison is based on:  
+- the same final hyperparameters
+- the same evaluation procedure
+- multiple seeds
+- averaged results with standard deviation
+  
+</details>
+<details>
+<summary>Comparison of final multi-seed results</summary>
+
+### Comparison of final multi-seed results
+The table below compares the final test results of the two Logistic Regression variants.  
+
+| Metric     | LR baseline model | LR network model |
+| ---------- | ----------------: | ---------------: |
+| ROC-AUC    |   0.9035 ± 0.0000 |  0.9805 ± 0.0001 |
+| HitRate@1  |   0.1610 ± 0.0000 |  0.7784 ± 0.0013 |
+| Recall@1   |   0.1610 ± 0.0000 |  0.7784 ± 0.0013 |
+| NDCG@1     |   0.1610 ± 0.0000 |  0.7784 ± 0.0013 |
+| HitRate@5  |   0.5761 ± 0.0000 |  0.9184 ± 0.0004 |
+| Recall@5   |   0.5761 ± 0.0000 |  0.9184 ± 0.0004 |
+| NDCG@5     |   0.3708 ± 0.0000 |  0.8581 ± 0.0005 |
+| HitRate@10 |   0.7485 ± 0.0000 |  0.9445 ± 0.0008 |
+| Recall@10  |   0.7485 ± 0.0000 |  0.9445 ± 0.0008 |
+| NDCG@10    |   0.4275 ± 0.0000 |  0.8666 ± 0.0003 |
+| HitRate@20 |   0.8400 ± 0.0000 |  0.9681 ± 0.0006 |
+| Recall@20  |   0.8400 ± 0.0000 |  0.9681 ± 0.0006 |
+| NDCG@20    |   0.4508 ± 0.0000 |  0.8726 ± 0.0003 |
+| MRR        |   0.3384 ± 0.0000 |  0.8437 ± 0.0006 |
+
+---------------------------------------------
+
+### Key observations
+
+The final multi-seed results show a very large difference between the two Logistic Regression variants.  
+Compared with the baseline model, the network model is substantially stronger across all reported metrics.  
+The largest gains are visible near the top of the ranking:  
+- HitRate@1 increases from 0.1610 to 0.7784
+- NDCG@10 increases from 0.4275 to 0.8666
+- MRR increases from 0.3384 to 0.8437
+  
+This suggests that the network-enriched feature set helps the model place relevant games much closer to the top of the recommendation list.  
+  
+Overall, the Network Logistic Regression model clearly outperforms the baseline version, indicating that social/network-derived features and embedding-based signals provide much stronger information for the recommendation task than the baseline metadata features alone.  
+
+*Additionally :  
+Unlike tree-based or neural models, Logistic Regression is effectively deterministic once the data and preprocessing are fixed.       
+Because it optimizes a convex objective, different random seeds converge to nearly the same solution, which explains the near-zero variance across seeds.*    
+  
+</details>
