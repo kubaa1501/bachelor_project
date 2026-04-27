@@ -1,5 +1,86 @@
 <details>
-<summary>make_baseline_features_playtime_capped_owned_semicolon.py</summary>
+<summary>STEP 1. Selecting positives for validation & training splits</summary>
+
+### CODE: `selecting_pos_pairs_for_val_test_split.py`
+
+This script selects positive user–game interaction pairs that will later be used as validation and test holdout pairs.
+
+The goal of this script is to create a leave-two-out split at the user level, where each eligible user contributes:
+
+- 1 positive interaction to validation
+- 1 positive interaction to test
+
+These pairs are later excluded when recomputing training-based features, so they act as true holdout interactions and help prevent leakage.
+
+-----------------------------------
+
+Inputs:
+- `baseline_dataset.csv`
+
+Only the following columns are loaded:
+
+- `steamid`
+- `appid`
+
+-----------------------------------
+
+#### Duplicate removal
+
+The script first removes duplicate `(steamid, appid)` pairs.
+
+This ensures that each user–game interaction is represented only once before sampling validation and test pairs.
+
+-----------------------------------
+
+#### User filtering
+
+The script keeps only users with at least:
+
+- `MIN_GAMES = 5`
+
+positive interactions.
+
+Users with fewer than 5 games are removed from the holdout-pair selection process.
+
+This makes sure that after selecting one validation and one test interaction, each user still has enough remaining interactions for training.
+
+-----------------------------------
+
+#### Leave-two-out holdout selection
+
+For every eligible user, the script randomly samples two owned games:
+
+- the first sampled game becomes the validation pair
+- the second sampled game becomes the test pair
+
+This produces exactly one validation and one test positive interaction per user.
+
+The sampling is random and uses:
+
+- `random_state=None`
+
+so the selected pairs may differ between script runs unless a fixed seed is added.
+
+-----------------------------------
+
+#### Outputs:
+
+- `validation_user_game_pairs.csv`
+- `test_user_game_pairs.csv`
+
+These files contain only:
+
+- `steamid`
+- `appid`
+
+They are later used by `make_baseline_features_playtime_capped_owned_semicolon.py` to exclude validation and test interactions from training-based feature computation.
+
+-----------------------------------
+
+</details>
+  
+<details>
+<summary>STEP 2: create dataset</summary>
     
 ### CODE: `make_baseline_features_playtime_capped_owned_semicolon.py`  
   
@@ -96,7 +177,7 @@ Output:
 -----------------------------------      
 </details>
 <details>
-<summary>make_positive_splits_from_pairs.py</summary>
+<summary>STEP 3: Create positive train, validation & test</summary>
     
 ### CODE: `make_positive_splits_from_pairs.py`
     
@@ -148,7 +229,7 @@ Outputs:
 -----------------------------------     
 </details>  
 <details>
-<summary>make_correct_splits.py</summary>
+<summary>STEP 4: Adding negatives to positive splits</summary>
     
 ### CODE: `make_correct_splits.py`
   
@@ -249,7 +330,7 @@ Outputs:
 
 </details>
 <details>
-<summary>build_groups_playtime_correct_splits.py</summary>
+<summary>STEP 5: enrich prepared splits with user genre-group playtime features</summary>
      
 ### CODE: `build_groups_playtime_correct_splits.py`
 
@@ -379,7 +460,7 @@ Outputs:
   
 </details>
 <details>
-<summary>build_network_dataset_correct_splits.py</summary>
+<summary>STEP 6: Enrich baseline dataset with additional network features to create network datasets</summary>
 
 ### CODE: build_network_dataset_correct_splits.py
 
@@ -482,7 +563,7 @@ Outputs:
 
 
 <details>
-<summary>fill_game_total_playtime_from_baseline.py</summary>
+<summary>STEP 7: Fill game_total_playtime features</summary>
 
 ### CODE: fill_game_total_playtime_from_baseline.py
 
