@@ -266,3 +266,168 @@ The script writes the enriched output to:
 
 </details>
 </details> 
+
+# Data cleaning and LCC 
+  
+The next step is to filter our scraped datasets to LCC.
+
+<details>
+<summary>STEP 3: Data cleaning and LCC filtering</summary>
+
+### CODE: `filtering_LCC.py`
+
+This script filters the scraped Steam network to the Largest Connected Component (LCC).
+
+The goal is to keep only users that belong to the largest connected part of the friendship graph.  
+This makes the final dataset consistent for later network-based experiments.
+
+-------------------------------------
+
+#### Inputs
+
+The script reads:
+
+- `checkpoint/users.csv`
+- `checkpoint/friends.csv`
+- `checkpoint/user_games.csv`
+- `enriched_games.csv`
+
+`enriched_games.csv` is the enriched game metadata file produced after querying the Steam Store API.
+
+-------------------------------------
+
+#### Processing steps
+
+The script first cleans identifier types:
+
+- `steamid` values are converted to strings
+- `appid` values are converted to integers
+
+Then it keeps only friendship edges where both users exist in `users.csv`.
+
+The friendship data originally contains directed rows:
+
+- `user_steamid`
+- `friend_steamid`
+
+These rows are converted into undirected edges:
+
+- `source`
+- `target`
+
+Duplicate undirected edges and self-loops are removed.
+
+-------------------------------------
+
+#### Largest Connected Component filtering
+
+The script builds an undirected graph from the friendship edges using NetworkX.
+
+It then finds the largest connected component:
+
+`lcc_users = set(max(nx.connected_components(G), key=len))`
+  
+**Only users inside this component are kept.**  
+
+------------------------------------- 
+  
+#### Filtered outputs
+
+The script creates the cleaned final datasets:  
+  
+Output files:  
+- `users.csv`      - Contains only users that belong to the LCC
+- `user_games.csv` - Contains only user-game interactions for users in the LCC
+- `games.csv`      - Contains only games that appear in the LCC-filtered user-game interactions
+- `edges.csv`      - Contains only friendship edges where both endpoints are inside the LCC
+
+</details>
+<details> <summary>STEP 4: Create initial baseline dataset</summary>
+
+CODE: `creating_baseline.py`
+  
+This script builds the initial positive-interaction baseline dataset from the LCC-filtered data.  
+It uses the cleaned files created by filtering_LCC.py.  
+
+-------------------------------------
+
+#### Inputs:
+- `users.csv`  
+- `user_games.csv`
+- `games.csv`
+
+-------------------------------------
+
+#### Account age features
+
+The script converts the Steam account creation timestamp into a datetime value:  
+
+`users["account_created"] = pd.to_datetime(  
+    users["account_created"], unit="s", errors="coerce"  
+)`    
+Then it computes:
+- `account_age_minutes`
+  
+*This is used to control unrealistic playtime values.*
+
+-------------------------------------
+
+#### Playtime capping
+  
+For each user-game interaction, the script caps playtime by the user's account age:  
+  
+`playtime_minutes_capped = min(playtime_minutes, account_age_minutes)`  
+*This prevents impossible cases where a user has more recorded playtime than the account could physically allow.*
+
+-------------------------------------
+
+#### User-level features
+  
+The script computes user aggregate features:  
+- `total_games_owned`
+- `total_playtime_minutes`
+- `median_playtime_minutes`
+- `unique_genres_played`
+  
+*`total_playtime_minutes` is also capped by account age.*
+
+-------------------------------------
+
+#### Game-level features
+  
+The script computes:  
+- `game_total_playtime_minutes`
+  
+*This is the total capped playtime for each game across the LCC-filtered interactions.*
+  
+The script also parses:  
+- `release_date`
+from the enriched game metadata.
+
+-------------------------------------
+
+#### Final baseline construction
+
+The final dataset is created by merging:  
+- user-game interactions
+- user-level aggregate features
+- enriched game metadata
+- game-level aggregate features 
+    
+The output contains one row per positive user-game interaction.  
+
+-------------------------------------
+
+#### Output:
+  
+- `baseline_dataset.csv`
+
+This file is used as the input for the next stage of dataset preparation (`dataset_preparation` folder) 
+
+*Important note*
+*`baseline_dataset.csv` is still a full positive-interaction dataset.
+Later train-only feature recomputation and leakage-safe train/validation/test splitting are handled in the next folder:
+`preparing_datasets/`*
+
+</details>
+
