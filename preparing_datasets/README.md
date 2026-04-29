@@ -15,7 +15,7 @@ These pairs are later excluded when recomputing training-based features, so they
 -----------------------------------
 
 Inputs:
-- `baseline_dataset.csv`
+- `baseline_dataset.csv` (output from last step from folder `data_scraping/`)
 
 Only the following columns are loaded:
 
@@ -92,6 +92,7 @@ Inputs:
 - `user_games.csv`
 -  `users.csv`
 -  `baseline_dataset.csv`
+  (outputs from folder `data_scraping/`)
   
 -----------------------------------       
 -  `validation_user_game_pairs.csv`
