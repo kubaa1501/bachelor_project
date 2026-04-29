@@ -872,3 +872,7 @@ The experiment shows that:
 - `game_emb_0` encodes a more complex signal than monotonic scaling of popularity
   
 </details>
+  
+---  
+  
+*Full results of all experiments can be seen in folder `results`*
