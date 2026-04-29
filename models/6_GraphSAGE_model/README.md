@@ -622,9 +622,6 @@ The multi-seed plots show:
 The shaded area represents:
 - standard deviation across seeds
   
-<img width="1200" height="1200" alt="gsage_no_net_learning_curve(1)" src="https://github.com/user-attachments/assets/8d437889-19a7-4afd-9cdb-bb769ba10663" />
-<img width="1200" height="1200" alt="gsage_with_net_learning_curve(1)" src="https://github.com/user-attachments/assets/97c4ef3a-b121-4d5d-b10d-7b817848785f" />
-
 </details>
 
 
@@ -684,6 +681,15 @@ across seeds:
 | NDCG@20 | 0.4847 ± 0.0018 |
 | MRR | 0.3663 ± 0.0018 |
 
+<details>
+<summary>Show multi-seed plot — baseline model:</summary>
+
+#### Multi-seed learning curve (`no_net`)
+  
+<img width="1200" height="1200" alt="gsage_no_net_learning_curve(1)" src="https://github.com/user-attachments/assets/8d437889-19a7-4afd-9cdb-bb769ba10663" />
+  
+</details>
+
 -------------------------------------
 
 ## GraphSAGE — with_net (network model)
@@ -724,6 +730,16 @@ across seeds:
 | NDCG@20 | 0.4887 ± 0.0024 |
 | MRR | 0.3708 ± 0.0029 |
 
+
+<details>
+<summary>Show multi-seed plot — network model:</summary>
+
+#### Multi-seed learning curve (`with_net`)
+  
+<img width="1200" height="1200" alt="gsage_with_net_learning_curve(1)" src="https://github.com/user-attachments/assets/97c4ef3a-b121-4d5d-b10d-7b817848785f" />
+  
+</details>
+  
 </details>
 
 
