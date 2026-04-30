@@ -1,0 +1,142 @@
+#!/bin/bash
+#SBATCH --job-name=make_trainonly
+#SBATCH --output=/home/anci/node_distance/data_for_micheles_algorithm/michele_safe/logs/make_trainonly_%j.out
+#SBATCH --error=/home/anci/node_distance/data_for_micheles_algorithm/michele_safe/logs/make_trainonly_%j.err
+#SBATCH --time=00:30:00
+#SBATCH --mem=40G
+#SBATCH --cpus-per-task=1
+#SBATCH --partition=scavenge
+
+set -euo pipefail
+set -x
+
+# load python enviroment
+module load Python/3.12.3-GCCcore-13.3.0
+source /home/anci/model/venv_gpu_model/bin/activate
+
+python - <<'PY'
+import csv, pickle
+from pathlib import Path
+import pandas as pd
+from scipy import sparse
+
+# paths 
+BASE = Path("/home/anci/node_distance/data_for_micheles_algorithm/michele_safe")
+VAL  = Path("/home/anci/new/validation_user_game_pairs.csv")
+TEST = Path("/home/anci/new/test_user_game_pairs.csv")
+
+# input/output matrix
+M_IN  = BASE/"user_game_01_relabelled.pkl"
+M_OUT = BASE/"user_game_01_relabelled_TRAINONLY.pkl"
+
+# mapping files
+# STEAM maps steam_id -> row index in the relabelled matrix
+# GMAP maps game_id/appid -> column index in the relabelled matrix
+STEAM = BASE/"steamid_to_newnodeid_LCC31021.csv"   
+GMAP  = BASE/"game_index_to_gameid_20988.csv"      
+
+def read_map(path, key, val, cast_k, cast_v):
+    # read a csv mapping file into a python dictionary
+    # example:
+    # steam_id -> new_node_id
+    # game_id  -> matrix_index
+    out={}
+    with open(path, newline="", encoding="utf-8") as f:
+        r=csv.DictReader(f)
+        if r.fieldnames is None or key not in r.fieldnames or val not in r.fieldnames:
+            raise ValueError(f"{path.name} missing {key}/{val}. has {r.fieldnames}")
+        for row in r:
+            if row.get(key) and row.get(val):
+                out[cast_k(row[key])] = cast_v(row[val])
+    return out
+
+# load mappings used to translate val/test ids into matrix positions
+steamid_to_row = read_map(STEAM, "steam_id", "new_node_id", str, int)
+appid_to_col   = read_map(GMAP,  "game_id",  "matrix_index", int, int)
+
+# load validation and test user-game pairs
+# these pairs must be hidden from the training-only matrix
+pairs = pd.concat([pd.read_csv(VAL), pd.read_csv(TEST)], ignore_index=True).drop_duplicates()
+
+# detect column names robustly
+# supports steamid / steam_id and appid / app_id / game_id
+low = {c.lower(): c for c in pairs.columns}
+scol = low.get("steamid") or low.get("steam_id")
+acol = low.get("appid") or low.get("app_id") or low.get("game_id")
+
+if not scol or not acol:
+    raise ValueError(f"val/test columns not found. Have: {list(pairs.columns)}")
+
+# keep only the user-game identifiers
+pairs = pairs[[scol, acol]].dropna()
+pairs.columns = ["steamid","appid"]
+
+# normalize types before mapping
+pairs["steamid"] = pairs["steamid"].astype(str)
+pairs["appid"] = pairs["appid"].astype(int)
+pairs = pairs.drop_duplicates()
+
+print("Unique pairs:", len(pairs))
+
+# translate steamid/appid into row/column positions in the relabelled matrix
+rows = pairs["steamid"].map(steamid_to_row)
+cols = pairs["appid"].map(appid_to_col)
+
+# keep only pairs that exist in both mappings
+ok = rows.notna() & cols.notna()
+rows = rows[ok].astype(int).to_numpy()
+cols = cols[ok].astype(int).to_numpy()
+
+print("Pairs mapped to relabelled indices:", len(rows))
+
+# load full relabelled user-game matrix
+X = pickle.load(open(M_IN,"rb"))
+print("Loaded", type(X))
+
+# set validation/test interactions to 0
+# this creates the train-only matrix and prevents data leakage
+changed = 0
+
+
+# case 1: scipy sparse matrix
+if sparse.issparse(X):
+    Y = X.tolil(copy=True)
+
+    for r,c in zip(rows, cols):
+        if Y[r,c] != 0:
+            Y[r,c] = 0
+            changed += 1
+
+    Y = Y.tocsr()
+    Y.eliminate_zeros()
+
+    pickle.dump(Y, open(M_OUT,"wb"), protocol=pickle.HIGHEST_PROTOCOL)
+
+# Case 2: pandas DataFrame
+elif isinstance(X, pd.DataFrame):
+    Y = X.copy()
+
+    # iat: indexowanie po pozycjach [row_idx, col_idx]
+    for r,c in zip(rows, cols):
+        if Y.iat[r, c] != 0:
+            Y.iat[r, c] = 0
+            changed += 1
+
+    pickle.dump(Y, open(M_OUT,"wb"), protocol=pickle.HIGHEST_PROTOCOL)
+
+# Case 3: numpy array
+else:
+    import numpy as np
+
+    Y = X.copy()
+
+    for r,c in zip(rows, cols):
+        if Y[r,c] != 0:
+            Y[r,c] = 0
+            changed += 1
+            
+    pickle.dump(Y, open(M_OUT,"wb"), protocol=pickle.HIGHEST_PROTOCOL)
+
+print("Actually zeroed:", changed)
+print("Saved:", M_OUT)
+PY

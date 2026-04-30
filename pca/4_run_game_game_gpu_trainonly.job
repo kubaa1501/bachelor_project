@@ -1,0 +1,59 @@
+#!/bin/bash
+#SBATCH --job-name=gg_gpu_train
+#SBATCH --output=/home/anci/node_distance/data_for_micheles_algorithm/michele_safe/logs/gg_gpu_train_%j.out
+#SBATCH --error=/home/anci/node_distance/data_for_micheles_algorithm/michele_safe/logs/gg_gpu_train_%j.err
+#SBATCH --time=12:00:00
+#SBATCH --mem=64G
+#SBATCH --cpus-per-task=4
+#SBATCH --partition=scavenge
+#SBATCH --nodelist=cn13
+#SBATCH --gres=gpu:a100_40gb:1
+
+set -euo pipefail
+set -x
+
+# reduce CUDA memory fragmentation during torch operations
+export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
+
+# load python environment
+module load Python/3.12.3-GCCcore-13.3.0
+source /home/anci/model/venv_gpu_model/bin/activate
+
+# path to node_vector_distance (algorithm code access )
+export PYTHONPATH=/home/anci/node_distance/data_for_micheles_algorithm/michele_safe:$PYTHONPATH
+
+python - <<'PY'
+import pickle
+from pathlib import Path
+import torch
+import node_vector_distance as nvd
+
+# paths
+BASE = Path("/home/anci/node_distance/data_for_micheles_algorithm/michele_safe")
+
+# check torch + GPU setup
+print("torch:", torch.__version__, "cuda:", torch.cuda.is_available())
+if torch.cuda.is_available():
+    print("gpu:", torch.cuda.get_device_name(0))
+
+# load relabelled user-user graph
+# nodes are new_node_id values: 0..N-1
+G  = pickle.load(open(BASE/"user_edge_graph_relabelled.pkl","rb"))
+
+# load train-only user-game matrix
+# rows = users, columns = games, values = 0/1
+df = pickle.load(open(BASE/"user_game_01_relabelled_TRAINONLY.pkl","rb"))
+
+# create attributed graph object used by distance algorithm
+# graph gives user-user structure
+# dataframe gives game ownership attributes for each user
+T = nvd.AttrGraph(G, df)
+
+# compute game-game generalized Euclidean distances
+# output is a game x game distance matrix
+D = nvd.pairwise_generalized_euclidean(T)   # GPU default
+
+# save distance matrix for PCA
+pickle.dump(D, open(BASE/"game_game_dists_trainonly.pkl","wb"), protocol=pickle.HIGHEST_PROTOCOL)
+print("Saved:", BASE/"game_game_dists_trainonly.pkl")
+PY

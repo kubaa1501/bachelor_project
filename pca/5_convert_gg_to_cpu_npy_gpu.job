@@ -1,0 +1,47 @@
+#!/bin/bash
+#SBATCH --job-name=gg2cpu
+#SBATCH --output=/home/anci/node_distance/data_for_micheles_algorithm/michele_safe/logs/gg2cpu_%j.out
+#SBATCH --error=/home/anci/node_distance/data_for_micheles_algorithm/michele_safe/logs/gg2cpu_%j.err
+#SBATCH --time=02:00:00
+#SBATCH --mem=140G
+#SBATCH --cpus-per-task=4
+#SBATCH --partition=scavenge
+#SBATCH --gres=gpu:1
+
+set -euo pipefail
+mkdir -p /home/anci/node_distance/data_for_micheles_algorithm/michele_safe/logs
+
+# load python environment
+module load Python/3.12.3-GCCcore-13.3.0
+source /home/anci/model/venv_gpu_model/bin/activate
+
+python - <<'PY'
+import torch, numpy as np
+from pathlib import Path
+
+# paths 
+p = Path("/home/anci/node_distance/data_for_micheles_algorithm/michele_safe/game_game_dists_trainonly.pkl")
+out = Path("/home/anci/node_distance/data_for_micheles_algorithm/michele_safe/game_game_dists_trainonly_cpu.npy")
+
+# check torch + cuda info
+print("torch:", torch.__version__, "cuda:", torch.cuda.is_available())
+print("Loading (map_location=cpu):", p)
+
+# load distance matrix on CPU
+# this is important if the pickle contains a CUDA tensor
+obj = torch.load(p, map_location="cpu")  # kluczowe: mapowanie CUDA -> CPU
+
+# convert torch tensor or array-like object to numpy
+if isinstance(obj, torch.Tensor):
+    arr = obj.detach().cpu().numpy()
+else:
+    arr = np.asarray(obj)
+
+
+print("array shape:", arr.shape, "dtype:", arr.dtype)
+
+# save as float32 numpy array
+# this format is easier to load for PCA
+np.save(out, arr.astype(np.float32, copy=False))
+print("WROTE:", out)
+PY
