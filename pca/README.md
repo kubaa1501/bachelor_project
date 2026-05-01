@@ -609,6 +609,7 @@ Properties:
 | **4**           | 55.10 | 17.03 | 32.05 | 31.70 | 0.00 |
   
 </details>    
+  
 -----------------------------------
   
 #### Leakage prevention
@@ -621,4 +622,192 @@ not the full user-game matrix.
 *That means validation and test positive interactions were already removed before calculating game-game distances.*  
 *This prevents the PCA embeddings from seeing validation/test interactions.*  
   
+</details>
+<details>
+<summary>STEP 5: Convert game-game distances to CPU NumPy array</summary>
+    
+### CODE: `5_convert_gg_to_cpu_npy_gpu.job`
+
+This job converts the game-game distance matrix into a CPU-based NumPy array.   
+The goal is to make the distance matrix easier to load for PCA.    
+
+-----------------------------------
+  
+Input:  
+- `game_game_dists_trainonly.pkl` (from previous code) 
+  
+<details>
+<summary>Show game_game_dists_trainonly.pkl</summary>
+  
+| game_i \ game_j | 0.00 | 54.78 | 51.14 | 51.06 | 55.10 |
+|-----------------|------|-------|-------|-------|-------|
+| **0**           | 0.00 | 54.78 | 51.14 | 51.06 | 55.10 |
+| **1**           | 54.78 | 0.00 | 30.55 | 30.27 | 17.03 |
+| **2**           | 51.14 | 30.55 | 0.00 | 14.00 | 32.05 |
+| **3**           | 51.06 | 30.27 | 14.00 | 0.00 | 31.70 |
+| **4**           | 55.10 | 17.03 | 32.05 | 31.70 | 0.00 |
+  
+</details>
+
+-----------------------------------
+
+#### Conversion strategy
+  
+The script loads the distance matrix with:
+  
+```text
+torch.load(..., map_location="cpu")
+```
+  
+*This is important because the matrix may have been saved as a CUDA tensor.*
+Then it converts the object to a NumPy array and saves it as float32.  
+  
+-----------------------------------
+
+Output:  
+- `game_game_dists_trainonly_cpu.npy`
+  
+<details>
+<summary>Show game_game_dists_trainonly_cpu.npy</summary>
+  
+| game_i \ game_j | 0     | 1     | 2     | 3     | 4     |
+| --------------- | ----- | ----- | ----- | ----- | ----- |
+| **0**           | 0.00  | 54.78 | 51.14 | 51.06 | 55.10 |
+| **1**           | 54.78 | 0.00  | 30.55 | 30.27 | 17.03 |
+| **2**           | 51.14 | 30.55 | 0.00  | 14.00 | 32.05 |
+| **3**           | 51.06 | 30.27 | 14.00 | 0.00  | 31.70 |
+| **4**           | 55.10 | 17.03 | 32.05 | 31.70 | 0.00  |
+    
+</details>
+</details>
+<details>
+<summary>STEP 6: Run PCA on train-only game-game distance matrix</summary>
+  
+### CODE: `6_run_pca_trainonly_k32_to_new.py`
+  
+This script creates **32-dimensional PCA game embeddings** from the **train-only** game-game distance matrix.  
+The goal is to compress the full game-game distance matrix into **lower-dimensional game embeddings** that can later be used as network features.
+
+-----------------------------------
+
+Inputs:  
+- `game_game_dists_trainonly_cpu.npy` (from previous code) 
+- `game_index_to_gameid_20988.csv` ( from previous code, STEP 2: Relabel raw LCC inputs)
+<details>
+<summary>Show game_game_dists_trainonly_cpu.npy</summary>
+  
+| game_i \ game_j | 0     | 1     | 2     | 3     | 4     |
+| --------------- | ----- | ----- | ----- | ----- | ----- |
+| **0**           | 0.00  | 54.78 | 51.14 | 51.06 | 55.10 |
+| **1**           | 54.78 | 0.00  | 30.55 | 30.27 | 17.03 |
+| **2**           | 51.14 | 30.55 | 0.00  | 14.00 | 32.05 |
+| **3**           | 51.06 | 30.27 | 14.00 | 0.00  | 31.70 |
+| **4**           | 55.10 | 17.03 | 32.05 | 31.70 | 0.00  |
+  
+</details>
+<details>
+<summary>Show game_index_to_gameid_20988.csv</summary>
+
+| matrix_index | game_id |
+| ------------ | ------: |
+| 0            |      10 |
+| 1            |      20 |
+| 2            |      30 |
+| 3            |      40 |
+|     ...      |   ...   |
+| 20983        | 4215730 |
+| 20984        | 4217610 |
+| 20985        | 4225940 |
+| 20986        | 4301100 |
+| 20987        | 4351050 |
+  
+</details>
+  
+-----------------------------------
+
+#### Matrix preprocessing
+  
+The script loads the game-game distance matrix and performs several preprocessing steps:
+
+- materializes the matrix as dense `float32`
+- symmetrizes the matrix
+- sets the diagonal to `0`
+- checks for `NaN` values
+- applies `log1p`
+- **standardizes** the matrix using `StandardScaler`
+  
+*The log transform compresses very large distance values, while standardization makes PCA less dominated by columns with larger scale.*
+
+-----------------------------------
+
+#### PCA
+  
+The script runs PCA with:
+- `K = 32`
+
+This produces **32 embedding dimensions per game**:
+- `game_emb_0`
+- `game_emb_1`  
+- ...  
+- `game_emb_31`
+
+It also computes cumulative explained variance and saves a plot.
+
+-----------------------------------
+  
+#### AppID mapping
+  
+After PCA, each row has a `game_index`.  
+  
+The script uses `game_index_to_gameid_20988.csv` to add the real `Steam appid` to each embedding row.  
+
+-----------------------------------
+
+Outputs:  
+- `game_pca_embeddings_k32_trainonly.csv` 
+- `pca_cumulative_plot_k32_trainonly.png`
+<details>
+<summary>Show game_pca_embeddings_k32_trainonly.csv</summary>
+  
+| appid | idx | emb_0 | emb_1 | emb_2 | emb_3 | emb_4 | emb_5 | emb_6 | emb_7 | emb_8 | emb_9 | ... | emb_30 | emb_31 |
+|------:|----:|------:|------:|------:|------:|------:|------:|------:|------:|------:|------:|-----|-------:|-------:|
+| 10    | 0   | 646.17 | 249.23 | 88.80 | 43.78 | -6.68 | 17.21 | 4.29 | 16.19 | 10.98 | 16.97 | ... | -1.51 | 0.70 |
+| 20    | 1   | 547.07 | 167.50 | 39.86 | 11.05 | -5.75 | -3.78 | 1.24 | -3.49 | -0.73 | 10.96 | ... | 0.20 | -1.72 |
+| 30    | 2   | 536.58 | 162.22 | 39.35 | 12.14 | -4.39 | -1.22 | -0.64 | -1.04 | 0.93 | 8.65 | ... | 1.06 | -3.90 |
+| 40    | 3   | 532.99 | 159.84 | 38.29 | 11.57 | -4.20 | -1.44 | -1.01 | -1.27 | 0.95 | 8.41 | ... | 1.18 | -3.86 |
+  
+</details>
+<details>
+<summary>Show pca_cumulative_plot_k32_trainonly.png</summary>
+    
+<img width="1600" height="1000" alt="pca_cumulative_plot_k32_trainonly" src="https://github.com/user-attachments/assets/0d579761-1b0f-4890-899a-8dd2e390e828" />
+  
+</details>
+  
+-----------------------------------
+
+### Final note: use of PCA embeddings as network features
+
+The output file:
+
+- `game_pca_embeddings_k32_trainonly.csv`
+
+contains the final PCA-based game embeddings.  
+  
+These embeddings are later joined to the datasets by `appid`.  
+
+Each game receives 32 network-based features:    
+- `game_emb_0`
+- `game_emb_1`
+- ...
+- `game_emb_31`
+  
+These features represent each game based on the game-game distance structure computed from:  
+- the Steam friendship network
+- train-only user-game ownership data
+  
+They are later used as additional **game-level network features** in the network-enriched datasets to train Network models.   
+  
+*Joining of those features are made in `preparing_datasets/` STEP 6: Enrich baseline dataset with additional network features to create network datasets*
+
 </details>
