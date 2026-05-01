@@ -876,3 +876,22 @@ The experiment shows that:
 ---  
   
 *Full results of all experiments can be seen in folder `results`*
+  
+<details>
+<summary><b>XGB variations models comparison</b></summary>
+  
+| XGB model                   | HitRate@1 | HitRate@10 |      MRR |
+| --------------------------- | --------: | ---------: | -------: |
+| XGB Network                 |  0.994009 |   0.997696 | 0.995188 |
+| XGB one embedding           |  0.984439 |   0.993690 | 0.987616 |
+| XGB emb0 + user_count       |  0.964712 |   0.952855 | 0.987841 |
+| XGB Baseline                |  0.776293 |   0.899365 | 0.818999 |
+| XGB Baseline double user_cou|  0.771684 |   0.771685 | 0.813321 |
+| XGB Baseline (log)          |  0.769983 |   0.895112 | 0.813131 |
+| XGB +emb0 - user_count      |  0.188118 |   0.65081  | 0.326862 |
+| XGB baseline - user_count   |  0.178760 |   0.625501 | 0.313451 |
+| XGB embeddings + basic info |  0.158732 |   0.611676 | 0.294999 |
+| XGB emb0 + playtime         |  0.135549 |   0.569778 | 0.267672 |
+| XGB embeddings only         |  0.106129 |   0.509163 | 0.234258 |
+  
+</details>
