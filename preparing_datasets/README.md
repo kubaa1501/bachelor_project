@@ -111,6 +111,7 @@ This produces a cleaned playtime feature.
 The purpose is to reduce the impact of unrealistic or corrupted playtime values.  
   
 -----------------------------------     
+  
 #### Feature recomputation strategy
     
 Before computing new features, the script removes the original aggregate columns from `baseline_dataset.csv` and recalculates them using only training interactions.    
@@ -189,26 +190,42 @@ This script creates positive-only train, validation, and test split files from t
 Inputs:  
 - `baseline_features_playtime_capped_owned_semicolon.csv`
 
+<details>
+<summary>Show baseline_features_playtime_capped_owned_semicolon.csv</summary>  
+  
 | steamid           | appid | country | total_games_owned | total_playtime_minutes | median_playtime_minutes | unique_genres_played | name          | genres | developer | publisher | platforms     | release_date | user_count | game_total_playtime_minutes | owned | user_game_playtime |
 |-------------------|-------|---------|-------------------|------------------------|-------------------------|----------------------|---------------|--------|-----------|-----------|---------------|--------------|------------|-----------------------------|-------|--------------------|
 | 76561198064675174 | 400   | IT      | 168               | 498693.0               | 588.0                   | 15                   | Portal        | Action | Valve     | Valve     | windows;linux | 2007-10-10   | 7807.0     | 2544088.0                   | 1     | 367.0              |
 | 76561198064675174 | 500   | IT      | 168               | 498693.0               | 588.0                   | 15                   | Left 4 Dead   | Action | Valve     | Valve     | windows       | 2008-11-17   | 6018.0     | 7031495.0                   | 1     | 117.0              |
 | 76561198064675174 | 550   | IT      | 168               | 498693.0               | 588.0                   | 15                   | Left 4 Dead 2 | Action | Valve     | Valve     | windows;linux | 2009-11-16   | 16225.0    | 67545173.0                  | 1     | 0.0                |
+
+</details>
+  
 - `validation_user_game_pairs.csv`
+
+<details>
+<summary>Show validation_user_game_pairs.csv</summary>  
   
 | steamid           | appid  | country | total_games_owned | total_playtime_minutes | median_playtime_minutes | unique_genres_played | name                    | genres                | developer                                                                 | publisher                                   | platforms        | release_date | user_count | game_total_playtime_minutes | owned | user_game_playtime |
 |-------------------|--------|---------|-------------------|------------------------|-------------------------|----------------------|-------------------------|-----------------------|---------------------------------------------------------------------------|---------------------------------------------|------------------|--------------|------------|-----------------------------|-------|--------------------|
 | 76561198064675174 | 383870 | IT      | 168               | 498693.0               | 588.0                   | 15                   | Firewatch               | Adventure;Indie       | Campo Santo                                                             | Panic; Campo Santo                          | windows;mac;linux | 2016-02-09   | 1965.0     | 657036.0                    | 1     | 0.0                |
 | 76561198109425210 | 594570 | BE      | 102               | 357949.0               | 644.5                   | 23                   | Total War: WARHAMMER II | Action;Strategy       | CREATIVE ASSEMBLY; Feral Interactive (Mac); Feral Interactive (Linux)    | SEGA; Feral Interactive (Mac); Feral Interactive (Linux) | windows;mac;linux | 2017-09-28   | 1208.0     | 8854491.0                   | 1     | 0.0                |
 | 76561198281198045 | 1588010|         | 68                | 254639.0               | 194.5                   | 13                   | PGA TOUR 2K23           | RPG;Simulation;Sports | HB Studios                                                              | 2K                                          | windows          | 2022-10-13   | 123.0      | 283888.0                    | 1     | 0.0                |
+
+</details>
   
 - `test_user_game_pairs.csv`
-  
+
+<details>
+<summary>Show test_user_game_pairs.csv</summary>
+    
 | steamid           | appid  | country | total_games_owned | total_playtime_minutes | median_playtime_minutes | unique_genres_played | name                     | genres                  | developer                                                                 | publisher | platforms        | release_date | user_count | game_total_playtime_minutes | owned | user_game_playtime |
 |-------------------|--------|---------|-------------------|------------------------|-------------------------|----------------------|--------------------------|-------------------------|---------------------------------------------------------------------------|-----------|------------------|--------------|------------|-----------------------------|-------|--------------------|
 | 76561198064675174 | 812140 | IT      | 168               | 498693.0               | 588.0                   | 15                   | Assassin's Creed® Odyssey | Action;Adventure;RPG    | Ubisoft Quebec; Ubisoft Montreal; Ubisoft Bucharest; Ubisoft Singapore; Ubisoft Montpellier; Ubisoft Kiev; Ubisoft Shanghai | Ubisoft   | windows          | 2018-10-05   | 2614.0     | 9709148.0                   | 1     | 0.0                |
 | 76561198109425210 | 239140 | BE      | 102               | 357949.0               | 644.5                   | 23                   | Dying Light              | Action;RPG             | Techland                                                                  | Techland  | windows;mac;linux | 2015-01-26   | 7595.0     | 18529467.0                  | 1     | 0.0                |
 | 76561198281198045 | 577670 |         | 68                | 254639.0               | 194.5                   | 13                   | Demolish & Build 2018    | Indie;Simulation       | Noble Muffins                                                            | Demolish Games S.A. | windows          | 2018-03-08   | 271.0      | 46561.0                     | 1     | 0.0                |
+
+</details>
   
 -----------------------------------     
   
@@ -228,6 +245,7 @@ Outputs:
 - `test_positive.csv`
   
 -----------------------------------     
+  
 </details>  
 <details>
 <summary>STEP 4: Adding negatives to positive splits</summary>
@@ -531,7 +549,8 @@ Input:
 | 536.5776   | 162.22127  | 39.3537    | 12.142582  | ... | 1.0581001   | -3.8984723  | 2          | 30    |
   
 </details>
-  -----------------------------------
+  
+-----------------------------------
 
 #### Friend count feature:
   
@@ -543,7 +562,9 @@ the steamid is used to look up the user’s number of friends
 the value is stored in a new column:  
     
 - `friend_count`
+    
  -----------------------------------  
+   
 #### Game embedding features
 
 The script also loads PCA-based game embeddings from:  
@@ -554,12 +575,16 @@ For each row:
   
 the appid is used to look up the game embedding  
 all embedding dimensions are appended as new columns.  
+  
  -----------------------------------  
+   
 Outputs:
 - train.csv  
 - val.csv  
 - test.csv
+  
  -----------------------------------
+   
 </details>
 
 
@@ -582,6 +607,7 @@ Inputs:
 - "with_genre_groups_network" / `test.csv`
   
 *train, val and test sets for both datasets, with and without netwoek features* 
+  
  -----------------------------------
  
 The script reads:  
@@ -595,7 +621,9 @@ Then, for each target file:
   
 - rows with missing `game_total_playtime_minutes` are identified
 - missing values are filled by matching on `appid`
+  
 -----------------------------------
+  
 #### Backup behavior
   
 Before overwriting each repaired file, the script creates a backup copy with the extension:
@@ -604,4 +632,4 @@ Before overwriting each repaired file, the script creates a backup copy with the
 The script overwrites the original dataset files after filling missing values.  
 As a result, the corrected versions remain in the same directories. 
 
-*the "with_genre_groups_network" was then renamed manually for "with_genre_groups_network_fixed" as input to models*
+*the "with_genre_groups_network" was then renamed manually for "with_genre_groups_network_fixed" as input to models in steps of training models in `models/`*
