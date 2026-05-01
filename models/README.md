@@ -18,3 +18,26 @@
 | XGB Embeddings Only | 0.106129 | 0.509163 | 0.234258 |
 | XGB 1 Embedding Only | 0.984439 | 0.993690 | 0.987616 |
 | XGB Embeddings + unique_genres_played + total_minutes_played | 0.158732 | 0.611676 | 0.294999 |
+  
+  
+### Ranking by MRR
+    
+| Model | MRR |
+|---|---:|
+| XGB Network | 0.995188 |
+| XGB 1 Embedding Only | 0.987616 |
+| Random Forest Network | 0.965596 |
+| Logistic Regression Network | 0.843029 |
+| XGB Baseline | 0.818999 |
+| Random Forest Baseline | 0.696769 |
+| LightGCN | 0.437903 |
+| GraphSAGE Network | 0.367246 |
+| GraphSAGE Baseline | 0.359860 |
+| NN Network | 0.344302 |  
+| NN Baseline | 0.340198 |
+| Logistic Regression Baseline | 0.338354 |
+| XGB Embeddings + unique_genres_played + total_minutes_played | 0.294999 |
+| Naive Popularity | 0.284082 |
+| XGB emb0 + playtime | 0.267672 |
+| XGB Embeddings Only | 0.234258 |
+| Naive Random | 0.053034 |
