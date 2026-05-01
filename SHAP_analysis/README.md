@@ -141,7 +141,7 @@ COMPARISON.md
 comparison_summary.json  
 ```
 
-*all can be found in the folder results*
+*all relevant results can be found in the folder results*
   
 -----------------------------------
   
