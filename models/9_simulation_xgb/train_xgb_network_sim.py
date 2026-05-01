@@ -22,7 +22,7 @@ np.random.seed(SEED)
 
 BASE_DIR = Path("/home/anci/new")
 DATA_DIR = BASE_DIR / "correct_splits" / "with_genre_groups_network_fixed_sim"
-OUT_DIR = BASE_DIR / "models_new" / "xgb_network_sim"
+OUT_DIR = BASE_DIR / "models_new" / "xgb_network_fixed_sim"
 
 TRAIN_CSV = DATA_DIR / "train.csv"
 VAL_CSV   = DATA_DIR / "val.csv"
