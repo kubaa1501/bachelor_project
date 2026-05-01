@@ -880,18 +880,17 @@ The experiment shows that:
 <details>
 <summary><b>XGB variations models comparison</b></summary>
   
-| XGB model                   | HitRate@1 | HitRate@10 |      MRR |
-| --------------------------- | --------: | ---------: | -------: |
-| XGB Network                 |  0.994009 |   0.997696 | 0.995188 |
-| XGB one embedding           |  0.984439 |   0.993690 | 0.987616 |
-| XGB emb0 + user_count       |  0.964712 |   0.952855 | 0.987841 |
-| XGB Baseline                |  0.776293 |   0.899365 | 0.818999 |
-| XGB Baseline double user_cou|  0.771684 |   0.771685 | 0.813321 |
-| XGB Baseline (log)          |  0.769983 |   0.895112 | 0.813131 |
-| XGB +emb0 - user_count      |  0.188118 |   0.65081  | 0.326862 |
-| XGB baseline - user_count   |  0.178760 |   0.625501 | 0.313451 |
-| XGB embeddings + basic info |  0.158732 |   0.611676 | 0.294999 |
-| XGB emb0 + playtime         |  0.135549 |   0.569778 | 0.267672 |
-| XGB embeddings only         |  0.106129 |   0.509163 | 0.234258 |
-  
+| Rank | Model | HitRate@1 | HitRate@5 | HitRate@10 | MRR |
+|---:|---|---:|---:|---:|---:|
+| 1 | **XGB Network** | 0.9942 ± 0.0002 | 0.9965 ± 0.0001 | 0.9976 ± 0.0001 | 0.9953 ± 0.0001 |
+| 2 | XGB Baseline + `game_emb_0` | 0.9844 | 0.9910 | 0.9937 | 0.9876 |
+| 3 | XGB `user_count` + `game_emb_0` only | 0.9529 | 0.9792 | 0.9878 | 0.9647 |
+| 4 | **XGB Baseline** | 0.7768 ± 0.0004 | 0.8630 ± 0.0021 | 0.8992 ± 0.0016 | 0.8187 ± 0.0006 |
+| 5 | XGB Baseline + `fake emb_0` | 0.7755 | 0.8640 | 0.9021 | 0.8180 |
+| 6 | XGB Baseline + `log(user_count)` | 0.7700 | 0.8582 | 0.8951 | 0.8131 |
+| 7 | XGB Baseline + `game_emb_0` without `user_count` | 0.1881 | 0.4645 | 0.6508 | 0.3269 |
+| 8 | XGB Baseline without `user_count` | 0.1788 | 0.4427 | 0.6255 | 0.3135 |
+| 9 | XGB embeddings + basic user info | 0.1587 | 0.4204 | 0.6117 | 0.2950 |
+| 10 | XGB embeddings only | 0.1061 | 0.3431 | 0.5092 | 0.2343 |
+   
 </details>
