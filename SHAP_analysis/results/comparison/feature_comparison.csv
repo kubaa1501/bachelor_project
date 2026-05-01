@@ -1,0 +1,428 @@
+feature,xgb_baseline_mean_abs_shap,xgb_baseline_importance_share,xgb_baseline_top_interaction_feature,xgb_one_embedding_mean_abs_shap,xgb_one_embedding_importance_share,xgb_one_embedding_top_interaction_feature,combined_mean_abs_shap
+num__user_count,12.15964255336384,0.7325595097642755,num__release_date,16.35081618427282,0.6111684370207529,num__game_emb_0,28.51045873763666
+num__game_emb_0,,,,8.113760220188148,0.30327991558631107,num__user_count,8.113760220188148
+num__game_total_playtime_minutes,2.4654700195529093,0.14853261524225958,num__user_count,0.5668185685961974,0.02118680894819716,num__game_emb_0,3.0322885881491066
+num__release_date,0.6610857505199114,0.03982721130063499,num__user_count,0.7825083348674408,0.029248961677928304,num__game_emb_0,1.4435940853873521
+num__median_playtime_minutes,0.1449427952406285,0.008732100681361328,num__user_count,0.2306885078451846,0.008622782691056315,num__release_date,0.3756313030858131
+num__total_games_owned,0.14933490529386026,0.008996704017627666,num__user_count,0.10223042509576227,0.0038212165324102375,num__game_emb_0,0.25156533038962253
+num__user_playtime_group_Other,0.1494541936425532,0.009003890562285996,num__unique_genres_played,0.062290128091723004,0.0023283094738878285,,0.2117443217342762
+num__user_playtime_group_RPG,0.09421015816905408,0.005675705266849719,,0.08987019705396179,0.003359210161083445,num__game_emb_0,0.18408035522301586
+num__user_playtime_group_Indie,0.1285191891030835,0.0077426580387934185,num__user_playtime_group_Casual,0.006861457021428293,0.0002564707422682032,,0.13538064612451178
+num__user_playtime_group_Strategy,0.10639636695411021,0.006409865263271344,num__total_playtime_minutes,0.028834631649665744,0.0010777943167354551,,0.13523099860377596
+num__user_playtime_group_Non-gameplay_Tools,0.07051711701617534,0.004248314409297238,,0.05524939912903218,0.0020651378213465046,,0.1257665161452075
+num__user_playtime_group_Casual,0.06012582200028185,0.0036222892651162487,,0.06060586279490529,0.0022653542197045855,,0.12073168479518714
+num__user_playtime_group_Racing,0.07551591783104854,0.004549467922509659,,0.038053216335934927,0.0014223708767526731,,0.11356913416698347
+num__user_playtime_group_Sports,0.07770308626627188,0.00468123421659664,,0.027502655243963496,0.0010280070811108154,,0.10520574151023537
+num__user_playtime_group_Adventure,0.053523210098121686,0.0032245139097155117,,0.04869910997306051,0.0018202980567517666,,0.1022223200711822
+num__unique_genres_played,0.05812128349622872,0.0035015255389303545,,0.03259464280894063,0.001218337768358682,,0.09071592630516935
+num__user_playtime_group_Action,0.05920736363795364,0.003566956601783976,,0.030383699774657495,0.0011356961079439275,,0.08959106341261114
+num__user_playtime_group_Violent,0.02952608747005923,0.001778803617573454,,0.03650268133065335,0.0013644142558082457,,0.06602876880071258
+num__friend_count,,,,0.06376134032624628,0.002383301131292935,num__game_emb_0,0.06376134032624628
+num__user_playtime_group_Simulation,0.03273772916576542,0.0019722894586103007,,0.009818097879481052,0.0003669854439003998,,0.04255582704524648
+num__user_playtime_group_Adult,0.011194527341902811,0.0006744159974799978,,0.009958099198207079,0.0003722184785197316,,0.021152626540109888
+num__total_playtime_minutes,0.011618012499527154,0.0006999289250270263,,0.005563941666475423,0.00020797160787883079,,0.01718195416600258
+cat__genres_Indie;Simulation,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Indie;RPG;Strategy,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Indie;Simulation;Early Access,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Indie;Simulation;Strategy,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Indie;Simulation;Strategy;Early Access,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Indie;Strategy,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_MISSING,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_RPG;Simulation;Strategy,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Indie;RPG;Simulation;Strategy,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Indie;RPG;Simulation,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Indie;RPG,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Indie,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Casual;Strategy,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Casual;Simulation;Strategy,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Casual;Simulation,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Casual;Indie;Strategy,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Casual;Indie;Simulation;Strategy,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Casual;Indie;Simulation,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Casual;Indie;Racing,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Casual;Indie;RPG;Strategy,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Casual;Indie;RPG;Simulation;Strategy,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Casual;Indie;RPG;Simulation,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Casual;Indie,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_RPG,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Artifex Mundi,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Alawar Casual,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Activision,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_8floor,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_505 Games,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_2K;Aspyr (Mac);Aspyr (Linux),0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_2K,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_11 bit studios,0.0,0.0,,0.0,0.0,,0.0
+cat__platforms_windows;mac;linux,0.0,0.0,,0.0,0.0,,0.0
+cat__platforms_windows;mac,0.0,0.0,,0.0,0.0,,0.0
+cat__platforms_windows;linux,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Casual;Indie;RPG,0.0,0.0,,0.0,0.0,,0.0
+cat__platforms_mac,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_infrequent_sklearn,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Utilities,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Strategy,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Sports,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Simulation;Strategy,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Simulation;Sports,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Simulation,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Racing;Simulation;Sports,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Racing,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_RPG;Strategy,0.0,0.0,,0.0,0.0,,0.0
+cat__platforms_windows,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Action;Simulation;Strategy,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Action;Simulation,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Action;RPG,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Action;Indie;Strategy,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Action;Indie;Sports,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Action;Indie;Simulation;Strategy,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Action;Indie;Simulation,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Action;Indie;Racing,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Action;Indie;RPG,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Action;Indie;Early Access,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Action;Indie,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Adventure;Indie;RPG,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Action;Early Access,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Action;Casual;Indie;Strategy,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Action;Casual;Indie;Sports,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Action;Casual;Indie;Simulation;Strategy,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Action;Casual;Indie;Simulation,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Action;Casual;Indie;RPG,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Action;Casual;Indie;Early Access,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Action;Casual;Indie,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Action;Casual,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Action;Adventure;Simulation,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Action;Adventure;RPG,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Action;Free To Play,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Casual,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Adventure;Simulation,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Adventure;RPG;Strategy,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Adventure;RPG,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Adventure;Indie;Strategy,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Adventure;Indie;Simulation;Strategy,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Adventure;Indie;Simulation,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Adventure;Indie;RPG;Strategy,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Adventure;Indie;RPG;Simulation;Strategy,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Adventure;Indie;RPG;Simulation,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Assemble Entertainment,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Action;Strategy,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Adventure;Casual;Simulation,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Adventure;Casual;RPG,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Adventure;Casual;Indie;Strategy,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Adventure;Casual;Indie;Simulation;Strategy,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Adventure;Casual;Indie;Simulation,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Adventure;Casual;Indie;RPG;Strategy,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Adventure;Casual;Indie;RPG;Simulation;Strategy,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Adventure;Casual;Indie;RPG;Simulation,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Adventure;Casual;Indie;RPG,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Adventure;Casual;Indie,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Adventure;Casual,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Adventure,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Adventure;Indie,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Strategy First,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Square Enix,0.0,0.0,,0.0,0.0,,0.0
+"cat__publisher_Spike Chunsoft Co., Ltd.",0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Sokpop Collective,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Slitherine Ltd.,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Shiravune,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Senpai Industrial Studios,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Sekai Project,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_SEGA;Feral Interactive (Mac);Feral Interactive (Linux),0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_SEGA,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_SA Industry,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Cherry Kiss Games,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Rebellion,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Raw Fury,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Quiet River,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_PsychoFlux Entertainment,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Plug In Digital,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_PlayWay S.A.,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_PlayStation Publishing LLC,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Paradox Interactive,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_PLAYISM,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_OTAKU Plan,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Nacon,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Rockstar Games,0.0,0.0,,0.0,0.0,,0.0
+cat__country_DK,0.0,0.0,,0.0,0.0,,0.0
+cat__country_DE,0.0,0.0,,0.0,0.0,,0.0
+cat__country_CZ,0.0,0.0,,0.0,0.0,,0.0
+cat__country_CX,0.0,0.0,,0.0,0.0,,0.0
+cat__country_CU,0.0,0.0,,0.0,0.0,,0.0
+cat__country_CR,0.0,0.0,,0.0,0.0,,0.0
+cat__country_CO,0.0,0.0,,0.0,0.0,,0.0
+cat__country_CN,0.0,0.0,,0.0,0.0,,0.0
+cat__country_CL,0.0,0.0,,0.0,0.0,,0.0
+cat__country_CK,0.0,0.0,,0.0,0.0,,0.0
+cat__country_CH,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_THQ Nordic,0.0,0.0,,0.0,0.0,,0.0
+cat__country_CA,0.0,0.0,,0.0,0.0,,0.0
+cat__country_BY,0.0,0.0,,0.0,0.0,,0.0
+cat__country_BS,0.0,0.0,,0.0,0.0,,0.0
+cat__country_DZ,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Volens Nolens Games,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Valve,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_United Independent Entertainment,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Ubisoft,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Tripwire Interactive,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Techland,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Team17 Digital Ltd,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Team17,0.0,0.0,,0.0,0.0,,0.0
+cat__country_CC,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_ESDigital Games,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_EGC Games,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Devolver Digital,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Deep Silver,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Daybreak Game Company,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Daedalic Entertainment,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Curve Games,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Crystal Dynamics,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Conglomerate 5,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Coffee Stain Publishing,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Codemasters;Electronic Arts,0.0,0.0,,0.0,0.0,,0.0
+"cat__publisher_NIS America, Inc.",0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Action;Adventure;Indie;Strategy,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Capcom,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_CD PROJEKT RED,0.0,0.0,,0.0,0.0,,0.0
+"cat__publisher_CAPCOM Co., Ltd.",0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Bohemia Interactive,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Bethesda Softworks,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Bandai Namco Entertainment,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Back To Basics Gaming,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_BFG Entertainment,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_BANDAI NAMCO Entertainment,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Atari,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Choice of Games,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_My Way Games,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Microids,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_MangaGamer,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_MISSING,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Landfall,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Klei Entertainment,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Kalypso Media Digital,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Kagura Games,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_KONAMI,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_KOMODO,0.0,0.0,,0.0,0.0,,0.0
+"cat__publisher_KOEI TECMO GAMES CO., LTD.",0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Electronic Arts,0.0,0.0,,0.0,0.0,,0.0
+"cat__publisher_Jackbox Games, Inc.",0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Iceberg Interactive,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_HypeTrain Digital,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Hosted Games,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Headup,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_GrabTheGames,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Gearbox Publishing,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Fulqrum Publishing,0.0,0.0,,0.0,0.0,,0.0
+"cat__publisher_FromSoftware, Inc.;Bandai Namco Entertainment",0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Forever Entertainment S. A.,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Focus Entertainment,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_EroticGamesClub,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_KEMCO,0.0,0.0,,0.0,0.0,,0.0
+cat__country_TD,0.0,0.0,,0.0,0.0,,0.0
+cat__country_SY,0.0,0.0,,0.0,0.0,,0.0
+cat__country_ST,0.0,0.0,,0.0,0.0,,0.0
+cat__country_SK,0.0,0.0,,0.0,0.0,,0.0
+cat__country_SI,0.0,0.0,,0.0,0.0,,0.0
+cat__country_SG,0.0,0.0,,0.0,0.0,,0.0
+cat__country_SE,0.0,0.0,,0.0,0.0,,0.0
+cat__country_RU,0.0,0.0,,0.0,0.0,,0.0
+cat__country_RS,0.0,0.0,,0.0,0.0,,0.0
+cat__country_RO,0.0,0.0,,0.0,0.0,,0.0
+cat__country_QA,0.0,0.0,,0.0,0.0,,0.0
+cat__country_PT,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Action;Adventure;Indie;RPG;Simulation;Strategy,0.0,0.0,,0.0,0.0,,0.0
+cat__country_PK,0.0,0.0,,0.0,0.0,,0.0
+cat__country_PH,0.0,0.0,,0.0,0.0,,0.0
+cat__country_PE,0.0,0.0,,0.0,0.0,,0.0
+cat__country_NZ,0.0,0.0,,0.0,0.0,,0.0
+cat__country_NO,0.0,0.0,,0.0,0.0,,0.0
+cat__country_NL,0.0,0.0,,0.0,0.0,,0.0
+cat__country_NE,0.0,0.0,,0.0,0.0,,0.0
+cat__country_MY,0.0,0.0,,0.0,0.0,,0.0
+cat__country_MX,0.0,0.0,,0.0,0.0,,0.0
+cat__country_MT,0.0,0.0,,0.0,0.0,,0.0
+cat__country_MO,0.0,0.0,,0.0,0.0,,0.0
+cat__country_MK,0.0,0.0,,0.0,0.0,,0.0
+cat__country_PL,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Bohemia Interactive,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_BioWare,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Bethesda Game Studios,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Avalanche Studios,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Arrowhead Game Studios,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Arkane Studios,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Alawar Casual,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_AMAX Interactive,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_8floor,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_4A Games,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_11 bit studios,0.0,0.0,,0.0,0.0,,0.0
+cat__country_infrequent_sklearn,0.0,0.0,,0.0,0.0,,0.0
+cat__country_TH,0.0,0.0,,0.0,0.0,,0.0
+cat__country_ZA,0.0,0.0,,0.0,0.0,,0.0
+cat__country_VN,0.0,0.0,,0.0,0.0,,0.0
+cat__country_VI,0.0,0.0,,0.0,0.0,,0.0
+cat__country_VE,0.0,0.0,,0.0,0.0,,0.0
+cat__country_VA,0.0,0.0,,0.0,0.0,,0.0
+cat__country_UY,0.0,0.0,,0.0,0.0,,0.0
+cat__country_US,0.0,0.0,,0.0,0.0,,0.0
+cat__country_UM,0.0,0.0,,0.0,0.0,,0.0
+cat__country_UG,0.0,0.0,,0.0,0.0,,0.0
+cat__country_UA,0.0,0.0,,0.0,0.0,,0.0
+cat__country_TW,0.0,0.0,,0.0,0.0,,0.0
+cat__country_TR,0.0,0.0,,0.0,0.0,,0.0
+cat__country_ZW,0.0,0.0,,0.0,0.0,,0.0
+cat__country_FI,0.0,0.0,,0.0,0.0,,0.0
+cat__country_ES,0.0,0.0,,0.0,0.0,,0.0
+cat__country_EG,0.0,0.0,,0.0,0.0,,0.0
+cat__country_EE,0.0,0.0,,0.0,0.0,,0.0
+cat__country_EC,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_tinyBuild,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_infrequent_sklearn,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_indie.io,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Ziggurat,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Xbox Game Studios,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Winged Cloud,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Warner Bros. Interactive Entertainment,0.0,0.0,,0.0,0.0,,0.0
+cat__country_MISSING,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Warner Bros. Games,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_WB Games,0.0,0.0,,0.0,0.0,,0.0
+cat__country_BR,0.0,0.0,,0.0,0.0,,0.0
+cat__country_BG,0.0,0.0,,0.0,0.0,,0.0
+cat__country_BE,0.0,0.0,,0.0,0.0,,0.0
+cat__country_BA,0.0,0.0,,0.0,0.0,,0.0
+cat__country_AZ,0.0,0.0,,0.0,0.0,,0.0
+cat__country_AU,0.0,0.0,,0.0,0.0,,0.0
+cat__country_AT,0.0,0.0,,0.0,0.0,,0.0
+cat__country_AR,0.0,0.0,,0.0,0.0,,0.0
+cat__country_AQ,0.0,0.0,,0.0,0.0,,0.0
+cat__country_AL,0.0,0.0,,0.0,0.0,,0.0
+cat__publisher_Warner Bros. Games;Warner Bros. Interactive Entertainment,0.0,0.0,,0.0,0.0,,0.0
+cat__country_MD,0.0,0.0,,0.0,0.0,,0.0
+cat__country_LV,0.0,0.0,,0.0,0.0,,0.0
+cat__country_LT,0.0,0.0,,0.0,0.0,,0.0
+cat__country_KZ,0.0,0.0,,0.0,0.0,,0.0
+cat__country_KR,0.0,0.0,,0.0,0.0,,0.0
+cat__country_KP,0.0,0.0,,0.0,0.0,,0.0
+cat__country_KG,0.0,0.0,,0.0,0.0,,0.0
+cat__country_JP,0.0,0.0,,0.0,0.0,,0.0
+cat__country_IT,0.0,0.0,,0.0,0.0,,0.0
+cat__country_IS,0.0,0.0,,0.0,0.0,,0.0
+cat__country_IR,0.0,0.0,,0.0,0.0,,0.0
+cat__country_IN,0.0,0.0,,0.0,0.0,,0.0
+cat__country_FJ,0.0,0.0,,0.0,0.0,,0.0
+cat__country_IE,0.0,0.0,,0.0,0.0,,0.0
+cat__country_ID,0.0,0.0,,0.0,0.0,,0.0
+cat__country_HU,0.0,0.0,,0.0,0.0,,0.0
+cat__country_HR,0.0,0.0,,0.0,0.0,,0.0
+cat__country_HM,0.0,0.0,,0.0,0.0,,0.0
+cat__country_HK,0.0,0.0,,0.0,0.0,,0.0
+cat__country_GT,0.0,0.0,,0.0,0.0,,0.0
+cat__country_GS,0.0,0.0,,0.0,0.0,,0.0
+cat__country_GR,0.0,0.0,,0.0,0.0,,0.0
+cat__country_GL,0.0,0.0,,0.0,0.0,,0.0
+cat__country_GB,0.0,0.0,,0.0,0.0,,0.0
+cat__country_GA,0.0,0.0,,0.0,0.0,,0.0
+cat__country_FR,0.0,0.0,,0.0,0.0,,0.0
+cat__country_IL,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Telltale Games,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Telltale,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Techland,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Team17 Digital Ltd,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Supermassive Games,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Studio Wildcard;Instinct Games;Efecto Studios;Virtual Basement LLC,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Square Enix,0.0,0.0,,0.0,0.0,,0.0
+"cat__developer_Spike Chunsoft Co., Ltd.",0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Somer Games,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Sokpop Collective,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_SEGA,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_SCS Software,0.0,0.0,,0.0,0.0,,0.0
+"cat__developer_CAPCOM Co., Ltd.",0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Ryu Ga Gotoku Studio,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Rocksteady Studios,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Rockstar North,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Rockstar Games,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Ripknot Systems,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Relic Entertainment,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Red Barrels,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Rebellion,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Quiet River,0.0,0.0,,0.0,0.0,,0.0
+"cat__developer_PopCap Games, Inc.",0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Paradox Development Studio,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_PUBG Corporation,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_SC Jogos,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Action;Adventure;Indie;Simulation,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Action;Adventure;Indie;RPG;Strategy,0.0,0.0,,0.0,0.0,,0.0
+cat__country_AE,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Action;Adventure;Indie;RPG;Simulation,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Action;Adventure;Indie;RPG;Early Access,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Action;Adventure;Indie;RPG,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Action;Adventure;Indie;Massively Multiplayer;RPG,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Action;Adventure;Indie;Early Access,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Action;Adventure;Indie,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Action;Adventure;Casual;Indie;Strategy,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Action;Adventure;Casual;Indie;Simulation,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Action;Adventure;Casual;Indie;RPG,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Treyarch,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Action;Adventure;Casual,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Action;Adventure,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Action,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_infrequent_sklearn,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_id Software,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Winged Cloud,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Wallpaper Engine Team,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Visual Concepts,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Valve,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Ubisoft Montreal,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Ubisoft,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Tripwire Interactive,0.0,0.0,,0.0,0.0,,0.0
+cat__genres_Action;Adventure;Casual;Indie,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Firefly Studios,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Firaxis Games;Aspyr (Mac);Aspyr (Linux),0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Firaxis Games,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Fatshark,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Facepunch Studios,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Exe Create Inc.,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_EroticGamesClub,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_EnsenaSoft,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Endnight Games Ltd,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Elephant Games,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_EGC Games,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Double Fine Productions,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Octo Games,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Daybreak Game Company,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Daedalic Entertainment,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_DICE,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Crytek,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Croteam,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Creobit,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Coffee Stain Studios,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Codemasters,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Choice of Games,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Capcom,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_CREATIVE ASSEMBLY;Feral Interactive (Mac);Feral Interactive (Linux),0.0,0.0,,0.0,0.0,,0.0
+cat__developer_CD PROJEKT RED,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Dharker Studios,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Obsidian Entertainment,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_OVERKILL - a Starbreeze Studio.,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_MumboJumbo,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Moon Studios GmbH,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Milestone S.r.l.,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Miel,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Microids,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_MISSING,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_MAGIX Software GmbH,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_MAGES. Inc.,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Larian Studios,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Klei Entertainment,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Forever Entertainment S. A.,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_KONAMI,0.0,0.0,,0.0,0.0,,0.0
+"cat__developer_KOEI TECMO GAMES CO., LTD.",0.0,0.0,,0.0,0.0,,0.0
+"cat__developer_Jackbox Games, Inc.",0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Innersloth,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Infinity Ward,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Individual Software,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_IO Interactive A/S,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Hosted Games,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Haemimont Games,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_HFM Games,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Gearbox Software,0.0,0.0,,0.0,0.0,,0.0
+cat__developer_Frontier Developments,0.0,0.0,,0.0,0.0,,0.0
+"cat__developer_FromSoftware, Inc.",0.0,0.0,,0.0,0.0,,0.0
+"cat__developer_Kairosoft Co.,Ltd",0.0,0.0,,0.0,0.0,,0.0

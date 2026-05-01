@@ -1,0 +1,107 @@
+{
+  "model_name": "xgb_baseline",
+  "model_path": "/home/anci/new/models_new/xgb_baseline/best_model.joblib",
+  "data_path": "/home/anci/new/correct_splits/with_genre_groups/test.csv",
+  "n_rows_input": 2849311,
+  "n_rows_used": 2849311,
+  "n_features_used": 425,
+  "top_features": [
+    {
+      "feature": "num__user_count",
+      "mean_abs_shap": 12.15964255336384,
+      "importance_share": 0.7325595097642755,
+      "top_interaction_feature": "num__release_date"
+    },
+    {
+      "feature": "num__game_total_playtime_minutes",
+      "mean_abs_shap": 2.4654700195529093,
+      "importance_share": 0.14853261524225958,
+      "top_interaction_feature": "num__user_count"
+    },
+    {
+      "feature": "num__release_date",
+      "mean_abs_shap": 0.6610857505199114,
+      "importance_share": 0.03982721130063499,
+      "top_interaction_feature": "num__user_count"
+    },
+    {
+      "feature": "num__user_playtime_group_Other",
+      "mean_abs_shap": 0.1494541936425532,
+      "importance_share": 0.009003890562285996,
+      "top_interaction_feature": "num__unique_genres_played"
+    },
+    {
+      "feature": "num__total_games_owned",
+      "mean_abs_shap": 0.14933490529386026,
+      "importance_share": 0.008996704017627666,
+      "top_interaction_feature": "num__user_count"
+    },
+    {
+      "feature": "num__median_playtime_minutes",
+      "mean_abs_shap": 0.1449427952406285,
+      "importance_share": 0.008732100681361328,
+      "top_interaction_feature": "num__user_count"
+    },
+    {
+      "feature": "num__user_playtime_group_Indie",
+      "mean_abs_shap": 0.1285191891030835,
+      "importance_share": 0.0077426580387934185,
+      "top_interaction_feature": "num__user_playtime_group_Casual"
+    },
+    {
+      "feature": "num__user_playtime_group_Strategy",
+      "mean_abs_shap": 0.10639636695411021,
+      "importance_share": 0.006409865263271344,
+      "top_interaction_feature": "num__total_playtime_minutes"
+    },
+    {
+      "feature": "num__user_playtime_group_RPG",
+      "mean_abs_shap": 0.09421015816905408,
+      "importance_share": 0.005675705266849719,
+      "top_interaction_feature": NaN
+    },
+    {
+      "feature": "num__user_playtime_group_Sports",
+      "mean_abs_shap": 0.07770308626627188,
+      "importance_share": 0.00468123421659664,
+      "top_interaction_feature": NaN
+    },
+    {
+      "feature": "num__user_playtime_group_Racing",
+      "mean_abs_shap": 0.07551591783104854,
+      "importance_share": 0.004549467922509659,
+      "top_interaction_feature": NaN
+    },
+    {
+      "feature": "num__user_playtime_group_Non-gameplay_Tools",
+      "mean_abs_shap": 0.07051711701617534,
+      "importance_share": 0.004248314409297238,
+      "top_interaction_feature": NaN
+    },
+    {
+      "feature": "num__user_playtime_group_Casual",
+      "mean_abs_shap": 0.06012582200028185,
+      "importance_share": 0.0036222892651162487,
+      "top_interaction_feature": NaN
+    },
+    {
+      "feature": "num__user_playtime_group_Action",
+      "mean_abs_shap": 0.05920736363795364,
+      "importance_share": 0.003566956601783976,
+      "top_interaction_feature": NaN
+    },
+    {
+      "feature": "num__unique_genres_played",
+      "mean_abs_shap": 0.05812128349622872,
+      "importance_share": 0.0035015255389303545,
+      "top_interaction_feature": NaN
+    }
+  ],
+  "waterfall_indices": {
+    "lowest_prediction": 87883,
+    "median_prediction": 1027463,
+    "highest_prediction": 449349
+  },
+  "plots_dir": "/home/anci/new/visualizations/xgb_baseline/plots",
+  "tables_dir": "/home/anci/new/visualizations/xgb_baseline/tables"
+}

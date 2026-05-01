@@ -1,0 +1,26 @@
+{
+  "shared_top_features": [
+    "num__game_total_playtime_minutes",
+    "num__median_playtime_minutes",
+    "num__release_date",
+    "num__total_games_owned",
+    "num__unique_genres_played",
+    "num__user_count",
+    "num__user_playtime_group_Action",
+    "num__user_playtime_group_Adult",
+    "num__user_playtime_group_Adventure",
+    "num__user_playtime_group_Casual",
+    "num__user_playtime_group_Non-gameplay_Tools",
+    "num__user_playtime_group_Other",
+    "num__user_playtime_group_RPG",
+    "num__user_playtime_group_Racing",
+    "num__user_playtime_group_Simulation",
+    "num__user_playtime_group_Sports",
+    "num__user_playtime_group_Strategy",
+    "num__user_playtime_group_Violent"
+  ],
+  "models": [
+    "xgb_baseline",
+    "xgb_one_embedding"
+  ]
+}

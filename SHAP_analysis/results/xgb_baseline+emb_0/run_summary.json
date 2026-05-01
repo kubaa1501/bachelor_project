@@ -1,0 +1,107 @@
+{
+  "model_name": "xgb_one_embedding",
+  "model_path": "/home/anci/new/models_new/xgb_one_embedding/best_model.joblib",
+  "data_path": "/home/anci/new/correct_splits/with_genre_groups_network_fixed/test.csv",
+  "n_rows_input": 2849311,
+  "n_rows_used": 2849311,
+  "n_features_used": 427,
+  "top_features": [
+    {
+      "feature": "num__user_count",
+      "mean_abs_shap": 16.35081618427282,
+      "importance_share": 0.6111684370207529,
+      "top_interaction_feature": "num__game_emb_0"
+    },
+    {
+      "feature": "num__game_emb_0",
+      "mean_abs_shap": 8.113760220188148,
+      "importance_share": 0.30327991558631107,
+      "top_interaction_feature": "num__user_count"
+    },
+    {
+      "feature": "num__release_date",
+      "mean_abs_shap": 0.7825083348674408,
+      "importance_share": 0.029248961677928304,
+      "top_interaction_feature": "num__game_emb_0"
+    },
+    {
+      "feature": "num__game_total_playtime_minutes",
+      "mean_abs_shap": 0.5668185685961974,
+      "importance_share": 0.02118680894819716,
+      "top_interaction_feature": "num__game_emb_0"
+    },
+    {
+      "feature": "num__median_playtime_minutes",
+      "mean_abs_shap": 0.2306885078451846,
+      "importance_share": 0.008622782691056315,
+      "top_interaction_feature": "num__release_date"
+    },
+    {
+      "feature": "num__total_games_owned",
+      "mean_abs_shap": 0.10223042509576227,
+      "importance_share": 0.0038212165324102375,
+      "top_interaction_feature": "num__game_emb_0"
+    },
+    {
+      "feature": "num__user_playtime_group_RPG",
+      "mean_abs_shap": 0.08987019705396179,
+      "importance_share": 0.003359210161083445,
+      "top_interaction_feature": "num__game_emb_0"
+    },
+    {
+      "feature": "num__friend_count",
+      "mean_abs_shap": 0.06376134032624628,
+      "importance_share": 0.002383301131292935,
+      "top_interaction_feature": "num__game_emb_0"
+    },
+    {
+      "feature": "num__user_playtime_group_Other",
+      "mean_abs_shap": 0.062290128091723004,
+      "importance_share": 0.0023283094738878285,
+      "top_interaction_feature": NaN
+    },
+    {
+      "feature": "num__user_playtime_group_Casual",
+      "mean_abs_shap": 0.06060586279490529,
+      "importance_share": 0.0022653542197045855,
+      "top_interaction_feature": NaN
+    },
+    {
+      "feature": "num__user_playtime_group_Non-gameplay_Tools",
+      "mean_abs_shap": 0.05524939912903218,
+      "importance_share": 0.0020651378213465046,
+      "top_interaction_feature": NaN
+    },
+    {
+      "feature": "num__user_playtime_group_Adventure",
+      "mean_abs_shap": 0.04869910997306051,
+      "importance_share": 0.0018202980567517666,
+      "top_interaction_feature": NaN
+    },
+    {
+      "feature": "num__user_playtime_group_Racing",
+      "mean_abs_shap": 0.038053216335934927,
+      "importance_share": 0.0014223708767526731,
+      "top_interaction_feature": NaN
+    },
+    {
+      "feature": "num__user_playtime_group_Violent",
+      "mean_abs_shap": 0.03650268133065335,
+      "importance_share": 0.0013644142558082457,
+      "top_interaction_feature": NaN
+    },
+    {
+      "feature": "num__unique_genres_played",
+      "mean_abs_shap": 0.03259464280894063,
+      "importance_share": 0.001218337768358682,
+      "top_interaction_feature": NaN
+    }
+  ],
+  "waterfall_indices": {
+    "lowest_prediction": 642057,
+    "median_prediction": 2238707,
+    "highest_prediction": 534795
+  },
+  "plots_dir": "/home/anci/new/visualizations/xgb_one_embedding/plots",
+  "tables_dir": "/home/anci/new/visualizations/xgb_one_embedding/tables"
+}
