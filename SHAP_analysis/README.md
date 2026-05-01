@@ -141,7 +141,7 @@ COMPARISON.md
 comparison_summary.json  
 ```
 
-*all relevant results can be found in the folder results*
+*plots and results for each model and comparison can be found in folder `results`*
   
 -----------------------------------
   
