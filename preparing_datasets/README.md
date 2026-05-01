@@ -633,3 +633,33 @@ The script overwrites the original dataset files after filling missing values.
 As a result, the corrected versions remain in the same directories. 
 
 *the "with_genre_groups_network" was then renamed manually for "with_genre_groups_network_fixed" as input to models in steps of training models in `models/`*
+
+</details> 
+  
+-----------------------------------
+  
+#### Datasets info - ready for model training:
+  
+Train positives: 3,954,054    
+Train negatives: 39,540,540    
+Train total:     43,494,594    
+**   
+Val positives:   28,211    
+Val negatives:   2,821,100   
+Val total:       2,849,311    
+**  
+Test positives:  28,211    
+Test negatives:  2,821,100    
+Test total:      2,849,311    
+**  
+
+**Ratios (positive to negative) :** 
+  train: 1:10    
+  val:   1:100    
+  test:  1:100    
+  
+**Overlap:**
+  
+train ∩ val : 0    
+train ∩ test: 0    
+val ∩ test  : 0    
