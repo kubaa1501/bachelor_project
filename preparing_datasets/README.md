@@ -478,8 +478,129 @@ Outputs:
 -----------------------------------    
   
 </details>
+
 <details>
-<summary>STEP 6: Enrich baseline dataset with additional network features to create network datasets</summary>
+<summary>STEP 6: Parse release_date into game age feature</summary>
+
+### CODE: `parse_release_date.py`
+
+This script converts the raw `release_date` column into a numeric game age feature expressed in months.
+
+The goal of this step is to make `release_date` usable for machine learning models by replacing mixed textual date formats with a consistent numeric representation.
+
+-----------------------------------
+
+Inputs:
+- `correct_splits/with_genre_groups_network/train.csv` (from previous code)
+- `correct_splits/with_genre_groups_network/val.csv` (from previous code)
+- `correct_splits/with_genre_groups_network/test.csv` (from previous code)
+
+-----------------------------------
+
+#### Date parsing strategy
+
+The script parses multiple release date formats, including:
+
+- standard date formats, e.g. `2007-10-10`
+- textual Steam-style dates, e.g. `21 Aug, 2012`
+- quarter-based dates, e.g. `Q1 2024`
+- Chinese date format, e.g. `2024年5月12日`
+- partial or human-readable dates handled by `dateparser`
+
+For quarter-based dates, the script converts each quarter to the first month of that quarter:
+
+- `Q1` → January
+- `Q2` → April
+- `Q3` → July
+- `Q4` → October
+
+-----------------------------------
+
+#### Game age transformation
+
+Each parsed release date is converted into the number of months between the release date and the fixed reference date:
+
+- `REFERENCE_DATE = 2026-03-12`
+
+The resulting value replaces the original `release_date` column.
+
+Future dates are clipped to:
+
+- `0`
+
+-----------------------------------
+
+#### Special values
+
+The script handles unreleased or unknown release dates explicitly:
+
+- `coming soon` → `0`
+- `to be announced` → `0`
+- empty or unparsable dates → `NaN`
+
+Very old games are filtered using:
+
+- `MAX_AGE_MONTHS = 600`
+
+If a parsed date is older than 600 months, the value is replaced with `NaN`.
+
+-----------------------------------
+
+#### Chunked processing
+
+The files are processed in chunks of:
+
+- `300,000` rows
+
+This allows the script to process large train, validation, and test files without loading the full dataset into memory at once.
+
+-----------------------------------
+
+#### Backup behavior
+
+Before processing, the script checks whether backup files exist:
+
+- `.bak_release_date`
+- `.bak`
+
+If a backup exists, it is used as the input source instead of the already modified file.
+
+The transformed data is first written to a temporary file:
+
+- `.tmp_release_date`
+
+After successful processing, the temporary file replaces the original CSV file.
+
+-----------------------------------
+
+#### Output validation
+
+After parsing `release_date`, an additional check was performed to confirm that the column contains only numeric values or missing values.
+
+Validation results:
+
+| File | Rows | NaN | NaN % | Numeric parsed | Non-numeric non-NaN | Min | Max |
+|------|------|-----|-------|----------------|---------------------|-----|-----|
+| `train.csv` | 43,494,594 | 298,220 | 0.69% | 43,196,374 | 0 | 0.0 | 340.0 |
+| `val.csv`   | 2,849,311  | 15,642  | 0.55% | 2,833,669  | 0 | 0.0 | 340.0 |
+| `test.csv`  | 2,849,311  | 15,651  | 0.55% | 2,833,660  | 0 | 0.0 | 340.0 |
+
+This confirms that `release_date` was successfully converted into a numeric feature and no non-numeric date strings remained in the final datasets.
+
+-----------------------------------
+
+Outputs:
+- `correct_splits/with_genre_groups_network/train.csv`
+- `correct_splits/with_genre_groups_network/val.csv`
+- `correct_splits/with_genre_groups_network/test.csv`
+
+The same files are overwritten, but with `release_date` converted from raw date strings into numeric game age in months.
+
+-----------------------------------
+
+</details>
+<details>
+<summary>STEP 7: Enrich baseline dataset with additional network features to create network datasets</summary>
 
 ### CODE: build_network_dataset_correct_splits.py
 
@@ -589,7 +710,7 @@ Outputs:
 
 
 <details>
-<summary>STEP 7: Fill game_total_playtime features</summary>
+<summary>STEP 8: Fill game_total_playtime features</summary>
 
 ### CODE: fill_game_total_playtime_from_baseline.py
 
