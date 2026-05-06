@@ -70,7 +70,7 @@ CATEGORICAL_FEATURES = [
     "publisher",
     "platforms",
 ]
-
+ 
 USECOLS = ID_COLS + [TARGET] + NUMERIC_FEATURES + CATEGORICAL_FEATURES
 
 MAX_TRAIN_ROWS = int(os.getenv("MAX_TRAIN_ROWS", "0"))
