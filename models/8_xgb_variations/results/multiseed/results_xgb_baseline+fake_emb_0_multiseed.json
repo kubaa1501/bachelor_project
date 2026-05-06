@@ -1,0 +1,294 @@
+{
+  "model_type": "xgb",
+  "dataset_type": "baseline_fake_emb_corr97",
+  "experiment_name": "baseline_fake_emb_corr97",
+  "dataset_dir": "/home/anci/new/correct_splits/with_genre_groups",
+  "seeds": [
+    42,
+    0,
+    1
+  ],
+  "train_rows": 43494594,
+  "val_rows": 2849311,
+  "test_rows": 2849311,
+  "xgb_njobs": 8,
+  "ohe_max_categories": 100,
+  "ohe_min_frequency": 50,
+  "learning_curve_max_rows": 1000000,
+  "numeric_features": [
+    "total_games_owned",
+    "total_playtime_minutes",
+    "median_playtime_minutes",
+    "unique_genres_played",
+    "user_count",
+    "game_total_playtime_minutes",
+    "release_date",
+    "user_playtime_group_Action",
+    "user_playtime_group_Adventure",
+    "user_playtime_group_RPG",
+    "user_playtime_group_Casual",
+    "user_playtime_group_Indie",
+    "user_playtime_group_Racing",
+    "user_playtime_group_Simulation",
+    "user_playtime_group_Strategy",
+    "user_playtime_group_Sports",
+    "user_playtime_group_Violent",
+    "user_playtime_group_Adult",
+    "user_playtime_group_Non-gameplay_Tools",
+    "user_playtime_group_Other",
+    "fake_emb_0_from_user_count"
+  ],
+  "categorical_features": [
+    "country",
+    "genres",
+    "developer",
+    "publisher",
+    "platforms"
+  ],
+  "best_params": {
+    "n_estimators": 300,
+    "max_depth": 6,
+    "learning_rate": 0.1,
+    "min_child_weight": 5,
+    "subsample": 0.8,
+    "colsample_bytree": 0.8,
+    "reg_lambda": 2.0,
+    "reg_alpha": 0.1
+  },
+  "val_metrics": {
+    "val_roc_auc": {
+      "mean": 0.968401295512098,
+      "std": 0.0008141934083514054
+    },
+    "HitRate@1": {
+      "mean": 0.7697588411139863,
+      "std": 0.0035210455056113856
+    },
+    "Recall@1": {
+      "mean": 0.7697588411139863,
+      "std": 0.0035210455056113856
+    },
+    "NDCG@1": {
+      "mean": 0.7697588411139863,
+      "std": 0.0035210455056113856
+    },
+    "HitRate@5": {
+      "mean": 0.8601609301336358,
+      "std": 0.0032800920982691824
+    },
+    "Recall@5": {
+      "mean": 0.8601609301336358,
+      "std": 0.0032800920982691824
+    },
+    "NDCG@5": {
+      "mean": 0.8177408331837598,
+      "std": 0.003230683231988139
+    },
+    "HitRate@10": {
+      "mean": 0.899117365566623,
+      "std": 0.0026355152664479875
+    },
+    "Recall@10": {
+      "mean": 0.899117365566623,
+      "std": 0.0026355152664479875
+    },
+    "NDCG@10": {
+      "mean": 0.830312364077666,
+      "std": 0.003021788389571302
+    },
+    "HitRate@20": {
+      "mean": 0.9399288693535618,
+      "std": 0.0017677046731915914
+    },
+    "Recall@20": {
+      "mean": 0.9399288693535618,
+      "std": 0.0017677046731915914
+    },
+    "NDCG@20": {
+      "mean": 0.8406611183807516,
+      "std": 0.002819788194646578
+    },
+    "MRR": {
+      "mean": 0.8133797274412823,
+      "std": 0.003106061120067944
+    },
+    "n_users_evaluated": 28211
+  },
+  "test_metrics": {
+    "test_roc_auc": {
+      "mean": 0.9676972013604882,
+      "std": 0.0007370848166577634
+    },
+    "HitRate@1": {
+      "mean": 0.7717202509659353,
+      "std": 0.0028518267612939736
+    },
+    "Recall@1": {
+      "mean": 0.7717202509659353,
+      "std": 0.0028518267612939736
+    },
+    "NDCG@1": {
+      "mean": 0.7717202509659353,
+      "std": 0.0028518267612939736
+    },
+    "HitRate@5": {
+      "mean": 0.8602672716316331,
+      "std": 0.0030116882397000348
+    },
+    "Recall@5": {
+      "mean": 0.8602672716316331,
+      "std": 0.0030116882397000348
+    },
+    "NDCG@5": {
+      "mean": 0.818742275902618,
+      "std": 0.002853111124467165
+    },
+    "HitRate@10": {
+      "mean": 0.8985502109106377,
+      "std": 0.0028798868169313927
+    },
+    "Recall@10": {
+      "mean": 0.8985502109106377,
+      "std": 0.0028798868169313927
+    },
+    "NDCG@10": {
+      "mean": 0.8311052685620522,
+      "std": 0.002791668198818899
+    },
+    "HitRate@20": {
+      "mean": 0.9375775406756229,
+      "std": 0.0020792313709296867
+    },
+    "Recall@20": {
+      "mean": 0.9375775406756229,
+      "std": 0.0020792313709296867
+    },
+    "NDCG@20": {
+      "mean": 0.8410025533722547,
+      "std": 0.002591507079254381
+    },
+    "MRR": {
+      "mean": 0.8145122912551143,
+      "std": 0.002658364837837014
+    },
+    "n_users_evaluated": 28211
+  },
+  "per_seed_val": [
+    {
+      "seed": 42,
+      "fit_seconds": 551.684775352478,
+      "val_roc_auc": 0.9694697579301084,
+      "n_users_evaluated": 28211,
+      "HitRate@1": 0.774733260075857,
+      "Recall@1": 0.774733260075857,
+      "NDCG@1": 0.774733260075857,
+      "HitRate@5": 0.8637765410655418,
+      "Recall@5": 0.8637765410655418,
+      "NDCG@5": 0.8220070389040371,
+      "HitRate@10": 0.9020240331785474,
+      "Recall@10": 0.9020240331785474,
+      "NDCG@10": 0.8343458502987102,
+      "HitRate@20": 0.9419020949275105,
+      "Recall@20": 0.9419020949275105,
+      "NDCG@20": 0.8444730097106367,
+      "MRR": 0.8176659684623172
+    },
+    {
+      "seed": 0,
+      "fit_seconds": 555.4437606334686,
+      "val_roc_auc": 0.9674953689906676,
+      "n_users_evaluated": 28211,
+      "HitRate@1": 0.767076672220056,
+      "Recall@1": 0.767076672220056,
+      "NDCG@1": 0.767076672220056,
+      "HitRate@5": 0.8558363758817482,
+      "Recall@5": 0.8558363758817482,
+      "NDCG@5": 0.8141915425598064,
+      "HitRate@10": 0.8956435432987133,
+      "Recall@10": 0.8956435432987133,
+      "NDCG@10": 0.8270728988869039,
+      "HitRate@20": 0.9376129878416221,
+      "Recall@20": 0.9376129878416221,
+      "NDCG@20": 0.8377408150072748,
+      "MRR": 0.8104044248866216
+    },
+    {
+      "seed": 1,
+      "fit_seconds": 554.6240890026093,
+      "val_roc_auc": 0.9682387596155181,
+      "n_users_evaluated": 28211,
+      "HitRate@1": 0.7674665910460459,
+      "Recall@1": 0.7674665910460459,
+      "NDCG@1": 0.7674665910460459,
+      "HitRate@5": 0.8608698734536174,
+      "Recall@5": 0.8608698734536174,
+      "NDCG@5": 0.8170239180874357,
+      "HitRate@10": 0.8996845202226083,
+      "Recall@10": 0.8996845202226083,
+      "NDCG@10": 0.8295183430473834,
+      "HitRate@20": 0.9402715252915529,
+      "Recall@20": 0.9402715252915529,
+      "NDCG@20": 0.8397695304243435,
+      "MRR": 0.8120687889749079
+    }
+  ],
+  "per_seed_test": [
+    {
+      "seed": 42,
+      "test_roc_auc": 0.9686838326662015,
+      "n_users_evaluated": 28211,
+      "HitRate@1": 0.7755485448938357,
+      "Recall@1": 0.7755485448938357,
+      "NDCG@1": 0.7755485448938357,
+      "HitRate@5": 0.8640246712275353,
+      "Recall@5": 0.8640246712275353,
+      "NDCG@5": 0.8224188749101494,
+      "HitRate@10": 0.9020949275105455,
+      "Recall@10": 0.9020949275105455,
+      "NDCG@10": 0.8346989634640489,
+      "HitRate@20": 0.9404133139555493,
+      "Recall@20": 0.9404133139555493,
+      "NDCG@20": 0.844419586380159,
+      "MRR": 0.8179992739930042
+    },
+    {
+      "seed": 0,
+      "test_roc_auc": 0.9669125782405784,
+      "n_users_evaluated": 28211,
+      "HitRate@1": 0.7687072418560136,
+      "Recall@1": 0.7687072418560136,
+      "NDCG@1": 0.7687072418560136,
+      "HitRate@5": 0.8566516606997271,
+      "Recall@5": 0.8566516606997271,
+      "NDCG@5": 0.8154644176344381,
+      "HitRate@10": 0.895040941476729,
+      "Recall@10": 0.895040941476729,
+      "NDCG@10": 0.8278927464620023,
+      "HitRate@20": 0.9354861578816773,
+      "Recall@20": 0.9354861578816773,
+      "NDCG@20": 0.8381465276178354,
+      "MRR": 0.8115518081212771
+    },
+    {
+      "seed": 1,
+      "test_roc_auc": 0.9674951931746845,
+      "n_users_evaluated": 28211,
+      "HitRate@1": 0.7709049661479564,
+      "Recall@1": 0.7709049661479564,
+      "NDCG@1": 0.7709049661479564,
+      "HitRate@5": 0.8601254829676367,
+      "Recall@5": 0.8601254829676367,
+      "NDCG@5": 0.8183435351632665,
+      "HitRate@10": 0.8985147637446386,
+      "Recall@10": 0.8985147637446386,
+      "NDCG@10": 0.8307240957601055,
+      "HitRate@20": 0.9368331501896423,
+      "Recall@20": 0.9368331501896423,
+      "NDCG@20": 0.8404415461187699,
+      "MRR": 0.8139857916510611
+    }
+  ],
+  "fake_embedding_source_col": "user_count",
+  "fake_embedding_col": "fake_emb_0_from_user_count",
+  "fake_embedding_target_corr": 0.97
+}
