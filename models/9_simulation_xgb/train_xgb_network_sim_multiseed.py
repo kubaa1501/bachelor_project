@@ -17,7 +17,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder
 from xgboost import XGBClassifier
 
-# multi-seed setup
+# multi-seed setup 
 SEEDS = [42, 0, 1]
 
 # paths
