@@ -59,7 +59,7 @@ The table below summarizes the final test results.
 | Neural Network Network        | 0.1917 ± 0.0020 | 0.4999 ± 0.0033 | 0.6976 ± 0.0042 | 0.3419 ± 0.0017 |
 | GraphSAGE  Baseline           | 0.2066 ± 0.0018 | 0.5471 ± 0.0027 | 0.7408 ± 0.0020 | 0.3663 ± 0.0018 |
 | GraphSAGE Network             | 0.2101 ± 0.0028 | 0.5536 ± 0.0029 | 0.7444 ± 0.0022 | 0.3708 ± 0.0029 |
-| LightGCN                      | NaN    | NaN    | NaN    | NaN    |
+| LightGCN                      | 0.2806 ± 0.0002 | 0.6270 ± 0.0007 | 0.7996 ± 0.0007 | 0.4384 ± 0.0003 |
 
 ### Ranking by MRR: 
   
@@ -70,12 +70,25 @@ The table below summarizes the final test results.
 | 3    | Logistic Regression + Network |  0.8437 ± 0.0006                               |
 | 4    | XGBoost Baseline              |  0.8187 ± 0.0006                               |
 | 5    | Random Forest Baseline        |  0.6989 ± 0.0026                               |
-| 6    | GraphSAGE + Network           |  0.3708 ± 0.0029                               |
-| 7    | GraphSAGE Baseline            |  0.3663 ± 0.0018                               |
-| 8    | Neural Network Baseline       |  0.3425 ± 0.0013                               |
-| 9    | Neural Network Network        |  0.3419 ± 0.0017                               |
-| 10   | Logistic Regression Baseline  |  0.3384 ± 0.0000                               |
-| 11   | Popularity                    | 0.2841                                         |
-| 12   | Random                        | 0.0514                                         |
-| 13   | LightGCN                      | NaN                                            |
+| 6    | LightGCN                      | 0.4384 ± 0.0003                                |
+| 7    | GraphSAGE + Network           |  0.3708 ± 0.0029                               |
+| 8    | GraphSAGE Baseline            |  0.3663 ± 0.0018                               |
+| 9    | Neural Network Baseline       |  0.3425 ± 0.0013                               |
+| 10   | Neural Network Network        |  0.3419 ± 0.0017                               |
+| 11   | Logistic Regression Baseline  |  0.3384 ± 0.0000                               |
+| 12   | Popularity                    | 0.2841                                         |
+| 13   | Random                        | 0.0514                                         |
 
+-------------------------------------
+
+## Statistical significance testing
+
+The repository also contains:
+
+- **`stat_significance.ipynb`**
+
+This notebook is used to test whether differences between selected model variants are statistically significant.
+
+It compares multi-seed results using paired statistical tests across seeds.
+
+-------------------------------------
