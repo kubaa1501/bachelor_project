@@ -579,8 +579,16 @@ across seeds:
 
 </details>
 
+<details>
+<summary>Show learning curves </summary>
+    
+<img width="2400" height="1440" alt="lightgcn_learning_curve_roc_auc" src="https://github.com/user-attachments/assets/3f2d735a-406f-493f-816c-5c4cad230769" />
+  
+<img width="2400" height="1440" alt="lightgcn_learning_curve_ranking" src="https://github.com/user-attachments/assets/048720c9-78a5-40d7-a5a8-1cbf0362c299" />
+  
 </details>
-
+  
+</details>
 
 <details>
 <summary>Comparison of approach</summary>
