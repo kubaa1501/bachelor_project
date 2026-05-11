@@ -552,33 +552,7 @@ across seeds:
 | MRR | 0.4384 ± 0.0003 |
 
 -------------------------------------
-
-<details>
-<summary>Show per-seed validation results</summary>
-
-### Per-seed validation results
-
-| Seed | ROC-AUC | HitRate@1 | HitRate@5 | HitRate@10 | HitRate@20 | NDCG@10 | MRR |
-|---:|---:|---:|---:|---:|---:|---:|---:|
-| 0 | 0.9278 | 0.2685 | 0.6160 | 0.7938 | 0.9305 | 0.5057 | 0.4287 |
-| 1 | 0.9277 | 0.2679 | 0.6157 | 0.7930 | 0.9302 | 0.5048 | 0.4279 |
-| 42 | 0.9277 | 0.2670 | 0.6157 | 0.7934 | 0.9308 | 0.5047 | 0.4275 |
-
-</details>
-
-<details>
-<summary>Show per-seed test results</summary>
-
-### Per-seed test results
-
-| Seed | ROC-AUC | HitRate@1 | HitRate@5 | HitRate@10 | HitRate@20 | NDCG@10 | MRR |
-|---:|---:|---:|---:|---:|---:|---:|---:|
-| 0 | 0.9297 | 0.2804 | 0.6274 | 0.7998 | 0.9296 | 0.5152 | 0.4388 |
-| 1 | 0.9295 | 0.2807 | 0.6274 | 0.8002 | 0.9297 | 0.5148 | 0.4382 |
-| 42 | 0.9297 | 0.2807 | 0.6262 | 0.7988 | 0.9308 | 0.5144 | 0.4382 |
-
-</details>
-
+  
 <details>
 <summary>Show learning curves </summary>
     
@@ -690,10 +664,7 @@ The final result is from:
 
 ## Key observations
 
-The single-seed and multi-seed results are very close.
-
-This suggests that the selected LightGCN configuration is stable across random seeds.
-
+The single-seed and multi-seed results are very close. This suggests that the selected LightGCN configuration is stable across random seeds.
 The standard deviations are very small across all reported metrics.
 
 </details>
