@@ -23,7 +23,7 @@ np.random.seed(SEED)
 # paths
 BASE_DIR = Path("/home/anci/new")
 DATA_DIR = BASE_DIR / "correct_splits" / "with_genre_groups"
-OUT_DIR = BASE_DIR / "models_new" / "xgb_baseline_fake_emb_corr97"
+OUT_DIR = BASE_DIR / "models_new" / "xgb_baseline_fake_emb_corr97_spearman"
 
 TRAIN_CSV = DATA_DIR / "train.csv"
 VAL_CSV   = DATA_DIR / "val.csv"
@@ -39,7 +39,7 @@ FAKE_EMB_SOURCE_COL = "user_count"
 FAKE_EMB_COL = "fake_emb_0_from_user_count"
 FAKE_EMB_TARGET_CORR = float(os.getenv("FAKE_EMB_TARGET_CORR", "0.97"))
 
-# numeric input features used by the model (baseline)
+# numeric input features used by the model
 NUMERIC_FEATURES = [
     "total_games_owned",
     "total_playtime_minutes",
@@ -107,19 +107,24 @@ def build_fake_feature_with_target_corr(
     scale_to_original_std: bool = True,
 ) -> pd.Series:
     """
-    Create a synthetic feature with sample Pearson correlation ~ rho to x.
+    Create a synthetic feature with sample Spearman correlation ~ rho to x.
 
     Method:
-    - z-score x
+    - convert x to ranks
+    - z-score the ranks
     - sample Gaussian noise
-    - orthogonalize that noise against x in-sample
+    - orthogonalize that noise against ranked x in-sample
     - combine signal and noise:
-            fake_z = rho * x_z + sqrt(1 - rho^2) * noise_z
+          fake_z = rho * x_rank_z + sqrt(1 - rho^2) * noise_z
+
+    Since Spearman correlation is Pearson correlation computed on ranks,
+    building the fake feature from ranked x targets Spearman correlation.
     """
     if not (-0.999 < rho < 0.999):
         raise ValueError("rho must be between -0.999 and 0.999")
 
-    xz = zscore_series(x).to_numpy(dtype=float)
+    x_rank = pd.to_numeric(x, errors="coerce").rank(method="average")
+    xz = zscore_series(x_rank).to_numpy(dtype=float)
     n = len(xz)
 
     rng = np.random.default_rng(seed)
@@ -127,7 +132,7 @@ def build_fake_feature_with_target_corr(
 
     denom = np.dot(xz, xz)
     if denom == 0:
-        raise ValueError("Cannot orthogonalize noise because source variance is zero.")
+        raise ValueError("Cannot orthogonalize noise because source rank variance is zero.")
 
     proj = np.dot(noise, xz) / denom
     noise_orth = noise - proj * xz
@@ -148,7 +153,6 @@ def build_fake_feature_with_target_corr(
         fake = fake * x_std
 
     return fake
-
 
 def add_fake_embedding_feature(df: pd.DataFrame, split_name: str) -> pd.DataFrame:
     """
@@ -191,7 +195,7 @@ def add_fake_embedding_feature(df: pd.DataFrame, split_name: str) -> pd.DataFram
         median_fake = 0.0
     df[FAKE_EMB_COL] = df[FAKE_EMB_COL].fillna(median_fake)
 
-    corr = df[[FAKE_EMB_SOURCE_COL, FAKE_EMB_COL]].corr(method="pearson").iloc[0, 1]
+    corr = df[[FAKE_EMB_SOURCE_COL, FAKE_EMB_COL]].corr(method="spearman").iloc[0, 1]
     print(
         f"[FAKE_EMB] split={split_name} "
         f"corr({FAKE_EMB_SOURCE_COL}, {FAKE_EMB_COL})={corr:.6f} "
@@ -300,6 +304,8 @@ def build_pipeline(params):
     # - categorical preprocessing: missing-value fill + one-hot encoding
     # - final classifier: XGBClassifier
 
+    # note:
+    # numeric scaling is not used here because tree-based boosting models do not require feature scaling
     numeric_transformer = Pipeline([
         ("imputer", SimpleImputer(strategy="median")),
     ])
@@ -539,7 +545,7 @@ def main():
     # final summary .json
     final_results = {
         "model_type": "xgb",
-        "dataset_type": "baseline_fake_emb_corr97",
+        "dataset_type": "baseline_fake_emb_corr97_spearman",
         "seed": SEED,
         "fake_embedding_source_col": FAKE_EMB_SOURCE_COL,
         "fake_embedding_col": FAKE_EMB_COL,
