@@ -15,25 +15,40 @@ The experiments extend the original:
 - `train_xgb_network.py`
 
 and systematically modify the feature space to isolate the impact of individual components.
+
+## Evaluation protocol
+  
+All final reported results are presented as **mean ± standard deviation** across 3 random seeds:
+  
+- `42`
+- `0`
+- `1`
+  
+The workflow was:  
+  
+1. initial experiments and hyperparameter search were performed using seed `42`
+2. after selecting the final hyperparameters, each experiment was rerun using 3 seeds
+3. the final metrics reported in this README are aggregated as `mean ± std`
+  
 ## Reference models
 
 ### Baseline model
-
-| Metric | Value |
-|---|---:|
-| HitRate@1 | 0.7763 |
-| HitRate@10 | 0.8994 |
-| MRR | 0.8190 |
-
+  
+| Metric     |           Value |
+| ---------- | --------------: |
+| HitRate@1  | 0.7768 ± 0.0004 |
+| HitRate@10 | 0.8992 ± 0.0016 |
+| MRR        | 0.8187 ± 0.0006 |
+  
 ### Network model
-
-| Metric | Value |
-|---|---:|
-| HitRate@1 | 0.9940 |
-| HitRate@10 | 0.9977 |
-| MRR | 0.9952 |
-
-
+  
+| Metric     |           Value |
+| ---------- | --------------: |
+| HitRate@1  | 0.9942 ± 0.0002 |
+| HitRate@10 | 0.9976 ± 0.0001 |
+| MRR        | 0.9953 ± 0.0001 |
+  
+  
 # Experiments
 
 
@@ -93,22 +108,22 @@ The goal is to evaluate how much predictive power is contained in one embedding 
 ---
 
 ### Results
-
-| Metric | Value |
-|---|---:|
-| HitRate@1 | 0.9844 |
-| HitRate@10 | 0.9937 |
-| MRR | 0.9876 |
-
+  
+| Metric     |           Value |
+| ---------- | --------------: |
+| HitRate@1  | 0.9840 ± 0.0003 |
+| HitRate@10 | 0.9936 ± 0.0001 |
+| MRR        | 0.9872 ± 0.0003 |
+  
 ---
 
 ### Comparison
 
 | Model | HitRate@1 | HitRate@10 | MRR |
 |---|---:|---:|---:|
-| Baseline | 0.7763 | 0.8994 | 0.8190 |
-| Baseline + game_emb_0 | 0.9844 | 0.9937 | 0.9876 |
-| Network | 0.9940 | 0.9977 | 0.9952 |
+| Baseline | 0.7768 ± 0.0004 | 0.8992 ± 0.0016 | 0.8187 ± 0.0006 |
+| Baseline + game_emb_0 | 0.9840 ± 0.0003 | 0.9936 ± 0.0001 | 0.9872 ± 0.0003 |
+| Network | 0.9942 ± 0.0002 | 0.9976 ± 0.0001 | 0.9953 ± 0.0001 |
 
 ---
 
@@ -180,23 +195,23 @@ No categorical features are used.
 ---
 
 ### Results
-
-| Metric | Value |
-|---|---:|
-| HitRate@1 | 0.1061 |
-| HitRate@10 | 0.5092 |
-| MRR | 0.2343 |
-
+  
+| Metric     |           Value |
+| ---------- | --------------: |
+| HitRate@1  | 0.1062 ± 0.0000 |
+| HitRate@10 | 0.5092 ± 0.0000 |
+| MRR        | 0.2343 ± 0.0000 |
+  
 ---
 
 ### Comparison
-
+  
 | Model | HitRate@1 | HitRate@10 | MRR |
 |---|---:|---:|---:|
-| Baseline | 0.7763 | 0.8994 | 0.8190 |
-| Embeddings only | 0.1061 | 0.5092 | 0.2343 |
-| Network | 0.9940 | 0.9977 | 0.9952 |
-
+| Baseline | 0.7768 ± 0.0004 | 0.8992 ± 0.0016 | 0.8187 ± 0.0006 |
+| embeddings only | 0.1062 ± 0.0000 | 0.5092 ± 0.0000 | 0.2343 ± 0.0000 |
+| Network | 0.9942 ± 0.0002 | 0.9976 ± 0.0001 | 0.9953 ± 0.0001 |
+  
 ---
 
 ### Summary
@@ -220,7 +235,7 @@ As a result, performance drops significantly compared to the baseline model.
 
 ### Description
 
-This experiment evaluates whether embeddings become more useful when combined with a small amount of user-level information.
+This experiment evaluates whether embeddings become more useful when combined with a minimal amount of user-level information.
 
 The model uses all 32 game embedding dimensions together with:
 
@@ -281,33 +296,30 @@ No categorical features are used.
 ---
 
 ### Results
-
-| Metric | Value |
-|---|---:|
-| HitRate@1 | 0.1587 |
-| HitRate@10 | 0.6117 |
-| MRR | 0.2950 |
   
+| Metric     |           Value |
+| ---------- | --------------: |
+| HitRate@1  | 0.1582 ± 0.0004 |
+| HitRate@10 | 0.6114 ± 0.0002 |
+| MRR        | 0.2946 ± 0.0002 |
+    
 ---
 
 ### Comparison
-
+  
 | Model | HitRate@1 | HitRate@10 | MRR |
 |---|---:|---:|---:|
-| Baseline | 0.7763 | 0.8994 | 0.8190 |
-| Embeddings only | 0.1061 | 0.5092 | 0.2343 |
-| Embeddings + basic user information | 0.1587 | 0.6117 | 0.2950 |
-| Network | 0.9940 | 0.9977 | 0.9952 |
-
+| Baseline | 0.7768 ± 0.0004 | 0.8992 ± 0.0016 | 0.8187 ± 0.0006 |
+| embeddings only | 0.1062 ± 0.0000 | 0.5092 ± 0.0000 | 0.2343 ± 0.0000 |
+| Embeddings + basic user information | 0.1582 ± 0.0004 | 0.6114 ± 0.0002 | 0.2946 ± 0.0002 |
+| Network | 0.9942 ± 0.0002 | 0.9976 ± 0.0001 | 0.9953 ± 0.0001 |
+  
 ---
 
 ### Summary
 
-Adding `unique_genres_played` and `total_playtime_minutes` improves performance over embeddings alone.
-
-However, the model is still far below the baseline model. This suggests that embeddings contain some useful game-structure signal, but it works only with some other meaningful features.
-
-
+Adding `unique_genres_played` and `total_playtime_minutes` improves performance over embeddings alone. However, the performance was still far below the Baseline model.  
+    
 </details>
 
 
@@ -331,8 +343,8 @@ A key observation is that the interaction structure of the model changes after i
 
 #### Baseline model
 
-- `num__user_count` interacts most strongly with `num__release_date`
-- `num__game_total_playtime_minutes` interacts most strongly with `num__user_count`
+- `user_count` interacts most strongly with `release_date`
+- `game_total_playtime_minutes` interacts most strongly with `user_count`
 
 This indicates that the baseline model relies primarily on a combination of popularity, recency, and playtime-related signals.
 
@@ -340,9 +352,9 @@ This indicates that the baseline model relies primarily on a combination of popu
 
 #### Embedding model (with `game_emb_0`)
 
-- `num__user_count` interacts most strongly with `num__game_emb_0`
-- `num__game_emb_0` interacts most strongly with `num__user_count`
-- `num__release_date` also shows strong interaction with `num__game_emb_0`
+- `user_count` interacts most strongly with `game_emb_0`
+- `game_emb_0` interacts most strongly with `user_count`
+- `release_date` also shows strong interaction with `game_emb_0`
 
 This indicates that the embedding feature is not used independently, but rather in conjunction with:
 
@@ -359,16 +371,16 @@ These patterns suggest that the embedding encodes a global structural signal ali
   
 | Rank | Feature | mean_abs_shap | Importance share |
 |---|---|---:|---:|
-| 1 | num__user_count | 12.1596 | 73.26% |
-| 2 | num__game_total_playtime_minutes | 2.4655 | 14.85% |
-| 3 | num__release_date | 0.6611 | 3.98% |
-| 4 | num__user_playtime_group_Other | 0.1495 | 0.90% |
-| 5 | num__total_games_owned | 0.1493 | 0.90% |
-| 6 | num__median_playtime_minutes | 0.1449 | 0.87% |
-| 7 | num__user_playtime_group_Indie | 0.1285 | 0.77% |
-| 8 | num__user_playtime_group_Strategy | 0.1064 | 0.64% |
-| 9 | num__user_playtime_group_RPG | 0.0942 | 0.57% |
-| 10 | num__user_playtime_group_Sports | 0.0777 | 0.47% |
+| 1 | user_count | 12.1596 | 73.26% |
+| 2 | game_total_playtime_minutes | 2.4655 | 14.85% |
+| 3 | release_date | 0.6611 | 3.98% |
+| 4 | user_playtime_group_Other | 0.1495 | 0.90% |
+| 5 | total_games_owned | 0.1493 | 0.90% |
+| 6 | median_playtime_minutes | 0.1449 | 0.87% |
+| 7 | user_playtime_group_Indie | 0.1285 | 0.77% |
+| 8 | user_playtime_group_Strategy | 0.1064 | 0.64% |
+| 9 | user_playtime_group_RPG | 0.0942 | 0.57% |
+| 10 | user_playtime_group_Sports | 0.0777 | 0.47% |
   
 The model is strongly dominated by `user_count`, which accounts for over 70% of total importance.
 
@@ -378,16 +390,16 @@ The model is strongly dominated by `user_count`, which accounts for over 70% of 
   
 | Rank | Feature | mean_abs_shap | Importance share |
 |---|---|---:|---:|
-| 1 | num__user_count | 16.3508 | 61.12% |
-| 2 | num__game_emb_0 | 8.1138 | 30.33% |
-| 3 | num__release_date | 0.7825 | 2.92% |
-| 4 | num__game_total_playtime_minutes | 0.5668 | 2.12% |
-| 5 | num__median_playtime_minutes | 0.2307 | 0.86% |
-| 6 | num__total_games_owned | 0.1022 | 0.38% |
-| 7 | num__user_playtime_group_RPG | 0.0899 | 0.34% |
-| 8 | num__friend_count | 0.0638 | 0.24% |
-| 9 | num__user_playtime_group_Other | 0.0623 | 0.23% |
-| 10 | num__user_playtime_group_Casual | 0.0606 | 0.23% |
+| 1 | user_count | 16.3508 | 61.12% |
+| 2 | game_emb_0 | 8.1138 | 30.33% |
+| 3 | release_date | 0.7825 | 2.92% |
+| 4 | game_total_playtime_minutes | 0.5668 | 2.12% |
+| 5 | median_playtime_minutes | 0.2307 | 0.86% |
+| 6 | total_games_owned | 0.1022 | 0.38% |
+| 7 | user_playtime_group_RPG | 0.0899 | 0.34% |
+| 8 | friend_count | 0.0638 | 0.24% |
+| 9 | user_playtime_group_Other | 0.0623 | 0.23% |
+| 10 | user_playtime_group_Casual | 0.0606 | 0.23% |
   
 The key change is the emergence of `game_emb_0` as the second most important feature, contributing over 30% of the total importance.
 
@@ -397,10 +409,10 @@ The key change is the emergence of `game_emb_0` as the second most important fea
 
 | Rank | Feature | Baseline share | Embedding share |
 |---|---|---:|---:|
-| 1 | num__user_count | 73.26% | 61.12% |
-| 2 | num__game_emb_0 | – | 30.33% |
-| 3 | num__game_total_playtime_minutes | 14.85% | 2.12% |
-| 4 | num__release_date | 3.98% | 2.92% |
+| 1 | user_count | 73.26% | 61.12% |
+| 2 | game_emb_0 | – | 30.33% |
+| 3 | game_total_playtime_minutes | 14.85% | 2.12% |
+| 4 | release_date | 3.98% | 2.92% |
 
 The introduction of the embedding redistributes importance from classical features to the embedding representation.
 
@@ -422,14 +434,7 @@ Importantly, the embedding does not replace traditional features but reorganizes
 - in the embedding model, a dominant latent feature emerges and interacts with a smaller set of supporting signals.
 
 ---
-
-### Conclusion
-
-The observed performance improvement is largely explained by:
-
-- the introduction of a strong global signal captured by `game_emb_0`
-- its interaction with `user_count` and other key features
-
+  
 </details>
 
 <details>
@@ -440,12 +445,6 @@ The observed performance improvement is largely explained by:
 This experiment removes the `user_count` feature from the baseline model.  
 
 The goal is to evaluate how much of the model performance is driven purely by the popularity signal, and how well the remaining features perform without it.  
-  
-This serves as a diagnostic test for:  
-  
-- reliance on global popularity
-- robustness of behavioral and content-based features
-- comparison baseline for embedding-based models
   
 ---
   
@@ -491,19 +490,20 @@ This serves as a diagnostic test for:
   
 ### Results:
 
-| Metric     |  Value |
-| ---------- | -----: |
-| HitRate@1  | 0.1788 |
-| HitRate@10 | 0.6255 |
-| MRR        | 0.3135 |
+| Metric     |           Value |
+| ---------- | --------------: |
+| HitRate@1  | 0.1803 ± 0.0011 |
+| HitRate@10 | 0.6269 ± 0.0010 |
+| MRR        | 0.3148 ± 0.0010 |
+
 
 ### Comparison:
   
-| Model                    | HitRate@1 | HitRate@10 |    MRR |
-| ------------------------ | --------: | ---------: | -----: |
-| Baseline                 |    0.7763 |     0.8994 | 0.8190 |
-| Baseline (no user_count) |    0.1788 |     0.6255 | 0.3135 |
-| Network                  |    0.9940 |     0.9977 | 0.9952 |
+| Model | HitRate@1 | HitRate@10 | MRR |
+|---|---:|---:|---:|
+| Baseline | 0.7768 ± 0.0004 | 0.8992 ± 0.0016 | 0.8187 ± 0.0006 |
+| Baseline without `user_count` | 0.1803 ± 0.0011 | 0.6269 ± 0.0010 | 0.3148 ± 0.0009 |
+| Network | 0.9942 ± 0.0002 | 0.9976 ± 0.0001 | 0.9953 ± 0.0001 |
 
 ---
   
@@ -517,24 +517,7 @@ HitRate@1 decreases from 0.776 → 0.179
 MRR decreases from 0.819 → 0.313  
 overall ranking quality collapses  
   
-This confirms that:  
-- `user_count` is the dominant signal in the baseline model  
-- most predictive power comes from popularity rather than personalization
-- remaining features (playtime, genres, metadata) are insufficient to recover performance
-  
-Interestingly, the model without `user_count` still outperforms the Random and Popularity (model that uses only `user_count`) model which means that tabular behavioral features carry some signal. 
-
 --- 
-  
-### Interpretation
-  
-This experiment establishes a critical reference point:  
-- the baseline model is largely driven by popularity
-- any improvement from embeddings should be interpreted relative to this effect
-  
-In particular:  
-- if embeddings recover performance lost after removing user_count, they likely encode popularity-like information
-- if they improve beyond this baseline, they may capture meaningful relational structure
   
 </details>
 
@@ -596,22 +579,22 @@ This directly checks whether `game_emb_0` behaves as a replacement for `user_cou
 
 ### Results
 
-| Metric | Value |
-|---|---:|
-| HitRate@1 | 0.1881 |
-| HitRate@10 | 0.6508 |
-| MRR | 0.3269 |
+| Metric     |           Value |
+| ---------- | --------------: |
+| HitRate@1  | 0.1890 ± 0.0007 |
+| HitRate@10 | 0.6494 ± 0.0012 |
+| MRR        | 0.3269 ± 0.0003 |
 
 ---
 
 ### Comparison
-
 | Model | HitRate@1 | HitRate@10 | MRR |
 |---|---:|---:|---:|
-| Baseline | 0.7763 | 0.8994 | 0.8190 |
-| Baseline without `user_count` | 0.1788 | 0.6255 | 0.3135 |
-| Baseline + `game_emb_0` without `user_count` | 0.1881 | 0.6508 | 0.3269 |
-| Network | 0.9940 | 0.9977 | 0.9952 |
+| Baseline | 0.7768 ± 0.0004 | 0.8992 ± 0.0016 | 0.8187 ± 0.0006 |
+| Baseline without `user_count` | 0.1803 ± 0.0011 | 0.6269 ± 0.0010 | 0.3148 ± 0.0009 |
+|Baseline with `game_emb_0` without `user_count` | 0.1890 ± 0.0000 | 0.6494 ± 0.0012 | 0.3269 ± 0.0003 |
+| Network | 0.9942 ± 0.0002 | 0.9976 ± 0.0001 | 0.9953 ± 0.0001 |
+
 
 ---
 
@@ -619,28 +602,14 @@ This directly checks whether `game_emb_0` behaves as a replacement for `user_cou
 
 Adding `game_emb_0` without `user_count` improves performance only slightly compared to the baseline without `user_count`.  
   
-This suggests that `game_emb_0` does not fully replace `user_count`.  
+`game_emb_0` does not fully replace `user_count`.  
   
-Its strongest effect appears when it is used together with `user_count`, which supports the SHAP finding that these two features interact strongly.  
-
 ---
-
-### Interpretation
-  
-The result indicates that `game_emb_0` contains useful signal, but its predictive power depends heavily on interaction with popularity.
-  
-On its own, without `user_count`, it provides only a modest improvement.  
-  
-Therefore, the large gain observed in the full embedding model is likely caused by the combination of:  
-  
-- explicit popularity signal from `user_count`
-- latent structural signal from `game_emb_0`
-- interaction between both features
   
 </details>
 
 <details>
-<summary><b>5. Only `user_count` + `game_emb_0`</b></summary>
+<summary><b>5. XGBoost Only `user_count` + `game_emb_0`</b></summary>
 
 `train_xgb_emb0+user_count.py`
 
@@ -652,8 +621,6 @@ This experiment trains XGBoost using only two features:
 - `game_emb_0`
 
 The goal is to test whether the strong performance of the network model can be largely explained by the interaction between explicit popularity and the first embedding dimension.
-
-This is a minimal-feature diagnostic experiment.
 
 ---
 
@@ -675,22 +642,22 @@ No categorical features are used.
 ---
 
 ### Results
-
-| Metric | Value |
-|---|---:|
-| HitRate@1 | 0.9529 |
-| HitRate@10 | 0.9878 |
-| MRR | 0.9647 |
   
+| Metric     |           Value |
+| ---------- | --------------: |
+| HitRate@1  | 0.9529 ± 0.0000 |
+| HitRate@10 | 0.9878 ± 0.0000 |
+| MRR        | 0.9647 ± 0.0000 |
+    
 ---
   
 ### Comparison
 
 | Model | HitRate@1 | HitRate@10 | MRR |
 |---|---:|---:|---:|
-| Baseline | 0.7763 | 0.8994 | 0.8190 |
-| Only `user_count` + `game_emb_0` | 0.9529 | 0.9878 | 0.9647 |
-| Network | 0.9940 | 0.9977 | 0.9952 |
+| Baseline | 0.7768 ± 0.0004 | 0.8992 ± 0.0016 | 0.8187 ± 0.0006 |
+| `game_emb_0` + `user_count` | 0.9529 ± 0.0000 | 0.9878 ± 0.0000 | 0.9647 ± 0.0000 |
+| Network | 0.9942 ± 0.0002 | 0.9976 ± 0.0001 | 0.9953 ± 0.0001 |
 
 ---
 
@@ -705,25 +672,9 @@ This is a strong result:
 - MRR reaches **0.9647**
 
 Despite using only two features, the model performs far above the full baseline model.
-
+  
 ---
-
-### Interpretation
-
-This suggests that the network model achieves slightly higher performance due to additional weak but informative features.
-
-However, the majority of the predictive power is already captured by the interaction between `user_count` and `game_emb_0`.  
-   
-In particular:
-  
-- `user_count` provides a strong explicit popularity signal  
-- `game_emb_0` captures a global latent structure of games  
-- their combination forms a highly effective joint signal  
-  
-The remaining embedding dimensions and network-derived features contribute only marginal gains on top of this core interaction.  
-  
-As a result, the superior performance of the network model is not primarily driven by a rich high-dimensional representation, but rather by a small number of dominant features that complement each other extremely well.  
-  
+    
 </details>
   
 <details>
@@ -748,7 +699,7 @@ A synthetic feature was constructed to mimic the correlation structure of `game_
 
 The feature:
 - is derived directly from `user_count`
-- has Pearson correlation ≈ 0.97
+- has Spearman correlation ≈ 0.97
 - contains no additional structural information
   
 ---
@@ -761,11 +712,12 @@ The feature:
   
 #### Results
 
-| Metric | Value |
-|---|---:|
-| HitRate@1 | 0.7755 |
-| HitRate@10 | 0.9021 |
-| MRR | 0.8180 |
+| Metric     |           Value |
+| ---------- | --------------: |
+| HitRate@1  | 0.7749 ± 0.0019 |
+| HitRate@10 | 0.8987 ± 0.0018 |
+| MRR        | 0.8172 ± 0.0015 |
+
   
 ---
   
@@ -773,42 +725,16 @@ The feature:
 
 | Model | HitRate@1 | HitRate@10 | MRR |
 |---|---:|---:|---:|
-| Baseline | 0.7763 | 0.8994 | 0.8190 |
-| Baseline + fake emb_0 | 0.7755 | 0.9020 | 0.8180 |
-| Baseline + game_emb_0 | 0.9844 | 0.9937 | 0.9876 |
-| Network | 0.9940 | 0.9977 | 0.9952 |  
+| Baseline | 0.7768 ± 0.0004 | 0.8992 ± 0.0016 | 0.8187 ± 0.0006 |
+| Baseline + fake game_emb_0 | 0.7749 ± 0.0019 | 0.8987 ± 0.0018 | 0.8172 ± 0.0015 |
+| Baseline + game_emb_0 | 0.9840 ± 0.0003 | 0.9936 ± 0.0001 | 0.9872 ± 0.0003 |
+| Network | 0.9942 ± 0.0002 | 0.9976 ± 0.0001 | 0.9953 ± 0.0001 |
 
 ---
   
 ### Interpretation
 
 The synthetic embedding (`fake_emb_0`) does **not reproduce the effect of the real embedding**, despite having a very high correlation (≈ 0.97) with `user_count`.  
-  
-Specifically:
-  
-- performance of *Baseline + fake emb_0* remains essentially identical to the baseline  
-- no meaningful improvement is observed from adding the synthetic feature  
-- in contrast, *Baseline + game_emb_0* leads to a dramatic performance increase  
-  
-This demonstrates that:  
-  
-- the improvement is **not caused by correlation with `user_count` alone**
-- a randomly constructed feature, even with extremely high correlation, **does not carry the required signal**
-- the real embedding contains **structured information that is not captured by simple statistical dependence**
-  
-In other words:  correlation ≠ information
-  
-Even though `game_emb_0` is strongly correlated with `user_count`, it encodes additional structure that the model is able to exploit.  
-  
----
-  
-### Conclusion
-  
-The experiment confirms that `game_emb_0` is **not trivially replaceable** by a synthetic feature derived from `user_count`.  
-  
-The performance gain comes from:  
-- meaningful structure encoded in the embedding  
-- not merely from its correlation with popularity  
   
 ---
 
@@ -828,11 +754,11 @@ To test this, `user_count` was replaced with `log1p(user_count)` in the Baseline
   
 #### Results
 
-| Metric | Value |
-|---|---:|
-| HitRate@1 | 0.7700 |
-| HitRate@10 | 0.8951 |
-| MRR | 0.8131 |
+| Metric     |           Value |
+| ---------- | --------------: |
+| HitRate@1  | 0.7730 ± 0.0039 |
+| HitRate@10 | 0.8965 ± 0.0011 |
+| MRR        | 0.8150 ± 0.0034 |
   
 ---
     
@@ -840,37 +766,17 @@ To test this, `user_count` was replaced with `log1p(user_count)` in the Baseline
   
 | Model | HitRate@1 | HitRate@10 | MRR |
 |---|---:|---:|---:|
-| Baseline | 0.7763 | 0.8994 | 0.8190 |
-| Baseline (`log(user_cout)`) | 0.7700 | 0.8951 | 0.8131 |
-| Baseline + game_emb_0 | 0.9844 | 0.9937 | 0.9876 |
-| Network | 0.9940 | 0.9977 | 0.9952 |  
+| Baseline | 0.7768 ± 0.0004 | 0.8992 ± 0.0016 | 0.8187 ± 0.0006 |
+| Baseline + log(`user_count`) | 0.7730 ± 0.0039 | 0.8965 ± 0.0011 | 0.8150 ± 0.0034 |
+| Baseline + `game_emb_0` | 0.9840 ± 0.0003 | 0.9936 ± 0.0001 | 0.9872 ± 0.0003 |
+| Network | 0.9942 ± 0.0002 | 0.9976 ± 0.0001 | 0.9953 ± 0.0001 |
   
 ---
 
 ### Interpretation
 
 Replacing `user_count` with its logarithmic transformation does **not improve the model**.
-  
-In fact:  
-  
-- performance slightly **decreases** compared to the baseline  
-- the model does not benefit from this simple non-linear transformation  
-- the gap to the embedding-based model remains extremely large  
-  
-This indicates that:  
-  
-- `game_emb_0` is **not equivalent to a simple log-transformation of popularity**  
-- even if visually correlated, the embedding captures a **different functional structure**  
-- the model cannot reproduce the embedding effect using a hand-crafted transformation  
-  
----
-  
-### Conclusion
-  
-The experiment shows that:  
-- a basic non-linear transformation of `user_count` is insufficient to explain the performance gain  
-- `game_emb_0` encodes a more complex signal than monotonic scaling of popularity
-  
+     
 </details>
   
 ---  
@@ -883,14 +789,14 @@ The experiment shows that:
 | Rank | Model | HitRate@1 | HitRate@5 | HitRate@10 | MRR |
 |---:|---|---:|---:|---:|---:|
 | 1 | **XGB Network** | 0.9942 ± 0.0002 | 0.9965 ± 0.0001 | 0.9976 ± 0.0001 | 0.9953 ± 0.0001 |
-| 2 | XGB Baseline + `game_emb_0` | 0.9844 | 0.9910 | 0.9937 | 0.9876 |
-| 3 | XGB `user_count` + `game_emb_0` only | 0.9529 | 0.9792 | 0.9878 | 0.9647 |
+| 2 | XGB Baseline + `game_emb_0` | 0.9840 ± 0.0003 | 0.9908 ± 0.0004 | 0.9936 ± 0.0001 | 0.9872 ± 0.0003 |
+| 3 | XGB `user_count` + `game_emb_0` only | 0.9529 ± 0.0000 | 0.9792 ± 0.0000 | 0.9878 ± 0.0000 | 0.9647 ± 0.0000 |
 | 4 | **XGB Baseline** | 0.7768 ± 0.0004 | 0.8630 ± 0.0021 | 0.8992 ± 0.0016 | 0.8187 ± 0.0006 |
-| 5 | XGB Baseline + `fake emb_0` | 0.7755 | 0.8640 | 0.9021 | 0.8180 |
-| 6 | XGB Baseline + `log(user_count)` | 0.7700 | 0.8582 | 0.8951 | 0.8131 |
-| 7 | XGB Baseline + `game_emb_0` without `user_count` | 0.1881 | 0.4645 | 0.6508 | 0.3269 |
-| 8 | XGB Baseline without `user_count` | 0.1788 | 0.4427 | 0.6255 | 0.3135 |
-| 9 | XGB embeddings + basic user info | 0.1587 | 0.4204 | 0.6117 | 0.2950 |
-| 10 | XGB embeddings only | 0.1061 | 0.3431 | 0.5092 | 0.2343 |
+| 5 | XGB Baseline + `fake emb_0` | 0.7749 ± 0.0019 | 0.8615 ± 0.0016 | 0.8987 ± 0.0018 | 0.8172 ± 0.0015 |
+| 6 | XGB Baseline + `log(user_count)` | 0.7730 ± 0.0039 | 0.8591 ± 0.0031 | 0.8965 ± 0.0011 | 0.8150 ± 0.0034 |
+| 7 | XGB Baseline + `game_emb_0` without `user_count` | 0.1890 ± 0.0007 | 0.4629 ± 0.0012 | 0.6494 ± 0.0012 | 0.3269 ± 0.0003 |
+| 8 | XGB Baseline without `user_count` | 0.1803 ± 0.0011 | 0.4444 ± 0.0013 | 0.6269 ± 0.0010 | 0.3148 ± 0.0010 |
+| 9 | XGB embeddings + basic user info | 0.1582 ± 0.0004 | 0.4198 ± 0.0008 | 0.6114 ± 0.0002 | 0.2946 ± 0.0002 |
+| 10 | XGB embeddings only | 0.1062 ± 0.0000 | 0.3433 ± 0.0001 | 0.5092 ± 0.0000 | 0.2343 ± 0.0000 |
    
 </details>
