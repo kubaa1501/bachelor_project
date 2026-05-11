@@ -4,6 +4,11 @@ This experiment was added as an extra sanity check for possible data leakage.
   
 The goal was to test whether the very strong XGBoost results, especially for the Network model, were caused by users appearing in both training and evaluation data.  
 
+**Reporting note:**  
+All fresh-user simulation results are reported as **mean ± standard deviation** across 3 random seeds: `42`, `0`, and `1`.
+The simulations were rerun using the best hyperparameters selected by the original training scripts.
+  
+        
 The results stayed very close to the original XGBoost results, which suggests that the strong performance is not simply caused by the same users leaking from train into validation/test.  
 
 -------------------------------------
@@ -148,42 +153,42 @@ The only difference is the input directory.
   
 **xgb baseline SIM**
     
-| Metric     |  Value |
-| ---------- | -----: |
-| ROC-AUC    | 0.9668 |
-| HitRate@1  | 0.7745 |
-| Recall@1   | 0.7745 |
-| NDCG@1     | 0.7745 |
-| HitRate@5  | 0.8575 |
-| Recall@5   | 0.8575 |
-| NDCG@5     | 0.8196 |
-| HitRate@10 | 0.8910 |
-| Recall@10  | 0.8910 |
-| NDCG@10    | 0.8304 |
-| HitRate@20 | 0.9325 |
-| Recall@20  | 0.9325 |
-| NDCG@20    | 0.8410 |
-| MRR        | 0.8162 |
+| Metric     | Value |
+| ---------- | ----: |
+| ROC-AUC    | 0.9674 ± 0.0005 |
+| HitRate@1  | 0.7785 ± 0.0033 |
+| Recall@1   | 0.7785 ± 0.0033 |
+| NDCG@1     | 0.7785 ± 0.0033 |
+| HitRate@5  | 0.8610 ± 0.0027 |
+| Recall@5   | 0.8610 ± 0.0027 |
+| NDCG@5     | 0.8227 ± 0.0027 |
+| HitRate@10 | 0.8952 ± 0.0037 |
+| Recall@10  | 0.8952 ± 0.0037 |
+| NDCG@10    | 0.8338 ± 0.0024 |
+| HitRate@20 | 0.9352 ± 0.0022 |
+| Recall@20  | 0.9352 ± 0.0022 |
+| NDCG@20    | 0.8439 ± 0.0022 |
+| MRR        | 0.8191 ± 0.0025 |
 
     
 ### xgb network SIM  
   
-| Metric     |  Value |
-| ---------- | -----: |
-| ROC-AUC    | 0.9992 |
-| HitRate@1  | 0.9950 |
-| Recall@1   | 0.9950 |
-| NDCG@1     | 0.9950 |
-| HitRate@5  | 0.9960 |
-| Recall@5   | 0.9960 |
-| NDCG@5     | 0.9955 |
-| HitRate@10 | 0.9970 |
-| Recall@10  | 0.9970 |
-| NDCG@10    | 0.9959 |
-| HitRate@20 | 0.9980 |
-| Recall@20  | 0.9980 |
-| NDCG@20    | 0.9961 |
-| MRR        | 0.9957 |
+| Metric     | Value |
+| ---------- | ----: |
+| ROC-AUC    | 0.9992 ± 0.0000 |
+| HitRate@1  | 0.9947 ± 0.0002 |
+| Recall@1   | 0.9947 ± 0.0002 |
+| NDCG@1     | 0.9947 ± 0.0002 |
+| HitRate@5  | 0.9960 ± 0.0000 |
+| Recall@5   | 0.9960 ± 0.0000 |
+| NDCG@5     | 0.9953 ± 0.0001 |
+| HitRate@10 | 0.9973 ± 0.0002 |
+| Recall@10  | 0.9973 ± 0.0002 |
+| NDCG@10    | 0.9958 ± 0.0001 |
+| HitRate@20 | 0.9983 ± 0.0002 |
+| Recall@20  | 0.9983 ± 0.0002 |
+| NDCG@20    | 0.9960 ± 0.0001 |
+| MRR        | 0.9954 ± 0.0002 |
 
 *full results output you can find in folder `results/`*
 
@@ -191,21 +196,21 @@ The only difference is the input directory.
   
 #### Comparison: normal XGB vs fresh-user simulation
   
-| Metric     | Normal XGB baseline | Fresh-user sim baseline |           Δ |
+| Metric     | Normal XGB baseline | Fresh-user sim baseline | Δ |
 | ---------- | ------------------: | ----------------------: | ----------: |
-| HitRate@1  |     0.7768 ± 0.0004 |                  0.7745 | **−0.0023** |
-| HitRate@5  |     0.8630 ± 0.0021 |                  0.8575 | **−0.0055** |
-| HitRate@10 |     0.8992 ± 0.0016 |                  0.8910 | **−0.0082** |
-| MRR        |     0.8187 ± 0.0006 |                  0.8162 | **−0.0025** |
+| HitRate@1  | 0.7768 ± 0.0004 | 0.7785 ± 0.0033 | **+0.0017** |
+| HitRate@5  | 0.8630 ± 0.0021 | 0.8610 ± 0.0027 | **−0.0020** |
+| HitRate@10 | 0.8992 ± 0.0016 | 0.8952 ± 0.0037 | **−0.0041** |
+| MRR        | 0.8187 ± 0.0006 | 0.8191 ± 0.0025 | **+0.0004** |
   
     
     
-| Metric     | Normal XGB network | Fresh-user sim network |           Δ |
+| Metric     | Normal XGB network | Fresh-user sim network | Δ |
 | ---------- | -----------------: | ---------------------: | ----------: |
-| HitRate@1  |    0.9942 ± 0.0002 |                 0.9950 | **+0.0008** |
-| HitRate@5  |    0.9965 ± 0.0001 |                 0.9960 | **−0.0005** |
-| HitRate@10 |    0.9976 ± 0.0001 |                 0.9970 | **−0.0006** |
-| MRR        |    0.9953 ± 0.0001 |                 0.9957 | **+0.0004** |
+| HitRate@1  | 0.9942 ± 0.0002 | 0.9947 ± 0.0002 | **+0.0004** |
+| HitRate@5  | 0.9965 ± 0.0001 | 0.9960 ± 0.0000 | **−0.0005** |
+| HitRate@10 | 0.9976 ± 0.0001 | 0.9973 ± 0.0002 | **−0.0002** |
+| MRR        | 0.9953 ± 0.0001 | 0.9954 ± 0.0002 | **+0.0001** |
 
 -------------------------------------
   
