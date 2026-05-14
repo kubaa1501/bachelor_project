@@ -5,7 +5,7 @@ Enhancing Steam Game Recommendations<br>
 with Network-Derived Features
 </h1>
 
-## Bachelor Thesis Project
+## Bachelor Thesis Project 2026 
 
 Authors:
 
