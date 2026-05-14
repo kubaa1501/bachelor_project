@@ -1,6 +1,23 @@
-# Steam Game Recommendation System  
-### Bachelor Thesis Project
+<div align="center">
 
+<h1>
+Enhancing Steam Game Recommendations<br>
+with Network-Derived Features
+</h1>
+
+## Bachelor Thesis Project
+
+Authors:
+
+*Aniela Marta Ciecierska*  
+*Jakub Piotr Gąsior*
+
+Supervised by: *Michele Coscia*
+
+</div>
+  
+---
+  
 This project builds a **large-scale game recommendation system** using Steam data, combining:
 
 - classical ML models (Logistic Regression, Random Forest, XGBoost)
