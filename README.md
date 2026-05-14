@@ -4,8 +4,7 @@
 This project builds a **large-scale game recommendation system** using Steam data, combining:
 
 - classical ML models (Logistic Regression, Random Forest, XGBoost)
-- deep learning models (Neural Networks)
-- graph-based models (GraphSAGE)
+- neural models (Neural Networks, GraphSAGE, LightGCN)
 - network-aware feature engineering (PCA embeddings from social graph)
 
 The pipeline covers the full lifecycle:
